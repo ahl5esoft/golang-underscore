@@ -5,6 +5,7 @@ type Queryer interface {
 	GroupBy(string) Queryer
 	Index(func(item interface{}) interface{}) Queryer
 	IndexBy(string) Queryer
+	Count() Queryer
 	Value() interface{}
 }
 

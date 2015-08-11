@@ -5,12 +5,14 @@ import (
 )
 
 func TestGroup(t *testing.T) {
-	dict := Group(arr, func (item interface{}) interface{} {
-		return item.(UnderscoreModel).Id
+	dict := Group([]int{ 1, 2, 3, 4, 5 }, func (item interface{}) interface{} {
+		if item.(int) % 2 == 0 {
+			return "even"
+		}
+		return "odd"
 	})
-	group, ok := dict["a"]
+	group, ok := dict["even"]
 	if !(ok && len(group) == 2) {
 		t.Error("wrong")
 	}
-	t.Log(dict)
 }

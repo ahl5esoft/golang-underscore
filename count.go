@@ -22,3 +22,9 @@ func Count(source interface{}) int {
 	}
 	return count
 }
+
+//chain
+func (this *Query) Count() Queryer {	
+	this.source = Count(this.source)
+	return this
+}

@@ -5,19 +5,11 @@ import (
 )
 
 func TestIndex(t *testing.T) {
-	res := Index(arr, func (v interface{}) interface{} {
-		return v.(UnderscoreModel).Id
+	res := Index([]string{ "a", "b" }, func (item interface{}) interface{} {
+		return item
 	})
-	v, ok := res["a"].(UnderscoreModel)
-	if !(ok && v.Id == "a") {
-		t.Error("[array]wrong model")
+	str, ok := res["a"].(string)
+	if !(ok && str == "a") {
+		t.Error("index error")
 	}
-	t.Log(res)
-
-	res = IndexBy(res, "Id")
-	v, ok = res["b"].(UnderscoreModel)
-	if !(ok && v.Id == "b") {
-		t.Error("[map]wrong model")
-	}
-	t.Log(res)
 }
