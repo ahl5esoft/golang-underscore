@@ -5,11 +5,11 @@ import (
 )
 
 func TestGroup(t *testing.T) {
-	dict := Group([]int{ 1, 2, 3, 4, 5 }, func (item interface{}) interface{} {
+	dict, _ := Group([]int{ 1, 2, 3, 4, 5 }, func (item interface{}) (interface{}, error) {
 		if item.(int) % 2 == 0 {
-			return "even"
+			return "even", nil
 		}
-		return "odd"
+		return "odd", nil
 	})
 	group, ok := dict["even"]
 	if !(ok && len(group) == 2) {

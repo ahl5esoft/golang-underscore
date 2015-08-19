@@ -1,6 +1,7 @@
 package underscore
 
 import (
+	"errors"
 	"reflect"
 )
 
@@ -34,4 +35,13 @@ func ToInterface(rv reflect.Value) interface{} {
 			break
 	}
 	return value
+}
+
+func getFieldValue(entity interface{}, fieldName string) (interface{}, error) {
+	rv := reflect.ValueOf(entity).FieldByName(fieldName)
+	if rv.IsValid() {
+		return ToInterface(rv), nil
+	}
+
+	return nil, errors.New("invalid field: [" + fieldName + "]")
 }

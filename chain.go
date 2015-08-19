@@ -1,22 +1,23 @@
 package underscore
 
 type Queryer interface {
-	Group(func(item interface{}) interface{}) Queryer
+	Group(func(item interface{}) (interface{}, error)) Queryer
 	GroupBy(string) Queryer
-	Index(func(item interface{}) interface{}) Queryer
+	Index(func(item interface{}) (interface{}, error)) Queryer
 	IndexBy(string) Queryer
 	Count() Queryer
-	Value() interface{}
+	Value() (interface{}, error)
 }
 
 type Query struct {
+	err error
 	source interface{}
 }
 
-func (this *Query) Value() interface{} {
-	return this.source
+func (this *Query) Value() (interface{}, error) {
+	return this.source, this.err
 }
 
 func Chain(source interface{}) Queryer {
-	return &Query{ source };
+	return &Query{ nil, source };
 }
