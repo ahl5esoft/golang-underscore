@@ -11,48 +11,44 @@ func Group(source interface{}, keySelector func(interface{}) (interface{}, error
 		return EMPTY_GROUP, nil
 	}
 
-	dict := make(map[interface{}][]interface{})
-	fnRV := reflect.ValueOf(keySelector)
 	sourceRV := reflect.ValueOf(source)
 	switch sourceRV.Kind() {
 		case reflect.Array:
 		case reflect.Slice:
 			if sourceRV.Len() == 0 {
-				return dict, nil
+				return EMPTY_GROUP, nil
 			}
 
+			dict := make(map[interface{}][]interface{})
 			for i := 0; i < sourceRV.Len(); i++ {
-				keyRVs := fnRV.Call([]reflect.Value{
-					sourceRV.Index(i),
-				})
-				if !keyRVs[1].IsNil() {
-					return EMPTY_GROUP, keyRVs[1].Interface().(error)
+				value := sourceRV.Index(i).Interface()
+				key, err := keySelector(value)
+				if err != nil {
+					return EMPTY_GROUP, err
 				}
 
-				key := ToInterface(keyRVs[0])
-				dict[key] = append(dict[key], ToInterface(sourceRV.Index(i)))
+				dict[key] = append(dict[key], value)
 			}
-			break
+			return dict, nil
 		case reflect.Map:
 			oldKeyRVs := sourceRV.MapKeys()
 			if len(oldKeyRVs) == 0 {
-				return dict, nil
+				return EMPTY_GROUP, nil
 			}
 
+			dict := make(map[interface{}][]interface{})
 			for i := 0; i < len(oldKeyRVs); i++ {
-				keyRVs := fnRV.Call([]reflect.Value{
-					sourceRV.Index(i),
-				})
-				if !keyRVs[1].IsNil() {
-					return EMPTY_GROUP, keyRVs[1].Interface().(error)
+				value := sourceRV.MapIndex(oldKeyRVs[i]).Interface()
+				key, err := keySelector(value)
+				if err != nil {
+					return EMPTY_GROUP, err
 				}
 
-				key := ToInterface(keyRVs[0])
-				dict[key] = append(dict[key], ToInterface(sourceRV.MapIndex(oldKeyRVs[i])))
+				dict[key] = append(dict[key], value)
 			}
-			break
+			return dict, nil
 	}
-	return dict, nil
+	return EMPTY_GROUP, nil
 }
 
 func GroupBy(source interface{}, field string) (map[interface{}][]interface{}, error) {

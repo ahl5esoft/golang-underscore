@@ -93,3 +93,14 @@ func TestChainCount(t *testing.T) {
 		return
 	}
 }
+
+func TestChainMap(t *testing.T) {
+	v, _ := Chain([]int{ 1, 2, 3 }).Map(func (item interface{}) interface{} {
+		return item.(int) + 10
+	}).Value()
+
+	res, ok := v.([]interface{})
+	if !(ok && len(res) == 3) {
+		t.Error("Chain.Map error")
+	}
+}

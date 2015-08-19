@@ -1,10 +1,11 @@
 package underscore
 
 type Queryer interface {
-	Group(func(item interface{}) (interface{}, error)) Queryer
+	Group(func(interface{}) (interface{}, error)) Queryer
 	GroupBy(string) Queryer
-	Index(func(item interface{}) (interface{}, error)) Queryer
+	Index(func(interface{}) (interface{}, error)) Queryer
 	IndexBy(string) Queryer
+	Map(func(interface{}) interface{}) Queryer
 	Count() Queryer
 	Value() (interface{}, error)
 }

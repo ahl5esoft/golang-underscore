@@ -11,46 +11,44 @@ func Index(source interface{}, indexSelector func(interface{}) (interface{}, err
 		return EMPTY_MAP, nil
 	}
 
-	dict := make(map[interface{}]interface{})
-	fnRV := reflect.ValueOf(indexSelector)
 	sourceRV := reflect.ValueOf(source)
 	switch sourceRV.Kind() {
 		case reflect.Array:
 		case reflect.Slice:
 			if sourceRV.Len() == 0 {
-				return dict, nil
+				return EMPTY_MAP, nil
 			}
 
+			dict := make(map[interface{}]interface{})
 			for i := 0; i < sourceRV.Len(); i++ {
-				keyRVs := fnRV.Call([]reflect.Value{
-					sourceRV.Index(i),
-				})
-				if !keyRVs[1].IsNil() {
-					return EMPTY_MAP, keyRVs[1].Interface().(error)	
+				value := sourceRV.Index(i).Interface()
+				index, err := indexSelector(value)
+				if err != nil {
+					return EMPTY_MAP, err
 				}
 
-				dict[ToInterface(keyRVs[0])] = ToInterface(sourceRV.Index(i))
+				dict[index] = value
 			}
-			break
+			return dict, nil
 		case reflect.Map:
 			oldKeyRVs := sourceRV.MapKeys()
 			if len(oldKeyRVs) == 0 {
-				return dict, nil
+				return EMPTY_MAP, nil
 			}
 
+			dict := make(map[interface{}]interface{})
 			for i := 0; i < len(oldKeyRVs); i++ {
-				keyRVs := fnRV.Call([]reflect.Value{
-					sourceRV.MapIndex(oldKeyRVs[i]),
-				})
-				if !keyRVs[1].IsNil() {
-					return EMPTY_MAP, keyRVs[1].Interface().(error)	
+				value := sourceRV.MapIndex(oldKeyRVs[i]).Interface()
+				index, err := indexSelector(value)
+				if err != nil {
+					return EMPTY_MAP, err
 				}
 
-				dict[ToInterface(keyRVs[0])] = ToInterface(sourceRV.MapIndex(oldKeyRVs[i]))
+				dict[index] = value
 			}
-			break
+			return dict, nil
 	}
-	return dict, nil
+	return EMPTY_MAP, nil
 }
 
 func IndexBy(source interface{}, field string) (map[interface{}]interface{}, error) {
