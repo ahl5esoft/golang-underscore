@@ -104,3 +104,23 @@ func TestChainMap(t *testing.T) {
 		t.Error("Chain.Map error")
 	}
 }
+
+func TestChainUniq(t *testing.T) {
+	v, _ := Chain([]int{ 1, 2, 3, 1, 4 }).Uniq().Value()
+
+	res, ok := v.([]interface{})
+	if !(ok && len(res) == 4) {
+		t.Error("Chain.Uniq error")
+	}
+}
+
+func TestChainUniqBy(t *testing.T) {
+	v, _ := Chain([]int{ 1, 2, 3, 1, 4 }).UniqBy(func (item interface{}) interface{} {
+		return item.(int) % 2
+	}).Value()
+
+	res, ok := v.([]interface{})
+	if !(ok && len(res) == 2) {
+		t.Error("Chain.UniqBy error")
+	}
+}

@@ -77,7 +77,7 @@ func (this *Query) Uniq() Queryer {
 
 func (this *Query) UniqBy(selector func(interface{}) interface{}) Queryer {
 	if this.err == nil {
-		this.source, this.err = Uniq(this.source)
+		this.source, this.err = UniqBy(this.source, selector)
 	}
 	return this
 }
