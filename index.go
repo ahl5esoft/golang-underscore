@@ -1,12 +1,17 @@
 package underscore
 
 import (
+	"errors"
 	"reflect"
 )
 
 var EMPTY_MAP = make(map[interface{}]interface{})
 
 func Index(source interface{}, indexSelector func(interface{}) (interface{}, error)) (map[interface{}]interface{}, error) {
+	if indexSelector == nil {
+		return EMPTY_MAP, errors.New("underscore: Index's indexSelector is nil")
+	}
+
 	if source == nil {
 		return EMPTY_MAP, nil
 	}
@@ -59,19 +64,15 @@ func IndexBy(source interface{}, field string) (map[interface{}]interface{}, err
 
 //Chain
 func (this *Query) Index(indexSelector func(item interface{}) (interface{}, error)) Queryer {
-	if this.err != nil {
-		return this
+	if this.err == nil {
+		this.source, this.err = Index(this.source, indexSelector)
 	}
-
-	this.source, this.err = Index(this.source, indexSelector)
 	return this
 }
 
 func (this *Query) IndexBy(field string) Queryer {
-	if this.err != nil {
-		return this
+	if this.err == nil {
+		this.source, this.err = IndexBy(this.source, field)
 	}
-
-	this.source, this.err = IndexBy(this.source, field)
 	return this
 }

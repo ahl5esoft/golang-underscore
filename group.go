@@ -1,12 +1,17 @@
 package underscore
 
 import (
+	"errors"
 	"reflect"
 )
 
 var EMPTY_GROUP = make(map[interface{}][]interface{})
 
 func Group(source interface{}, keySelector func(interface{}) (interface{}, error)) (map[interface{}][]interface{}, error) {
+	if keySelector == nil {
+		return EMPTY_GROUP, errors.New("underscore: Group's keySelector is nil")
+	}
+
 	if source == nil {
 		return EMPTY_GROUP, nil
 	}
@@ -59,19 +64,15 @@ func GroupBy(source interface{}, field string) (map[interface{}][]interface{}, e
 
 //Chain
 func (this *Query) Group(keySelector func(item interface{}) (interface{}, error)) Queryer {
-	if this.err != nil {
-		return this
+	if this.err == nil {
+		this.source, this.err = Group(this.source, keySelector)
 	}
-
-	this.source, this.err = Group(this.source, keySelector)
 	return this
 }
 
 func (this *Query) GroupBy(field string) Queryer {
-	if this.err != nil {
-		return this
+	if this.err == nil {
+		this.source, this.err = GroupBy(this.source, field)
 	}
-
-	this.source, this.err = GroupBy(this.source, field)
 	return this
 }
