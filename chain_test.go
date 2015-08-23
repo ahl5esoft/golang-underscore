@@ -80,6 +80,27 @@ func TestChainIndexBy(t *testing.T) {
 	}
 }
 
+func TestChainPluck(t *testing.T) {
+	v, err := Chain(arr).Pluck("Id").Value()
+	if err != nil {
+		t.Error(err)
+	}
+
+	res, ok := v.([]interface{})
+	if !(ok && len(res) == 8) {
+		t.Error("Chain.Pluck: type error")
+		return
+	}
+
+	s, ok := res[0].(string)
+	if !(ok && s == "a") {
+		t.Error("Chain.Pluck: value error")
+		return
+	}
+
+	t.Log(res)
+}
+
 func TestChainSize(t *testing.T) {
 	v, err := Chain(arr).Size().Value()
 	if err != nil {
