@@ -80,15 +80,15 @@ func TestChainIndexBy(t *testing.T) {
 	}
 }
 
-func TestChainCount(t *testing.T) {
-	v, err := Chain(arr).Count().Value()
+func TestChainSize(t *testing.T) {
+	v, err := Chain(arr).Size().Value()
 	if err != nil {
 		t.Error(err)
 		return
 	}
 
-	count, ok := v.(int)
-	if !(ok && count == 8) {
+	length, ok := v.(int)
+	if !(ok && length == 8) {
 		t.Error("Chain.Count error")
 		return
 	}

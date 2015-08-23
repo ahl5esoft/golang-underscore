@@ -4,31 +4,31 @@ import (
 	"reflect"
 )
 
-func Count(source interface{}) int {
-	count := 0
+func Size(source interface{}) int {
+	length := 0
 	if source == nil {
-		return count
+		return length
 	}
 
 	sourceRV := reflect.ValueOf(source)
 	switch sourceRV.Kind() {
 		case reflect.Array:
 		case reflect.Slice:
-			count = sourceRV.Len()
+			length = sourceRV.Len()
 			break
 		case reflect.Map:
-			count = len(sourceRV.MapKeys())
+			length = len(sourceRV.MapKeys())
 			break
 	}
-	return count
+	return length
 }
 
 //chain
-func (this *Query) Count() Queryer {
+func (this *Query) Size() Queryer {
 	if this.err != nil {
 		this.source = 0
 	} else {
-		this.source = Count(this.source)
+		this.source = Size(this.source)
 	}
 	return this
 }

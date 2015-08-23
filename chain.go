@@ -6,9 +6,9 @@ type Queryer interface {
 	Index(func(interface{}) (interface{}, error)) Queryer
 	IndexBy(string) Queryer
 	Map(func(interface{}) interface{}) Queryer
+	Size() Queryer
 	Uniq() Queryer
 	UniqBy(func(interface{}) interface{}) Queryer
-	Count() Queryer
 	Value() (interface{}, error)
 }
 

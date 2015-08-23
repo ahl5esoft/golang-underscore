@@ -28,39 +28,25 @@ func uniq(source interface{}, selector func(interface{}) interface{}) []interfac
 			return EMPTY_ARRAY
 		}
 
-		var results []interface{}
-		if selector == nil {
-			dict := make(map[interface{}]bool)
-			for i := 0; i < sourceRV.Len(); i++ {
-				v := sourceRV.Index(i).Interface()
-				if _, ok := dict[v]; !ok {
-					dict[v] = true
-				}
+		dict := make(map[interface{}]interface{})
+		for i := 0; i < sourceRV.Len(); i++ {
+			v := sourceRV.Index(i).Interface()
+			var k interface{}
+			if selector == nil {
+				k = v
+			} else {
+				k = selector(v)
 			}
+			if _, ok := dict[k]; !ok {
+				dict[k] = v
+			}
+		}
 
-			results = make([]interface{}, len(dict))
-			i := 0
-			for k := range dict {
-				results[i] = k
-				i++
-			}
-			return results
-		} else {
-			dict := make(map[interface{}]interface{})
-			for i := 0; i < sourceRV.Len(); i++ {
-				v := sourceRV.Index(i).Interface()
-				key := selector(v)
-				if _, ok := dict[key]; !ok {
-					dict[key] = v
-				}
-			}
-
-			results = make([]interface{}, len(dict))
-			i := 0
-			for _, v := range dict {
-				results[i] = v
-				i++
-			}
+		results := make([]interface{}, len(dict))
+		i := 0
+		for k := range dict {
+			results[i] = k
+			i++
 		}
 		return results
 	}
