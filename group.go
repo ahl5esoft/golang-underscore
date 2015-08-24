@@ -7,7 +7,7 @@ import (
 
 var EMPTY_GROUP = make(map[interface{}][]interface{})
 
-func Group(source interface{}, keySelector func(interface{}) (interface{}, error)) (map[interface{}][]interface{}, error) {
+func Group(source interface{}, keySelector func(interface{}, interface{}) (interface{}, error)) (map[interface{}][]interface{}, error) {
 	if keySelector == nil {
 		return EMPTY_GROUP, errors.New("underscore: Group's keySelector is nil")
 	}
@@ -27,7 +27,7 @@ func Group(source interface{}, keySelector func(interface{}) (interface{}, error
 			dict := make(map[interface{}][]interface{})
 			for i := 0; i < sourceRV.Len(); i++ {
 				value := sourceRV.Index(i).Interface()
-				key, err := keySelector(value)
+				key, err := keySelector(value, i)
 				if err != nil {
 					return EMPTY_GROUP, err
 				}
@@ -44,7 +44,7 @@ func Group(source interface{}, keySelector func(interface{}) (interface{}, error
 			dict := make(map[interface{}][]interface{})
 			for i := 0; i < len(oldKeyRVs); i++ {
 				value := sourceRV.MapIndex(oldKeyRVs[i]).Interface()
-				key, err := keySelector(value)
+				key, err := keySelector(value, oldKeyRVs[i].Interface())
 				if err != nil {
 					return EMPTY_GROUP, err
 				}
@@ -57,13 +57,13 @@ func Group(source interface{}, keySelector func(interface{}) (interface{}, error
 }
 
 func GroupBy(source interface{}, field string) (map[interface{}][]interface{}, error) {
-	return Group(source, func (item interface{}) (interface{}, error) {
+	return Group(source, func (item interface{}, _ interface{}) (interface{}, error) {
 		return getFieldValue(item, field)
 	})
 }
 
 //Chain
-func (this *Query) Group(keySelector func(item interface{}) (interface{}, error)) Queryer {
+func (this *Query) Group(keySelector func(interface{}, interface{}) (interface{}, error)) Queryer {
 	if this.err == nil {
 		this.source, this.err = Group(this.source, keySelector)
 	}

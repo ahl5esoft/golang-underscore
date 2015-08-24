@@ -5,7 +5,7 @@ import (
 )
 
 func TestGroup(t *testing.T) {
-	dict, _ := Group([]int{ 1, 2, 3, 4, 5 }, func (item interface{}) (interface{}, error) {
+	dict, _ := Group([]int{ 1, 2, 3, 4, 5 }, func (item interface{}, _ interface{}) (interface{}, error) {
 		if item.(int) % 2 == 0 {
 			return "even", nil
 		}

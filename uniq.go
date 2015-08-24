@@ -9,7 +9,7 @@ func Uniq(source interface{}) ([]interface{}, error) {
 	return uniq(source, nil), nil
 }
 
-func UniqBy(source interface{}, selector func(interface{}) interface{}) ([]interface{}, error) {
+func UniqBy(source interface{}, selector func(interface{}, int) interface{}) ([]interface{}, error) {
 	if selector == nil {
 		return EMPTY_ARRAY, errors.New("underscore: UniqBy's selector is nil")
 	}
@@ -17,7 +17,7 @@ func UniqBy(source interface{}, selector func(interface{}) interface{}) ([]inter
 	return uniq(source, selector), nil
 }
 
-func uniq(source interface{}, selector func(interface{}) interface{}) []interface{} {
+func uniq(source interface{}, selector func(interface{}, int) interface{}) []interface{} {
 	if source == nil {
 		return EMPTY_ARRAY
 	}
@@ -35,7 +35,7 @@ func uniq(source interface{}, selector func(interface{}) interface{}) []interfac
 			if selector == nil {
 				k = v
 			} else {
-				k = selector(v)
+				k = selector(v, i)
 			}
 			if _, ok := dict[k]; !ok {
 				dict[k] = v
@@ -61,7 +61,7 @@ func (this *Query) Uniq() Queryer {
 	return this
 }
 
-func (this *Query) UniqBy(selector func(interface{}) interface{}) Queryer {
+func (this *Query) UniqBy(selector func(interface{}, int) interface{}) Queryer {
 	if this.err == nil {
 		this.source, this.err = UniqBy(this.source, selector)
 	}

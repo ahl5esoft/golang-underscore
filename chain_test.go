@@ -11,19 +11,19 @@ type UnderscoreModel struct {
 
 var (
 	arr = []UnderscoreModel{
-		UnderscoreModel{ "a", 1 },
-		UnderscoreModel{ "a", 11 },
-		UnderscoreModel{ "b", 2 },
-		UnderscoreModel{ "b", 21 },
-		UnderscoreModel{ "c", 3 },
-		UnderscoreModel{ "c", 31 },
-		UnderscoreModel{ "d", 4 },
 		UnderscoreModel{ "d", 41 },
+		UnderscoreModel{ "d", 4 },
+		UnderscoreModel{ "c", 31 },
+		UnderscoreModel{ "c", 3 },
+		UnderscoreModel{ "b", 21 },
+		UnderscoreModel{ "b", 2 },
+		UnderscoreModel{ "a", 11 },
+		UnderscoreModel{ "a", 1 },
 	}
 )
 
 func TestChainGroup(t *testing.T) {
-	v, err := Chain(arr).Group(func (item interface{}) (interface{}, error) {
+	v, err := Chain(arr).Group(func (item interface{}, _ interface{}) (interface{}, error) {
 		return item.(UnderscoreModel).Id, nil
 	}).Value()
 	if err != nil {
@@ -52,7 +52,7 @@ func TestChainGroupBy(t *testing.T) {
 }
 
 func TestChainIndex(t *testing.T) {
-	v, err := Chain(arr).Index(func (item interface{}) (interface{}, error) {
+	v, err := Chain(arr).Index(func (item interface{}, _ interface{}) (interface{}, error) {
 		return item.(UnderscoreModel).Id, nil
 	}).Value()
 	if err != nil {
@@ -80,6 +80,17 @@ func TestChainIndexBy(t *testing.T) {
 	}
 }
 
+func TestChainMap(t *testing.T) {
+	v, _ := Chain([]int{ 1, 2, 3 }).Map(func (item interface{}, _ interface{}) interface{} {
+		return item.(int) + 10
+	}).Value()
+
+	res, ok := v.([]interface{})
+	if !(ok && len(res) == 3) {
+		t.Error("Chain.Map error")
+	}
+}
+
 func TestChainPluck(t *testing.T) {
 	v, err := Chain(arr).Pluck("Id").Value()
 	if err != nil {
@@ -93,7 +104,7 @@ func TestChainPluck(t *testing.T) {
 	}
 
 	s, ok := res[0].(string)
-	if !(ok && s == "a") {
+	if !(ok && s == "d") {
 		t.Error("Chain.Pluck: value error")
 		return
 	}
@@ -115,15 +126,26 @@ func TestChainSize(t *testing.T) {
 	}
 }
 
-func TestChainMap(t *testing.T) {
-	v, _ := Chain([]int{ 1, 2, 3 }).Map(func (item interface{}) interface{} {
-		return item.(int) + 10
-	}).Value()
+func TestChainSortBy(t *testing.T) {
+	v, err := Chain(arr).SortBy("Age").Value()
+	if err != nil {
+		t.Error(err)
+		return
+	}
 
 	res, ok := v.([]interface{})
-	if !(ok && len(res) == 3) {
-		t.Error("Chain.Map error")
+	if !(ok && len(res) == 8) {
+		t.Error("Chain.SortBy: type error")
+		return
 	}
+
+	m, ok := res[0].(UnderscoreModel)
+	if !(ok && m.Id == "a") {
+		t.Error("Chain.SortBy: value error")
+		return
+	}
+
+	t.Log(res)
 }
 
 func TestChainUniq(t *testing.T) {
@@ -136,7 +158,7 @@ func TestChainUniq(t *testing.T) {
 }
 
 func TestChainUniqBy(t *testing.T) {
-	v, _ := Chain([]int{ 1, 2, 3, 1, 4 }).UniqBy(func (item interface{}) interface{} {
+	v, _ := Chain([]int{ 1, 2, 3, 1, 4 }).UniqBy(func (item interface{}, _ int) interface{} {
 		return item.(int) % 2
 	}).Value()
 

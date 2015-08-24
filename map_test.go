@@ -6,7 +6,7 @@ import (
 
 func TestMap(t *testing.T) {
 	arr := []string{ "a", "b", "c" }
-	res, _ := Map(arr, func (item interface{}) interface{} {
+	res, _ := Map(arr, func (item interface{}, _ interface{}) interface{} {
 		return item.(string) + "-"
 	})
 	if len(res) != len(arr) {

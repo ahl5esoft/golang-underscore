@@ -12,7 +12,7 @@ func TestUniq(t *testing.T) {
 }
 
 func TestUniqBy(t *testing.T) {
-	res, _ := UniqBy([]int{ 1, 2, 1, 4, 1, 3 }, func (item interface{}) interface{} {
+	res, _ := UniqBy([]int{ 1, 2, 1, 4, 1, 3 }, func (item interface{}, _ int) interface{} {
 		return item.(int) % 2
 	})
 	if len(res) != 2 {

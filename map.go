@@ -7,7 +7,7 @@ import (
 
 var EMPTY_ARRAY = make([]interface{}, 0)
 
-func Map(source interface{}, selector func(interface{}) interface{}) ([]interface{}, error) {
+func Map(source interface{}, selector func(interface{}, interface{}) interface{}) ([]interface{}, error) {
 	if selector == nil {
 		return EMPTY_ARRAY, errors.New("underscore: Map's selector is nil")
 	}
@@ -28,6 +28,7 @@ func Map(source interface{}, selector func(interface{}) interface{}) ([]interfac
 			for i := 0; i < sourceRV.Len(); i++ {
 				results[i] = selector(
 					sourceRV.Index(i).Interface(),
+					i,
 				)
 			}
 			return results, nil
@@ -41,6 +42,7 @@ func Map(source interface{}, selector func(interface{}) interface{}) ([]interfac
 			for i := 0; i < len(keyRVs); i++ {
 				results[i] = selector(
 					sourceRV.MapIndex(keyRVs[i]).Interface(),
+					keyRVs[i].Interface(),
 				)
 			}
 			return results, nil
@@ -49,7 +51,7 @@ func Map(source interface{}, selector func(interface{}) interface{}) ([]interfac
 }
 
 //chain
-func (this *Query) Map(selector func(interface{}) interface{}) Queryer {
+func (this *Query) Map(selector func(interface{}, interface{}) interface{}) Queryer {
 	if this.err == nil {
 		this.source, this.err = Map(this.source, selector)
 	}
