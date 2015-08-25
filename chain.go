@@ -7,6 +7,7 @@ type Queryer interface {
 	IndexBy(string) Queryer
 	Map(func(interface{}, interface{}) interface{}) Queryer
 	Pluck(string) Queryer
+	Reduce(func(interface{}, interface{}, interface{}) interface{}, interface{}) Queryer
 	Size() Queryer
 	Sort(func(interface{},interface{},interface{},interface{}) bool) Queryer
 	SortBy(string) Queryer

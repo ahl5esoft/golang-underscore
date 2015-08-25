@@ -112,6 +112,25 @@ func TestChainPluck(t *testing.T) {
 	t.Log(res)
 }
 
+func TestChainReduce(t *testing.T) {
+	v, err := Chain(arr).Reduce(func (memo, value, _ interface{}) interface{} {
+		dict := memo.(map[string]int)
+		m := value.(UnderscoreModel)
+		dict[m.Id] = m.Age
+		return dict
+	}, make(map[string]int)).Value()
+	if err != nil {
+		t.Error(err)
+	}
+
+	dict, ok := v.(map[string]int)
+	if !(ok && len(dict) == 4) {
+		t.Error("Chain.Reduce: vlaue error")
+	}
+
+	t.Log(dict)
+}
+
 func TestChainSize(t *testing.T) {
 	v, err := Chain(arr).Size().Value()
 	if err != nil {
