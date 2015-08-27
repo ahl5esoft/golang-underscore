@@ -22,6 +22,15 @@ var (
 	}
 )
 
+func TestChainClone(t *testing.T) {
+	v, _ := Chain(arr).Clone().Value()
+	res, _ := v.([]UnderscoreModel)
+	res[0].Id = "e"
+	if res[0].Id == arr[0].Id {
+		t.Error("Chain.Clone: error")
+	}
+}
+
 func TestChainGroup(t *testing.T) {
 	v, err := Chain(arr).Group(func (item interface{}, _ interface{}) (interface{}, error) {
 		return item.(UnderscoreModel).Id, nil
@@ -81,8 +90,8 @@ func TestChainIndexBy(t *testing.T) {
 }
 
 func TestChainMap(t *testing.T) {
-	v, _ := Chain([]int{ 1, 2, 3 }).Map(func (item interface{}, _ interface{}) interface{} {
-		return item.(int) + 10
+	v, _ := Chain([]int{ 1, 2, 3 }).Map(func (item interface{}, _ interface{}) (interface{}, error) {
+		return item.(int) + 10, nil
 	}).Value()
 
 	res, ok := v.([]interface{})
@@ -113,11 +122,11 @@ func TestChainPluck(t *testing.T) {
 }
 
 func TestChainReduce(t *testing.T) {
-	v, err := Chain(arr).Reduce(func (memo, value, _ interface{}) interface{} {
+	v, err := Chain(arr).Reduce(func (memo, value, _ interface{}) (interface{}, error) {
 		dict := memo.(map[string]int)
 		m := value.(UnderscoreModel)
 		dict[m.Id] = m.Age
-		return dict
+		return dict, nil
 	}, make(map[string]int)).Value()
 	if err != nil {
 		t.Error(err)

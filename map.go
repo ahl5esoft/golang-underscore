@@ -7,7 +7,7 @@ import (
 
 var EMPTY_ARRAY = make([]interface{}, 0)
 
-func Map(source interface{}, selector func(interface{}, interface{}) interface{}) ([]interface{}, error) {
+func Map(source interface{}, selector func(interface{}, interface{}) (interface{}, error)) ([]interface{}, error) {
 	if selector == nil {
 		return EMPTY_ARRAY, errors.New("underscore: Map's selector is nil")
 	}
@@ -16,6 +16,7 @@ func Map(source interface{}, selector func(interface{}, interface{}) interface{}
 		return EMPTY_ARRAY, nil
 	}
 
+	var err error
 	sourceRV := reflect.ValueOf(source)
 	switch sourceRV.Kind() {
 		case reflect.Array:
@@ -26,10 +27,13 @@ func Map(source interface{}, selector func(interface{}, interface{}) interface{}
 
 			results := make([]interface{}, sourceRV.Len())
 			for i := 0; i < sourceRV.Len(); i++ {
-				results[i] = selector(
+				results[i], err = selector(
 					sourceRV.Index(i).Interface(),
 					i,
 				)
+				if err != nil {
+					return EMPTY_ARRAY, err
+				}
 			}
 			return results, nil
 		case reflect.Map:
@@ -40,10 +44,13 @@ func Map(source interface{}, selector func(interface{}, interface{}) interface{}
 
 			results := make([]interface{}, len(keyRVs))
 			for i := 0; i < len(keyRVs); i++ {
-				results[i] = selector(
+				results[i], err = selector(
 					sourceRV.MapIndex(keyRVs[i]).Interface(),
 					keyRVs[i].Interface(),
 				)
+				if err != nil {
+					return EMPTY_ARRAY, err
+				}
 			}
 			return results, nil
 	}
@@ -51,7 +58,7 @@ func Map(source interface{}, selector func(interface{}, interface{}) interface{}
 }
 
 //chain
-func (this *Query) Map(selector func(interface{}, interface{}) interface{}) Queryer {
+func (this *Query) Map(selector func(interface{}, interface{}) (interface{}, error)) Queryer {
 	if this.err == nil {
 		this.source, this.err = Map(this.source, selector)
 	}

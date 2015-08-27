@@ -5,12 +5,12 @@ import (
 )
 
 func TestReduce(t *testing.T) {
-	v, err := Reduce([]int{ 1, 2 }, func (memo, value, _ interface{}) interface{} {
+	v, err := Reduce([]int{ 1, 2 }, func (memo, value, _ interface{}) (interface{}, error) {
 		arr := memo.([]int)
 		num := value.(int)
 		arr = append(arr, num)
 		arr = append(arr, num + 10)
-		return arr
+		return arr, nil
 	}, make([]int, 0))
 	
 	if err != nil {
