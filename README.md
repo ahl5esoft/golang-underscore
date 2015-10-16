@@ -1,7 +1,18 @@
 Underscore.go
 ==========================================
 
-Move Fast; Optimize Late
-------------------------------------------
-
 like underscore.js, but for Go
+
+# Documentation
+
+## All
+
+```go
+arr := []int{ 2, 4 }
+res, _ := All(arr, func (n, _ interface{}) (bool, error) {
+	return n.(int) % 2 == 0, nil	
+})
+if !res {
+	// wrong
+}
+```
