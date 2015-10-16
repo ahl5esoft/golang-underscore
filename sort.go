@@ -66,13 +66,13 @@ func Sort(source interface{}, compare func(thisValue, thisKey, thatValue, thatKe
 	return EMPTY_ARRAY, nil
 }
 
-func SortBy(source interface{}, field string) ([]interface{}, error) {
+func SortBy(source interface{}, property string) ([]interface{}, error) {
 	sourceRV := reflect.ValueOf(source)
 	if sourceRV.Kind() == reflect.Array || sourceRV.Kind() == reflect.Slice || sourceRV.Kind() == reflect.Map {
-		var fieldKind reflect.Kind
+		var propertyKind reflect.Kind
 		qs := sortQuery{}
 		qs.compare = func (_, thisKey, _, thatKey interface{}) bool {
-			switch fieldKind {
+			switch propertyKind {
 				case reflect.Float32:
 					return thisKey.(float32) < thatKey.(float32)
 				case reflect.Float64:
@@ -102,13 +102,13 @@ func SortBy(source interface{}, field string) ([]interface{}, error) {
 			qs.values = make([]interface{}, len(oldKeyRVs))
 			for i := 0; i < len(oldKeyRVs); i++ {
 				qs.values[i] = sourceRV.MapIndex(oldKeyRVs[i]).Interface()
-				value, err := getFieldValue(qs.values[i], field)
+				value, err := getPropertyValue(qs.values[i], property)
 				if err != nil {
 					return EMPTY_ARRAY, err
 				}
 
 				if i == 0 {
-					fieldKind = reflect.ValueOf(qs.values[i]).FieldByName(field).Kind()
+					propertyKind = reflect.ValueOf(qs.values[i]).FieldByName(property).Kind()
 				}
 				qs.keys[i] = value
 			}
@@ -121,13 +121,13 @@ func SortBy(source interface{}, field string) ([]interface{}, error) {
 			qs.values = make([]interface{}, sourceRV.Len())
 			for i := 0; i < sourceRV.Len(); i++ {
 				qs.values[i] = sourceRV.Index(i).Interface()
-				value, err := getFieldValue(qs.values[i], field)
+				value, err := getPropertyValue(qs.values[i], property)
 				if err != nil {
 					return EMPTY_ARRAY, nil
 				}
 
 				if i == 0 {
-					fieldKind = reflect.ValueOf(qs.values[i]).FieldByName(field).Kind()
+					propertyKind = reflect.ValueOf(qs.values[i]).FieldByName(property).Kind()
 				}
 				qs.keys[i] = value
 			}
@@ -147,9 +147,9 @@ func (this *Query) Sort(compare func(thisValue, thisKey, thatValue, thatKey inte
 	return this
 }
 
-func (this *Query) SortBy(field string) Queryer {
+func (this *Query) SortBy(property string) Queryer {
 	if this.err == nil {
-		this.source, this.err = SortBy(this.source, field)
+		this.source, this.err = SortBy(this.source, property)
 	}
 	return this
 }

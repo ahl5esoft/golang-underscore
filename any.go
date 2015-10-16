@@ -57,7 +57,7 @@ func AnyBy(source interface{}, properties map[string]interface{}) (bool, error) 
 
 	return Any(source, func (item, _ interface{}) (bool, error) {
 		return All(properties, func (pv, pn interface{}) (bool, error) {
-			value, err := getFieldValue(item, pn.(string))
+			value, err := getPropertyValue(item, pn.(string))
 			if err != nil {
 				return false, err
 			}

@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-func Pluck(source interface{}, field string) ([]interface{}, error) {
+func Pluck(source interface{}, property string) ([]interface{}, error) {
 	if source == nil {
 		return EMPTY_ARRAY, nil
 	}
@@ -19,7 +19,7 @@ func Pluck(source interface{}, field string) ([]interface{}, error) {
 
 			results := make([]interface{}, sourceRV.Len())
 			for i := 0; i < sourceRV.Len(); i++ {
-				v, err := getFieldValue(sourceRV.Index(i).Interface(), field)
+				v, err := getPropertyValue(sourceRV.Index(i).Interface(), property)
 				if err != nil {
 					return EMPTY_ARRAY, err
 				}
@@ -35,7 +35,7 @@ func Pluck(source interface{}, field string) ([]interface{}, error) {
 
 			results := make([]interface{}, len(oldKeyRVs))
 			for i := 0; i < len(oldKeyRVs); i++ {
-				v, err := getFieldValue(sourceRV.MapIndex(oldKeyRVs[i]).Interface(), field)
+				v, err := getPropertyValue(sourceRV.MapIndex(oldKeyRVs[i]).Interface(), property)
 				if err != nil {
 					return EMPTY_ARRAY, err
 				}
@@ -48,9 +48,9 @@ func Pluck(source interface{}, field string) ([]interface{}, error) {
 }
 
 //chain
-func (this *Query) Pluck(field string) Queryer {
+func (this *Query) Pluck(property string) Queryer {
 	if this.err == nil {
-		this.source, this.err = Pluck(this.source, field)
+		this.source, this.err = Pluck(this.source, property)
 	}
 	return this
 }

@@ -56,9 +56,9 @@ func Group(source interface{}, keySelector func(interface{}, interface{}) (inter
 	return EMPTY_GROUP, nil
 }
 
-func GroupBy(source interface{}, field string) (map[interface{}][]interface{}, error) {
+func GroupBy(source interface{}, property string) (map[interface{}][]interface{}, error) {
 	return Group(source, func (item, _ interface{}) (interface{}, error) {
-		return getFieldValue(item, field)
+		return getPropertyValue(item, property)
 	})
 }
 
@@ -70,9 +70,9 @@ func (this *Query) Group(keySelector func(interface{}, interface{}) (interface{}
 	return this
 }
 
-func (this *Query) GroupBy(field string) Queryer {
+func (this *Query) GroupBy(property string) Queryer {
 	if this.err == nil {
-		this.source, this.err = GroupBy(this.source, field)
+		this.source, this.err = GroupBy(this.source, property)
 	}
 	return this
 }

@@ -56,9 +56,9 @@ func Index(source interface{}, indexSelector func(interface{}, interface{}) (int
 	return EMPTY_MAP, nil
 }
 
-func IndexBy(source interface{}, field string) (map[interface{}]interface{}, error) {
+func IndexBy(source interface{}, property string) (map[interface{}]interface{}, error) {
 	return Index(source, func (item interface{}, _ interface{}) (interface{}, error) {
-		return getFieldValue(item, field)
+		return getPropertyValue(item, property)
 	})
 }
 
@@ -70,9 +70,9 @@ func (this *Query) Index(indexSelector func(interface{}, interface{}) (interface
 	return this
 }
 
-func (this *Query) IndexBy(field string) Queryer {
+func (this *Query) IndexBy(property string) Queryer {
 	if this.err == nil {
-		this.source, this.err = IndexBy(this.source, field)
+		this.source, this.err = IndexBy(this.source, property)
 	}
 	return this
 }
