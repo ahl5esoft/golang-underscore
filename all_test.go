@@ -14,6 +14,16 @@ func TestAll(t *testing.T) {
 	}
 }
 
+func TestChain_All(t *testing.T) {
+	arr := []int{ 2, 4 }
+	res, _ := Chain(arr).All(func (n, _ interface{}) (bool, error) {
+		return n.(int) % 2 == 0, nil	
+	}).Value()
+	if !res.(bool) {
+		t.Error("wrong result")
+	}
+}
+
 func TestAllBy(t *testing.T) {
 	arr := []TestModel{
 		TestModel{ 1, "one" },
@@ -28,6 +38,24 @@ func TestAllBy(t *testing.T) {
 	}
 
 	if res {
+		t.Error("wrong result")
+	}
+}
+
+func TestChain_AllBy(t *testing.T) {
+	arr := []TestModel{
+		TestModel{ 1, "one" },
+		TestModel{ 2, "two" },
+		TestModel{ 3, "three" },
+	}
+	res, err := Chain(arr).AllBy(map[string]interface{}{
+		"Name": "a",
+	}).Value()
+	if err != nil {
+		t.Error(err)
+	}
+
+	if res.(bool) {
 		t.Error("wrong result")
 	}
 }

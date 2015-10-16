@@ -7,7 +7,7 @@ import (
 
 func Select(source interface{}, predicate func(interface{}, interface{}) (bool, error)) ([]interface{}, error) {
 	if predicate == nil {
-		return EMPTY_ARRAY, errors.New("underscore: Select's selector is nil")
+		return EMPTY_ARRAY, errors.New("underscore: Select's predicate is nil")
 	}
 
 	if source == nil {
@@ -73,4 +73,19 @@ func SelectBy(source interface{}, properties map[string]interface{}) ([]interfac
 			return value == pv, nil
 		})
 	})
+}
+
+//# chain
+func (this *Query) Select(predicate func(interface{}, interface{}) (bool, error)) Queryer {
+	if this.err == nil {
+		this.source, this.err = Select(this.source, predicate)
+	}
+	return this
+}
+
+func (this *Query) SelectBy(properties map[string]interface{}) Queryer {
+	if this.err == nil {
+		this.source, this.err = SelectBy(this.source, properties)
+	}
+	return this
 }

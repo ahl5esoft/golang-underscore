@@ -7,7 +7,7 @@ import (
 
 func All(source interface{}, predicate func(interface{}, interface{}) (bool, error)) (bool, error) {
 	if predicate == nil {
-		return false, errors.New("underscore: Select's selector is nil")
+		return false, errors.New("underscore: All's predicate is nil")
 	}
 
 	if source == nil  {
@@ -27,7 +27,7 @@ func All(source interface{}, predicate func(interface{}, interface{}) (bool, err
 					sourceRV.Index(i).Interface(),
 					i,
 				)
-				if !(ok && err == nil) {
+				if !(err == nil && ok) {
 					return ok, err
 				}
 			}
@@ -42,7 +42,7 @@ func All(source interface{}, predicate func(interface{}, interface{}) (bool, err
 					sourceRV.MapIndex(keyRVs[i]).Interface(),
 					keyRVs[i].Interface(),
 				)
-				if !(ok && err == nil) {
+				if !(err == nil && ok) {
 					return ok, err
 				}
 			}
@@ -65,4 +65,19 @@ func AllBy(source interface{}, properties map[string]interface{}) (bool, error) 
 			return value == pv, nil
 		})
 	})
+}
+
+//# chain
+func (this *Query) All(predicate func(interface{}, interface{}) (bool, error)) Queryer {
+	if this.err == nil {
+		this.source, this.err = All(this.source, predicate)
+	}
+	return this
+}
+
+func (this *Query) AllBy(properties map[string]interface{}) Queryer {
+	if this.err == nil {
+		this.source, this.err = AllBy(this.source, properties)
+	}
+	return this
 }

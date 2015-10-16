@@ -1,6 +1,10 @@
 package underscore
 
 type Queryer interface {
+	All(func(interface{}, interface{}) (bool, error)) Queryer
+	AllBy(map[string]interface{}) Queryer
+	Any(func(interface{}, interface{}) (bool, error)) Queryer
+	AnyBy(map[string]interface{}) Queryer
 	Clone() Queryer
 	Group(func(interface{}, interface{}) (interface{}, error)) Queryer
 	GroupBy(string) Queryer
@@ -9,8 +13,10 @@ type Queryer interface {
 	Map(func(interface{}, interface{}) (interface{}, error)) Queryer
 	Pluck(string) Queryer
 	Reduce(func(interface{}, interface{}, interface{}) (interface{}, error), interface{}) Queryer
+	Select(func(interface{}, interface{}) (bool, error)) Queryer
+	SelectBy(map[string]interface{}) Queryer
 	Size() Queryer
-	Sort(func(interface{},interface{},interface{},interface{}) bool) Queryer
+	Sort(func(interface{}, interface{}, interface{}, interface{}) bool) Queryer
 	SortBy(string) Queryer
 	Uniq() Queryer
 	UniqBy(func(interface{}, int) interface{}) Queryer

@@ -57,7 +57,7 @@ func Group(source interface{}, keySelector func(interface{}, interface{}) (inter
 }
 
 func GroupBy(source interface{}, field string) (map[interface{}][]interface{}, error) {
-	return Group(source, func (item interface{}, _ interface{}) (interface{}, error) {
+	return Group(source, func (item, _ interface{}) (interface{}, error) {
 		return getFieldValue(item, field)
 	})
 }
