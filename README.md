@@ -3,9 +3,17 @@ Underscore.go
 
 like underscore.js, but for Go
 
-# Documentation
+## Documentation
 
-## All
+<a name="all" />
+### All(source, predicate)
+
+__Arguments__
+
+* `source` - Array or Map
+* `predicate` - func(interface{}, interface{}) (bool, error)
+
+__Examples__
 
 ```go
 arr := []int{ 2, 4 }
