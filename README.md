@@ -13,6 +13,10 @@ __Arguments__
 * `source` - Array or Map
 * `predicate` - func(interface{}, interface{}) (bool, error)
 
+__Return__
+
+* bool, error
+
 __Examples__
 
 ```go
