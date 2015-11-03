@@ -38,7 +38,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Reduce`](#reduce)
 * [`Select`](#select), [`SelectBy`](#selectBy)
 * [`Size`](#size)
-* [`Sort`](#sort), [`SortBy`](#sortBy)
+* [`Sort`](#sory), `SortBy`
 * [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
 
 <a name="all" />
