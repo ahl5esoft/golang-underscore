@@ -6,6 +6,8 @@ type Queryer interface {
 	Any(func(interface{}, interface{}) (bool, error)) Queryer
 	AnyBy(map[string]interface{}) Queryer
 	Clone() Queryer
+	Find(func(interface{}, interface{}) (bool, error)) Queryer
+	FindBy(map[string]interface{}) Queryer
 	Group(func(interface{}, interface{}) (interface{}, error)) Queryer
 	GroupBy(string) Queryer
 	Index(func(interface{}, interface{}) (interface{}, error)) Queryer

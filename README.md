@@ -73,11 +73,11 @@ res, err := AllBy(arr, map[string]interface{}{
 	"Name": "a",
 })
 if err != nil {
-	t.Error(err)
+	// wrong
 }
 
 if res {
-	t.Error("wrong result")
+	// wrong
 }
 ```
 
@@ -101,7 +101,7 @@ res, _ := Any(arr, func (n, _ interface{}) (bool, error) {
 	return n.(int) % 2 == 0, nil	
 })
 if res {
-	t.Error("wrong result")
+	// wrong
 }
 ```
 
@@ -130,11 +130,11 @@ res, err := AnyBy(arr, map[string]interface{}{
 	"Name": "two",
 })
 if err != nil {
-	t.Error(err)
+	// wrong
 }
 
 if !res {
-	t.Error("wrong result")
+	// wrong
 }
 ```
 
@@ -153,7 +153,7 @@ v, _ := Clone(arr)
 dstArr, _ := v.([]int)
 dstArr[0] = 11
 if arr[0] == dstArr[0] {
-	t.Error("wrong")
+	// wrong
 }
 ```
 
@@ -180,7 +180,7 @@ dict, _ := Group([]int{ 1, 2, 3, 4, 5 }, func (item, _ interface{}) (interface{}
 })
 group, ok := dict["even"]
 if !(ok && len(group) == 2) {
-	t.Error("wrong")
+	// wrong
 }
 ```
 
@@ -207,7 +207,7 @@ arr := []TestModel{
 }
 dict, err := GroupBy(arr, "Name")
 if !(err == nil && len(dict) == 2) {
-	t.Error(err)
+	// wrong
 }
 ```
 
@@ -231,7 +231,7 @@ res, _ := Index([]string{ "a", "b" }, func (item, _ interface{}) (interface{}, e
 })
 str, ok := res["a"].(string)
 if !(ok && str == "a") {
-	t.Error("index error")
+	// wrong
 }
 ```
 
@@ -258,7 +258,7 @@ arr := []TestModel{
 }
 dict, err := IndexBy(arr, "Name")
 if !(err == nil && len(dict) == 2) {
-	t.Error("wrong")
+	// wrong
 }
 ```
 
@@ -282,7 +282,7 @@ res, _ := Map(arr, func (item, _ interface{}) (interface{}, error) {
 	return item.(string) + "-", nil
 })
 if !(len(res) == len(arr) && res[0].(string) == "a-") {
-	t.Error("wrong")
+	// wrong
 }
 ```
 
@@ -308,16 +308,16 @@ arr := []TestModel{
 }
 res, err := Pluck(arr, "Name")
 if err != nil {
-	t.Error(err)
+	// wrong
 }
 
 if len(res) != len(arr) {
-	t.Error("wrong length")
+	// wrong
 }
 
 for i := 0; i < 3; i++ {
 	if res[i].(string) != arr[i].Name {
-		t.Error("wrong result")
+		// wrong
 	}
 }
 ```
@@ -345,16 +345,16 @@ v, err := Reduce([]int{ 1, 2 }, func (memo, value, _ interface{}) (interface{}, 
 	return arr, nil
 }, make([]int, 0))	
 if err != nil {
-	t.Error(err)
+	// wrong
 }
 
 res, ok := v.([]int)
 if !(ok && len(res) == 4) {
-	t.Error("wrong length")
+	// wrong
 }
 
 if !(res[0] == 1 && res[1] == 11 && res[2] == 2 && res[3] == 12) {
-	t.Error("wrong result")
+	// wrong
 }
 ```
 
@@ -378,11 +378,11 @@ res, _ := Select(arr, func (n, _ interface{}) (bool, error) {
 	return n.(int) % 2 == 0, nil
 })
 if len(res) != 2 {
-	t.Error("wrong length")
+	// wrong
 }
 
 if !(res[0].(int) == 2 && res[1].(int) == 4) {
-	t.Error("wrong result")
+	// wrong
 }
 ```
 
@@ -410,11 +410,11 @@ res, err := SelectBy(arr, map[string]interface{}{
 	"Id": 1,
 })
 if err != nil {
-	t.Error(err)
+	// wrong
 }
 
 if !(len(res) == 1 && res[0].(TestModel) == arr[0]) {
-	t.Error("wrong result")
+	// wrong
 }
 ```
 
@@ -438,7 +438,7 @@ dict := map[string]int{
 	"c": 3,
 }
 if Size(dict) != len(dict) {
-	t.Error("wrong")
+	// wrong
 }
 ```
 
@@ -464,7 +464,7 @@ res, _ := Sort([]int{ 5, 3, 2, 1 }, func (thisValue, _, thatValue, _ interface{}
 
 for i, n := range arr {
 	if res[i].(int) != n {
-		t.Error("wrong result")
+		// wrong
 	}
 }
 ```
@@ -485,7 +485,7 @@ __Examples__
 ```go
 res, _ := Uniq([]int{ 1, 2, 1, 4, 1, 3 })
 if len(res) != 4 {
-	t.Error("wrong")
+	// wrong
 }
 ```
 
@@ -508,6 +508,6 @@ res, _ := UniqBy([]int{ 1, 2, 1, 4, 1, 3 }, func (item interface{}, _ int) inter
 	return item.(int) % 2
 })
 if len(res) != 2 {
-	t.Error("wrong")
+	// wrong
 }
 ```
