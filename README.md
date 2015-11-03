@@ -157,6 +157,68 @@ if arr[0] == dstArr[0] {
 }
 ```
 
+<a name="find" />
+### Find(source, predicate)
+
+__Arguments__
+
+* `source` - array or map
+* `predicate` - func(interface{}, interface{}) (bool, error)
+
+__Return__
+
+* interface{}, error
+
+__Examples__
+
+```go
+arr := []int{ 1, 2, 3, 4 }
+res, _ := Find(arr, func (n, _ interface{}) (bool, error) {
+	return n.(int) % 2 == 0, nil
+})
+if res == nil {
+	// wrong
+} else {
+	v, ok := res.(int)
+	if !(ok && v == 2) {
+		// wrong
+	}
+}
+```
+
+<a name="findBy" />
+### FindBy(source, properties)
+
+__Arguments__
+
+* `source` - array or map
+* `properties` - map[string]interface{}
+
+__Return__
+
+* interface{}, error
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{ 1, "one" },
+	TestModel{ 2, "two" },
+	TestModel{ 3, "three" },
+}
+res, err := FindBy(arr, map[string]interface{}{
+	"Id": 1,
+})
+if err != nil || res == nil {
+	// wrong
+}
+
+m, ok := res.(TestModel)
+if !(ok && m.Name == "one") {
+	// wrong
+}
+```
+
 <a name="group" />
 ### Group(source, keySelector)
 
