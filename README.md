@@ -25,6 +25,22 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 
 ## Documentation
 
+### API
+* [`All`](#all), [`AllBy`](#allBy)
+* [`Any`](#any), [`AnyBy`](#anyBy)
+* [`Chain`](#chain)
+* [`Clone`](#clone)
+* [`Find`](#find), [`FindBy`](#findBy)
+* [`Group`](#group), [`GroupBy`](#groupBy)
+* [`Index`](#index), [`IndexBy`](#indexBy)
+* [`Map`](#map)
+* [`Pluck`](#pluck)
+* [`Reduce`](#reduce)
+* [`Select`](#select), [`SelectBy`](#selectBy)
+* [`Size`](#size)
+* [`Sort`](#sort), [`SortBy`](#sortBy)
+* [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
+
 <a name="all" />
 ### All(source, predicate)
 
