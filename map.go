@@ -7,58 +7,68 @@ import (
 
 var EMPTY_ARRAY = make([]interface{}, 0)
 
-func Map(source interface{}, selector func(interface{}, interface{}) (interface{}, error)) ([]interface{}, error) {
-	if selector == nil {
-		return EMPTY_ARRAY, errors.New("underscore: Map's selector is nil")
+func Map(source, selector interface{}) (interface{}, error) {
+	selectorRT := reflect.TypeOf(selector)
+	if !(selectorRT.Kind() == reflect.Func && selectorRT.NumIn() == 2 && selectorRT.NumOut() == 2) {
+		return nil, errors.New("underscore: Map's selector is nil")
 	}
 
+	selectorRV := reflect.ValueOf(selector)
+	resultRT := reflect.SliceOf(
+		selectorRV.Type().Out(0),
+	)
 	if source == nil {
-		return EMPTY_ARRAY, nil
+		return makeArray(resultRT), nil
 	}
 
-	var err error
+	resultRV := makeArray(resultRT)
 	sourceRV := reflect.ValueOf(source)
 	switch sourceRV.Kind() {
 		case reflect.Array:
 		case reflect.Slice:
 			if sourceRV.Len() == 0 {
-				return EMPTY_ARRAY, nil
+				return makeArray(resultRT), nil
 			}
 
-			results := make([]interface{}, sourceRV.Len())
 			for i := 0; i < sourceRV.Len(); i++ {
-				results[i], err = selector(
-					sourceRV.Index(i).Interface(),
-					i,
+				values := selectorRV.Call(
+					[]reflect.Value{
+						sourceRV.Index(i),
+						reflect.ValueOf(i),
+					},
 				)
-				if err != nil {
-					return EMPTY_ARRAY, err
+				if !values[1].IsNil() {
+					return nil, values[1].Interface().(error)
 				}
+
+				resultRV = reflect.Append(resultRV, values[0])
 			}
-			return results, nil
 		case reflect.Map:
 			keyRVs := sourceRV.MapKeys()
 			if len(keyRVs) == 0 {
-				return EMPTY_ARRAY, nil
+				return makeArray(resultRT), nil
 			}
 
-			results := make([]interface{}, len(keyRVs))
 			for i := 0; i < len(keyRVs); i++ {
-				results[i], err = selector(
-					sourceRV.MapIndex(keyRVs[i]).Interface(),
-					keyRVs[i].Interface(),
+				values := selectorRV.Call(
+					[]reflect.Value{
+						sourceRV.MapIndex(keyRVs[i]),
+						keyRVs[i],
+					},
 				)
-				if err != nil {
-					return EMPTY_ARRAY, err
+				if !values[1].IsNil() {
+					return nil, values[1].Interface().(error)
 				}
+
+				resultRV = reflect.Append(resultRV, values[0])
 			}
-			return results, nil
 	}
-	return EMPTY_ARRAY, nil
+	
+	return resultRV.Interface(), nil
 }
 
 //chain
-func (this *Query) Map(selector func(interface{}, interface{}) (interface{}, error)) Queryer {
+func (this *Query) Map(selector interface{}) Queryer {
 	if this.err == nil {
 		this.source, this.err = Map(this.source, selector)
 	}

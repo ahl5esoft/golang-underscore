@@ -12,7 +12,7 @@ type Queryer interface {
 	GroupBy(string) Queryer
 	Index(func(interface{}, interface{}) (interface{}, error)) Queryer
 	IndexBy(string) Queryer
-	Map(func(interface{}, interface{}) (interface{}, error)) Queryer
+	Map(interface{}) Queryer
 	Pluck(string) Queryer
 	Reduce(func(interface{}, interface{}, interface{}) (interface{}, error), interface{}) Queryer
 	Select(func(interface{}, interface{}) (bool, error)) Queryer
