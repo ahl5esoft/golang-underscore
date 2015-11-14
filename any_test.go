@@ -6,8 +6,8 @@ import (
 
 func TestAny(t *testing.T) {
 	arr := []int{ 1, 3 }
-	res, _ := Any(arr, func (n, _ interface{}) (bool, error) {
-		return n.(int) % 2 == 0, nil	
+	res, _ := Any(arr, func (n, _ int) (bool, error) {
+		return n % 2 == 0, nil	
 	})
 	if res {
 		t.Error("wrong result")
@@ -16,8 +16,8 @@ func TestAny(t *testing.T) {
 
 func TestChain_Any(t *testing.T) {
 	arr := []int{ 1, 3 }
-	v, _ := Chain(arr).Any(func (n, _ interface{}) (bool, error) {
-		return n.(int) % 2 == 0, nil	
+	v, _ := Chain(arr).Any(func (n, _ int) (bool, error) {
+		return n % 2 == 0, nil	
 	}).Value()
 	res, ok := v.(bool)
 	if !ok || res {

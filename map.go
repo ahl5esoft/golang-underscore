@@ -8,26 +8,22 @@ import (
 var EMPTY_ARRAY = make([]interface{}, 0)
 
 func Map(source, selector interface{}) (interface{}, error) {
-	selectorRT := reflect.TypeOf(selector)
-	if !(selectorRT.Kind() == reflect.Func && selectorRT.NumIn() == 2 && selectorRT.NumOut() == 2) {
-		return nil, errors.New("underscore: Map's selector is nil")
-	}
-
 	selectorRV := reflect.ValueOf(selector)
-	resultRT := reflect.SliceOf(
-		selectorRV.Type().Out(0),
-	)
-	if source == nil {
-		return makeArray(resultRT), nil
+	if selectorRV.Kind() != reflect.Func {
+		return nil, errors.New("underscore: Map's selector is not func")
 	}
 
-	resultRV := makeArray(resultRT)
+	if source == nil {
+		return nil, nil
+	}
+
+	resultRV := makeSliceRVWithElem(selectorRV.Type().Out(0))
 	sourceRV := reflect.ValueOf(source)
 	switch sourceRV.Kind() {
 		case reflect.Array:
 		case reflect.Slice:
 			if sourceRV.Len() == 0 {
-				return makeArray(resultRT), nil
+				return nil, nil
 			}
 
 			for i := 0; i < sourceRV.Len(); i++ {
@@ -46,7 +42,7 @@ func Map(source, selector interface{}) (interface{}, error) {
 		case reflect.Map:
 			keyRVs := sourceRV.MapKeys()
 			if len(keyRVs) == 0 {
-				return makeArray(resultRT), nil
+				return nil, nil
 			}
 
 			for i := 0; i < len(keyRVs); i++ {

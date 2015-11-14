@@ -6,8 +6,8 @@ import (
 
 func TestFind(t *testing.T) {
 	arr := []int{ 1, 2, 3, 4 }
-	res, _ := Find(arr, func (n, _ interface{}) (bool, error) {
-		return n.(int) % 2 == 0, nil
+	res, _ := Find(arr, func (n, _ int) (bool, error) {
+		return n % 2 == 0, nil
 	})
 	if res == nil {
 		t.Error("wrong")
@@ -21,8 +21,8 @@ func TestFind(t *testing.T) {
 
 func TestChain_Find(t *testing.T) {
 	arr := []int{ 1, 2, 3, 4 }
-	res, _ := Chain(arr).Find(func (n, _ interface{}) (bool, error) {
-		return n.(int) % 2 == 0, nil
+	res, _ := Chain(arr).Find(func (n, _ int) (bool, error) {
+		return n % 2 == 0, nil
 	}).Value()
 	if res == nil {
 		t.Error("wrong")

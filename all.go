@@ -5,9 +5,10 @@ import (
 	"reflect"
 )
 
-func All(source interface{}, predicate func(interface{}, interface{}) (bool, error)) (bool, error) {
-	if predicate == nil {
-		return false, errors.New("underscore: All's predicate is nil")
+func All(source, predicate interface{}) (bool, error) {
+	predicateRV := reflect.ValueOf(predicate)
+	if predicateRV.Kind() != reflect.Func {
+		return false, errors.New("underscore: All's predicate is not func")
 	}
 
 	if source == nil  {
@@ -23,12 +24,18 @@ func All(source interface{}, predicate func(interface{}, interface{}) (bool, err
 			}
 
 			for i := 0; i < sourceRV.Len(); i++ {
-				ok, err := predicate(
-					sourceRV.Index(i).Interface(),
-					i,
+				values := predicateRV.Call(
+					[]reflect.Value{
+						sourceRV.Index(i),
+						reflect.ValueOf(i),
+					},
 				)
-				if !(err == nil && ok) {
-					return ok, err
+				if !values[1].IsNil() {
+					return false, values[1].Interface().(error)
+				}
+				
+				if !values[0].Bool() {
+					return false, nil
 				}
 			}
 		case reflect.Map:
@@ -38,12 +45,18 @@ func All(source interface{}, predicate func(interface{}, interface{}) (bool, err
 			}
 
 			for i := 0; i < len(keyRVs); i++ {
-				ok, err := predicate(
-					sourceRV.MapIndex(keyRVs[i]).Interface(),
-					keyRVs[i].Interface(),
+				values := predicateRV.Call(
+					[]reflect.Value{
+						sourceRV.MapIndex(keyRVs[i]),
+						keyRVs[i],
+					},
 				)
-				if !(err == nil && ok) {
-					return ok, err
+				if !values[1].IsNil() {
+					return false, values[1].Interface().(error)
+				}
+				
+				if !values[0].Bool() {
+					return false, nil
 				}
 			}
 	}
@@ -56,8 +69,8 @@ func AllBy(source interface{}, properties map[string]interface{}) (bool, error) 
 	}
 
 	return All(source, func (item, _ interface{}) (bool, error) {
-		return All(properties, func (pv, pn interface{}) (bool, error) {
-			value, err := getPropertyValue(item, pn.(string))
+		return All(properties, func (pv interface{}, pn string) (bool, error) {
+			value, err := getPropertyValue(item, pn)
 			if err != nil {
 				return false, err
 			}
@@ -68,7 +81,7 @@ func AllBy(source interface{}, properties map[string]interface{}) (bool, error) 
 }
 
 //# chain
-func (this *Query) All(predicate func(interface{}, interface{}) (bool, error)) Queryer {
+func (this *Query) All(predicate interface{}) Queryer {
 	if this.err == nil {
 		this.source, this.err = All(this.source, predicate)
 	}

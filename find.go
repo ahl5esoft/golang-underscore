@@ -5,9 +5,10 @@ import (
 	"reflect"
 )
 
-func Find(source interface{}, predicate func(interface{}, interface{}) (bool, error)) (interface{}, error) {
-	if predicate == nil {
-		return nil, errors.New("underscore: Find's predicate is nil")
+func Find(source, predicate interface{}) (interface{}, error) {
+	predicateRV := reflect.ValueOf(predicate)
+	if predicateRV.Kind() != reflect.Func {
+		return nil, errors.New("underscore: Find's predicate is not func")
 	}
 
 	if source == nil {
@@ -23,14 +24,16 @@ func Find(source interface{}, predicate func(interface{}, interface{}) (bool, er
 			}
 
 			for i := 0; i < sourceRV.Len(); i++ {
-				item := sourceRV.Index(i).Interface()
-				ok, err := predicate(item, i)
-				if err != nil {
-					return nil, err
-				}
-
-				if ok {
-					return item, nil
+				values := predicateRV.Call(
+					[]reflect.Value{
+						sourceRV.Index(i),
+						reflect.ValueOf(i),
+					},
+				)
+				if values[0].Bool() && values[1].IsNil() {
+					return sourceRV.Index(i).Interface(), nil
+				} else if !values[1].IsNil() {
+					return nil, values[0].Interface().(error)
 				}
 			}
 		case reflect.Map:
@@ -40,17 +43,16 @@ func Find(source interface{}, predicate func(interface{}, interface{}) (bool, er
 			}
 
 			for i := 0; i < len(keyRVs); i++ {
-				item := sourceRV.MapIndex(keyRVs[i]).Interface()
-				ok, err := predicate(
-					item,
-					keyRVs[i].Interface(),
+				values := predicateRV.Call(
+					[]reflect.Value{
+						sourceRV.MapIndex(keyRVs[i]),
+						reflect.ValueOf(i),
+					},
 				)
-				if err != nil {
-					return nil, err
-				}
-
-				if ok {
-					return item, nil
+				if values[0].Bool() && values[1].IsNil() {
+					return sourceRV.MapIndex(keyRVs[i]).Interface(), nil
+				} else if !values[1].IsNil() {
+					return nil, values[0].Interface().(error)
 				}
 			}
 	}
@@ -63,8 +65,8 @@ func FindBy(source interface{}, properties map[string]interface{}) (interface{},
 	}
 
 	return Find(source, func (item, _ interface{}) (bool, error) {
-		return All(properties, func (pv, pn interface{}) (bool, error) {
-			value, err := getPropertyValue(item, pn.(string))
+		return All(properties, func (pv interface{}, pn string) (bool, error) {
+			value, err := getPropertyValue(item, pn)
 			if err != nil {
 				return false, err
 			}
@@ -75,7 +77,7 @@ func FindBy(source interface{}, properties map[string]interface{}) (interface{},
 }
 
 //# chain
-func (this *Query) Find(predicate func(interface{}, interface{}) (bool, error)) Queryer {
+func (this *Query) Find(predicate interface{}) Queryer {
 	if this.err == nil {
 		this.source, this.err = Find(this.source, predicate)
 	}

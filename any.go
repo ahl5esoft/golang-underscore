@@ -5,9 +5,10 @@ import (
 	"reflect"
 )
 
-func Any(source interface{}, predicate func(interface{}, interface{}) (bool, error)) (bool, error) {
-	if predicate == nil {
-		return false, errors.New("underscore: Any's predicate is nil")
+func Any(source, predicate interface{}) (bool, error) {
+	predicateRV := reflect.ValueOf(predicate)
+	if predicateRV.Kind() != reflect.Func {
+		return false, errors.New("underscore: Any's predicate is not func")
 	}
 
 	if source == nil  {
@@ -23,12 +24,16 @@ func Any(source interface{}, predicate func(interface{}, interface{}) (bool, err
 			}
 
 			for i := 0; i < sourceRV.Len(); i++ {
-				ok, err := predicate(
-					sourceRV.Index(i).Interface(),
-					i,
+				values := predicateRV.Call(
+					[]reflect.Value{
+						sourceRV.Index(i),
+						reflect.ValueOf(i),
+					},
 				)
-				if err == nil && ok {
+				if values[0].Bool() && values[1].IsNil() {
 					return true, nil
+				} else if !values[1].IsNil() {
+					return false, values[1].Interface().(error)
 				}
 			}
 		case reflect.Map:
@@ -38,12 +43,16 @@ func Any(source interface{}, predicate func(interface{}, interface{}) (bool, err
 			}
 
 			for i := 0; i < len(keyRVs); i++ {
-				ok, err := predicate(
-					sourceRV.MapIndex(keyRVs[i]).Interface(),
-					keyRVs[i].Interface(),
+				values := predicateRV.Call(
+					[]reflect.Value{
+						sourceRV.MapIndex(keyRVs[i]),
+						keyRVs[i],
+					},
 				)
-				if err == nil && ok {
+				if values[0].Bool() && values[1].IsNil() {
 					return true, nil
+				} else if !values[1].IsNil() {
+					return false, values[1].Interface().(error)
 				}
 			}
 	}
@@ -56,8 +65,8 @@ func AnyBy(source interface{}, properties map[string]interface{}) (bool, error) 
 	}
 
 	return Any(source, func (item, _ interface{}) (bool, error) {
-		return All(properties, func (pv, pn interface{}) (bool, error) {
-			value, err := getPropertyValue(item, pn.(string))
+		return All(properties, func (pv interface{}, pn string) (bool, error) {
+			value, err := getPropertyValue(item, pn)
 			if err != nil {
 				return false, err
 			}
@@ -68,7 +77,7 @@ func AnyBy(source interface{}, properties map[string]interface{}) (bool, error) 
 }
 
 //# chain
-func (this *Query) Any(predicate func(interface{}, interface{}) (bool, error)) Queryer {
+func (this *Query) Any(predicate interface{}) Queryer {
 	if this.err == nil {
 		this.source, this.err = Any(this.source, predicate)
 	}

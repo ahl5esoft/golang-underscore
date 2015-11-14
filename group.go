@@ -7,63 +7,83 @@ import (
 
 var EMPTY_GROUP = make(map[interface{}][]interface{})
 
-func Group(source interface{}, keySelector func(interface{}, interface{}) (interface{}, error)) (map[interface{}][]interface{}, error) {
-	if keySelector == nil {
-		return EMPTY_GROUP, errors.New("underscore: Group's keySelector is nil")
+func Group(source, keySelector interface{}) (interface{}, error) {
+	ksRV := reflect.ValueOf(keySelector)
+	if ksRV.Kind() != reflect.Func {
+		return nil, errors.New("underscore: Group's keySelector is not func")
 	}
 
 	if source == nil {
-		return EMPTY_GROUP, nil
+		return nil, nil
 	}
-
+	
 	sourceRV := reflect.ValueOf(source)
 	switch sourceRV.Kind() {
 		case reflect.Array:
 		case reflect.Slice:
 			if sourceRV.Len() == 0 {
-				return EMPTY_GROUP, nil
+				return nil, nil
 			}
 
-			dict := make(map[interface{}][]interface{})
+			groupRV := makeMapRV(ksRV.Type().Out(0), sourceRV.Type())
 			for i := 0; i < sourceRV.Len(); i++ {
-				value := sourceRV.Index(i).Interface()
-				key, err := keySelector(value, i)
-				if err != nil {
-					return EMPTY_GROUP, err
+				values := ksRV.Call(
+					[]reflect.Value{
+						sourceRV.Index(i),
+						reflect.ValueOf(i),
+					},
+				)
+				if !values[1].IsNil() {
+					return nil, values[1].Interface().(error)
 				}
 
-				dict[key] = append(dict[key], value)
+				valuesRV := groupRV.MapIndex(values[0])
+				if !valuesRV.IsValid() {
+					valuesRV = makeSliceRV(sourceRV.Type())
+				}
+				valuesRV = reflect.Append(valuesRV, sourceRV.Index(i))
+				
+				groupRV.SetMapIndex(values[0], valuesRV)
 			}
-			return dict, nil
+			return groupRV.Interface(), nil
 		case reflect.Map:
-			oldKeyRVs := sourceRV.MapKeys()
-			if len(oldKeyRVs) == 0 {
-				return EMPTY_GROUP, nil
+			keyRVs := sourceRV.MapKeys()
+			if len(keyRVs) == 0 {
+				return nil, nil
 			}
 
-			dict := make(map[interface{}][]interface{})
-			for i := 0; i < len(oldKeyRVs); i++ {
-				value := sourceRV.MapIndex(oldKeyRVs[i]).Interface()
-				key, err := keySelector(value, oldKeyRVs[i].Interface())
-				if err != nil {
-					return EMPTY_GROUP, err
+			groupRV := makeGroupRV(ksRV.Type().Out(0), sourceRV.MapIndex(keyRVs[0]).Type())
+			for _, keyRV := range keyRVs {
+				values := ksRV.Call(
+					[]reflect.Value{
+						sourceRV.MapIndex(keyRV),
+						keyRV,
+					},
+				)
+				if !values[1].IsNil() {
+					return nil, values[1].Interface().(error)
 				}
 
-				dict[key] = append(dict[key], value)
+				valuesRV := groupRV.MapIndex(values[0])
+				if !valuesRV.IsValid() {
+					valuesRV = makeSliceRVWithElem(sourceRV.MapIndex(keyRV).Type())
+				}
+				valuesRV = reflect.Append(valuesRV, sourceRV.MapIndex(keyRV))
+				
+				groupRV.SetMapIndex(values[0], valuesRV)
 			}
-			return dict, nil
 	}
-	return EMPTY_GROUP, nil
+	return nil, nil
 }
 
-func GroupBy(source interface{}, property string) (map[interface{}][]interface{}, error) {
+func GroupBy(source interface{}, property string) (interface{}, error) {
 	return Group(source, func (item, _ interface{}) (interface{}, error) {
 		return getPropertyValue(item, property)
 	})
 }
 
 //Chain
-func (this *Query) Group(keySelector func(interface{}, interface{}) (interface{}, error)) Queryer {
+func (this *Query) Group(keySelector interface{}) Queryer {
 	if this.err == nil {
 		this.source, this.err = Group(this.source, keySelector)
 	}
