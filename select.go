@@ -5,67 +5,40 @@ import (
 	"reflect"
 )
 
-func Select(source interface{}, predicate func(interface{}, interface{}) (bool, error)) ([]interface{}, error) {
-	if predicate == nil {
-		return EMPTY_ARRAY, errors.New("underscore: Select's predicate is nil")
+func Select(source, predicate interface{}) (interface{}, error) {
+	predicateRV := reflect.ValueOf(predicate)
+	if predicateRV.Kind() != reflect.Func {
+		return EMPTY_ARRAY, errors.New("underscore: Select's predicate is not func")
 	}
 
-	if source == nil {
-		return EMPTY_ARRAY, nil
+	var arrRV reflect.Value
+	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+		if !arrRV.IsValid() {
+			arrRV = makeSliceRVWithElem(args[0].Type(), 0)
+		}
+
+		values := predicateRV.Call(args)
+		if !isErrorRVValid(values[1]) && values[0].Bool() {			
+			arrRV = reflect.Append(arrRV, args[0])
+		}
+
+		return false, values[1]
+	})
+	if err == nil && arrRV.IsValid() {
+		return arrRV.Interface(), nil
 	}
 
-	results := []interface{}{}
-	sourceRV := reflect.ValueOf(source)
-	switch sourceRV.Kind() {
-		case reflect.Array:
-		case reflect.Slice:
-			if sourceRV.Len() == 0 {
-				return EMPTY_ARRAY, nil
-			}
-
-			for i := 0; i < sourceRV.Len(); i++ {
-				item := sourceRV.Index(i).Interface()
-				ok, err := predicate(item, i)
-				if err != nil {
-					return EMPTY_ARRAY, err
-				}
-
-				if ok {
-					results = append(results, item)
-				}
-			}
-		case reflect.Map:
-			keyRVs := sourceRV.MapKeys()
-			if len(keyRVs) == 0 {
-				return EMPTY_ARRAY, nil
-			}
-
-			for i := 0; i < len(keyRVs); i++ {
-				item := sourceRV.MapIndex(keyRVs[i]).Interface()
-				ok, err := predicate(
-					item,
-					keyRVs[i].Interface(),
-				)
-				if err != nil {
-					return EMPTY_ARRAY, err
-				}
-
-				if ok {
-					results = append(results, item)
-				}
-			}
-	}
-	return results, nil
+	return nil, err
 }
 
-func SelectBy(source interface{}, properties map[string]interface{}) ([]interface{}, error) {
+func SelectBy(source interface{}, properties map[string]interface{}) (interface{}, error) {
 	if source == nil || properties == nil || len(properties) == 0 {
 		return EMPTY_ARRAY, nil
 	}
 
 	return Select(source, func (item, _ interface{}) (bool, error) {
-		return All(properties, func (pv, pn interface{}) (bool, error) {
-			value, err := getPropertyValue(item, pn.(string))
+		return All(properties, func (pv interface{}, pn string) (bool, error) {
+			value, err := getPropertyValue(item, pn)
 			if err != nil {
 				return false, err
 			}
@@ -76,7 +49,7 @@ func SelectBy(source interface{}, properties map[string]interface{}) ([]interfac
 }
 
 //# chain
-func (this *Query) Select(predicate func(interface{}, interface{}) (bool, error)) Queryer {
+func (this *Query) Select(predicate interface{}) Queryer {
 	if this.err == nil {
 		this.source, this.err = Select(this.source, predicate)
 	}

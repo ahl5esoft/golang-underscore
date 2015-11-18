@@ -13,67 +13,30 @@ func Group(source, keySelector interface{}) (interface{}, error) {
 		return nil, errors.New("underscore: Group's keySelector is not func")
 	}
 
-	if source == nil {
-		return nil, nil
+	var groupRV reflect.Value
+	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+		if !groupRV.IsValid() {
+			groupRV = makeGroupRV(ksRV.Type().Out(0), args[0].Type())
+		}
+
+		values := ksRV.Call(args)
+		if !isErrorRVValid(values[1]) {
+			valuesRV := groupRV.MapIndex(values[0])
+			if !valuesRV.IsValid() {
+				valuesRV = makeSliceRVWithElem(args[0].Type(), 0)
+			}
+			valuesRV = reflect.Append(valuesRV, args[0])
+			
+			groupRV.SetMapIndex(values[0], valuesRV)
+		}
+
+		return false, values[1]
+	})
+	if err == nil && groupRV.IsValid() {
+		return groupRV.Interface(), nil
 	}
-	
-	sourceRV := reflect.ValueOf(source)
-	switch sourceRV.Kind() {
-		case reflect.Array:
-		case reflect.Slice:
-			if sourceRV.Len() == 0 {
-				return nil, nil
-			}
 
-			groupRV := makeMapRV(ksRV.Type().Out(0), sourceRV.Type())
-			for i := 0; i < sourceRV.Len(); i++ {
-				values := ksRV.Call(
-					[]reflect.Value{
-						sourceRV.Index(i),
-						reflect.ValueOf(i),
-					},
-				)
-				if !values[1].IsNil() {
-					return nil, values[1].Interface().(error)
-				}
-
-				valuesRV := groupRV.MapIndex(values[0])
-				if !valuesRV.IsValid() {
-					valuesRV = makeSliceRV(sourceRV.Type())
-				}
-				valuesRV = reflect.Append(valuesRV, sourceRV.Index(i))
-				
-				groupRV.SetMapIndex(values[0], valuesRV)
-			}
-			return groupRV.Interface(), nil
-		case reflect.Map:
-			keyRVs := sourceRV.MapKeys()
-			if len(keyRVs) == 0 {
-				return nil, nil
-			}
-
-			groupRV := makeGroupRV(ksRV.Type().Out(0), sourceRV.MapIndex(keyRVs[0]).Type())
-			for _, keyRV := range keyRVs {
-				values := ksRV.Call(
-					[]reflect.Value{
-						sourceRV.MapIndex(keyRV),
-						keyRV,
-					},
-				)
-				if !values[1].IsNil() {
-					return nil, values[1].Interface().(error)
-				}
-
-				valuesRV := groupRV.MapIndex(values[0])
-				if !valuesRV.IsValid() {
-					valuesRV = makeSliceRVWithElem(sourceRV.MapIndex(keyRV).Type())
-				}
-				valuesRV = reflect.Append(valuesRV, sourceRV.MapIndex(keyRV))
-				
-				groupRV.SetMapIndex(values[0], valuesRV)
-			}
-	}
-	return nil, nil
+	return nil, err
 }
 
 func GroupBy(source interface{}, property string) (interface{}, error) {

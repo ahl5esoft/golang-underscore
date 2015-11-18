@@ -5,22 +5,22 @@ import (
 )
 
 func TestIndex(t *testing.T) {
-	res, _ := Index([]string{ "a", "b" }, func (item, _ interface{}) (interface{}, error) {
+	v, _ := Index([]string{ "a", "b" }, func (item string, _ int) (string, error) {
 		return item, nil
 	})
-	str, ok := res["a"].(string)
-	if !(ok && str == "a") {
+	res, ok := v.(map[string]string)
+	if !(ok && res["a"] == "a") {
 		t.Error("index error")
 	}
 }
 
 func TestChain_Index(t *testing.T) {
-	v, _ := Chain([]string{ "a", "b" }).Index(func (item, _ interface{}) (interface{}, error) {
+	v, _ := Chain([]string{ "a", "b" }).Index(func (item string, _ int) (string, error) {
 		return item, nil
 	}).Value()
-	dict, ok := v.(map[interface{}]interface{})
-	if !(ok && len(dict) == 2) {
-		t.Error("wrong")
+	res, ok := v.(map[string]string)
+	if !(ok && res["a"] == "a") {
+		t.Error("index error")
 	}
 }
 
@@ -31,8 +31,13 @@ func TestIndexBy(t *testing.T) {
 		TestModel{ 3, "b" },
 		TestModel{ 4, "b" },
 	}
-	dict, err := IndexBy(arr, "Name")
-	if !(err == nil && len(dict) == 2) {
+	res, err := IndexBy(arr, "Name")
+	if err != nil {
+		t.Error(err)
+	}
+
+	dict, ok := res.(map[interface{}]TestModel)
+	if !(ok && len(dict) == 2) {
 		t.Error("wrong")
 	}
 }
@@ -49,7 +54,7 @@ func TestChain_IndexBy(t *testing.T) {
 		t.Error(err)
 	}
 
-	dict, ok := res.(map[interface{}]interface{})
+	dict, ok := res.(map[interface{}]TestModel)
 	if !(ok && len(dict) == 2) {
 		t.Error("wrong")
 	}

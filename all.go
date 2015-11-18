@@ -11,56 +11,17 @@ func All(source, predicate interface{}) (bool, error) {
 		return false, errors.New("underscore: All's predicate is not func")
 	}
 
-	if source == nil  {
-		return true, nil
+	var ok bool
+	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+		values := predicateRV.Call(args)
+		ok = values[0].Bool()
+		return !ok, values[1]
+	})
+	if err != nil {
+		return false, err
 	}
 
-	sourceRV := reflect.ValueOf(source)
-	switch sourceRV.Kind() {
-		case reflect.Array:
-		case reflect.Slice:
-			if sourceRV.Len() == 0 {
-				return true, nil
-			}
-
-			for i := 0; i < sourceRV.Len(); i++ {
-				values := predicateRV.Call(
-					[]reflect.Value{
-						sourceRV.Index(i),
-						reflect.ValueOf(i),
-					},
-				)
-				if !values[1].IsNil() {
-					return false, values[1].Interface().(error)
-				}
-				
-				if !values[0].Bool() {
-					return false, nil
-				}
-			}
-		case reflect.Map:
-			keyRVs := sourceRV.MapKeys()
-			if len(keyRVs) == 0 {
-				return true, nil
-			}
-
-			for i := 0; i < len(keyRVs); i++ {
-				values := predicateRV.Call(
-					[]reflect.Value{
-						sourceRV.MapIndex(keyRVs[i]),
-						keyRVs[i],
-					},
-				)
-				if !values[1].IsNil() {
-					return false, values[1].Interface().(error)
-				}
-				
-				if !values[0].Bool() {
-					return false, nil
-				}
-			}
-	}
-	return true, nil
+	return ok, nil
 }
 
 func AllBy(source interface{}, properties map[string]interface{}) (bool, error) {

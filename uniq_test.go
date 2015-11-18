@@ -5,35 +5,45 @@ import (
 )
 
 func TestUniq(t *testing.T) {
-	res, _ := Uniq([]int{ 1, 2, 1, 4, 1, 3 })
-	if len(res) != 4 {
+	v, _ := Uniq([]int{ 1, 2, 1, 2, 1, 3 }, nil)
+	res, ok := v.([]int)
+	if !(ok && res[0] == 1 && res[1] == 2 && res[2] == 3) {
 		t.Error("wrong")
 	}
 }
 
 func TestChain_Uniq(t *testing.T) {
-	v, _ := Chain([]int{ 1, 2, 1, 4, 1, 3 }).Uniq().Value()
-	res, ok := v.([]interface{})
-	if !(ok && len(res) == 4) {
+	v, _ := Chain([]int{ 1, 2, 1, 4, 1, 3 }).Uniq(func (n, _ int) (int, error) {
+		return n % 2, nil
+	}).Value()
+	res, ok := v.([]int)
+	if !(ok && len(res) == 2) {
 		t.Error("wrong")
 	}
 }
 
 func TestUniqBy(t *testing.T) {
-	res, _ := UniqBy([]int{ 1, 2, 1, 4, 1, 3 }, func (item interface{}, _ int) interface{} {
-		return item.(int) % 2
-	})
-	if len(res) != 2 {
+	arr := []TestModel{
+		TestModel{ 1, "one" },
+		TestModel{ 2, "one" },
+		TestModel{ 3, "one" },
+	}
+	v, _ := UniqBy(arr, "Name")
+	res, ok := v.([]TestModel)
+	if !(ok && len(res) == 1) {
 		t.Error("wrong")
 	}
 }
 
 func TestChain_UniqBy(t *testing.T) {
-	v, _ := Chain([]int{ 1, 2, 1, 4, 1, 3 }).UniqBy(func (item interface{}, _ int) interface{} {
-		return item.(int) % 2
-	}).Value()
-	res, ok := v.([]interface{})
-	if !(ok && len(res) == 2) {
+	arr := []TestModel{
+		TestModel{ 1, "one" },
+		TestModel{ 2, "one" },
+		TestModel{ 3, "one" },
+	}
+	v, _ := Chain(arr).UniqBy("Name").Value()
+	res, ok := v.([]TestModel)
+	if !(ok && len(res) == 1) {
 		t.Error("wrong")
 	}
 }

@@ -5,65 +5,71 @@ import (
 	"reflect"
 )
 
-func Uniq(source interface{}) ([]interface{}, error) {
-	return uniq(source, nil), nil
-}
-
-func UniqBy(source interface{}, selector func(interface{}, int) interface{}) ([]interface{}, error) {
+func Uniq(source, selector interface{}) (interface{}, error) {
 	if selector == nil {
-		return EMPTY_ARRAY, errors.New("underscore: UniqBy's selector is nil")
+		selector = func (item, _ interface{}) (interface{}, error) {
+			return item, nil
+		}
 	}
 
-	return uniq(source, selector), nil
+	selectorRV := reflect.ValueOf(selector)
+	if selectorRV.Kind() != reflect.Func {
+		return nil, errors.New("underscore: UniqBy's selector is not func")
+	}
+
+	var mapRV reflect.Value
+	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+		if !mapRV.IsValid() {
+			mapRV = makeMapRV(
+				selectorRV.Type().Out(0),
+				args[0].Type(),
+			)
+		}
+
+		values := selectorRV.Call(args)
+		if !isErrorRVValid(values[1]) {
+			mapRV.SetMapIndex(
+				values[0],
+				args[0],
+			)
+		}
+
+		return false, values[1]
+	})
+	if err == nil && mapRV.IsValid() {
+		keyRVs := mapRV.MapKeys()
+		arrRV := makeSliceRVWithElem(
+			mapRV.MapIndex(keyRVs[0]).Type(),
+			len(keyRVs),
+		)
+		for i := 0; i < len(keyRVs); i++ {
+			arrRV.Index(i).Set(
+				mapRV.MapIndex(keyRVs[i]),
+			)
+		}
+		return arrRV.Interface(), nil
+	}
+
+	return nil, err
 }
 
-func uniq(source interface{}, selector func(interface{}, int) interface{}) []interface{} {
-	if source == nil {
-		return EMPTY_ARRAY
-	}
-	
-	sourceRV := reflect.ValueOf(source)
-	if sourceRV.Kind() == reflect.Array || sourceRV.Kind() == reflect.Slice {
-		if sourceRV.Len() == 0 {
-			return EMPTY_ARRAY
-		}
-
-		dict := make(map[interface{}]interface{})
-		for i := 0; i < sourceRV.Len(); i++ {
-			v := sourceRV.Index(i).Interface()
-			var k interface{}
-			if selector == nil {
-				k = v
-			} else {
-				k = selector(v, i)
-			}
-			if _, ok := dict[k]; !ok {
-				dict[k] = v
-			}
-		}
-
-		results := make([]interface{}, len(dict))
-		i := 0
-		for k := range dict {
-			results[i] = k
-			i++
-		}
-		return results
-	}
-	return EMPTY_ARRAY
+func UniqBy(source interface{}, property string) (interface{}, error) {
+	return Uniq(source, func (item, _ interface{}) (interface{}, error) {
+		return getPropertyValue(item, property)
+	})
 }
 
 //chain
-func (this *Query) Uniq() Queryer {
+func (this *Query) Uniq(selector interface{}) Queryer {
 	if this.err == nil {
-		this.source, this.err = Uniq(this.source)
+		this.source, this.err = Uniq(this.source, selector)
 	}
 	return this
 }
 
-func (this *Query) UniqBy(selector func(interface{}, int) interface{}) Queryer {
+func (this *Query) UniqBy(property string) Queryer {
 	if this.err == nil {
-		this.source, this.err = UniqBy(this.source, selector)
+		this.source, this.err = UniqBy(this.source, property)
 	}
 	return this
 }

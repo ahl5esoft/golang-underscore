@@ -7,142 +7,123 @@ import (
 )
 
 type sortQuery struct {
-	keys []interface{}
-	values []interface{}
-	compare func(thisValue, thisKey, thatValue, thatKey interface{}) bool
+	keysRV reflect.Value
+	valuesRV reflect.Value
+	compareRV reflect.Value
 }
 
 func (this sortQuery) Len() int {
-	return len(this.values);
+	if this.keysRV.IsValid() {
+		return this.keysRV.Len()
+	}
+
+	return 0;
 }
 
 func (this sortQuery) Swap(i, j int) {
-	this.keys[i], this.keys[j] = this.keys[j], this.keys[i]
-	this.values[i], this.values[j] = this.values[j], this.values[i]
+	temp := this.keysRV.Index(i).Interface()
+	this.keysRV.Index(i).Set(
+		this.keysRV.Index(j),
+	)
+	this.keysRV.Index(j).Set(
+		reflect.ValueOf(temp),
+	)
+
+	temp = this.valuesRV.Index(i).Interface()
+	this.valuesRV.Index(i).Set(
+		this.valuesRV.Index(j),
+	)
+	this.valuesRV.Index(j).Set(
+		reflect.ValueOf(temp),
+	)
 }
 
 func (this sortQuery) Less(i, j int) bool {
-	return this.compare(this.values[i], this.keys[i], this.values[j], this.keys[j])
+	thisRV := this.keysRV.Index(i)
+	thatRV := this.keysRV.Index(j)
+	switch thisRV.Kind() {
+		case reflect.Float32, reflect.Float64:
+			return thisRV.Float() < thatRV.Float()
+		case reflect.Int, reflect.Int16, reflect.Int32, reflect.Int64:
+			return thisRV.Int() < thatRV.Int()
+		case reflect.String:
+			return thisRV.String() < thatRV.String()
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+			return thisRV.Uint() < thatRV.Uint()
+		default:
+			return false
+	}
 }
 
-func Sort(source interface{}, compare func(thisValue, thisKey, thatValue, thatKey interface{}) bool) ([]interface{}, error) {
-	if compare == nil {
-		return EMPTY_ARRAY, errors.New("underscore: Sort's compare is nil")
+func Sort(source, selector interface{}) (interface{}, error) {
+	selectorRV := reflect.ValueOf(selector)
+	if selectorRV.Kind() != reflect.Func {
+		return nil, errors.New("underscore: Sort's selector is not func")
 	}
 
-	sourceRV := reflect.ValueOf(source)
-	if sourceRV.Kind() == reflect.Array || sourceRV.Kind() == reflect.Slice || sourceRV.Kind() == reflect.Map {
-		qs := sortQuery{}
-		qs.compare = compare
-
-		if sourceRV.Kind() == reflect.Map {
-			oldKeyRVs := sourceRV.MapKeys()
-			if len(oldKeyRVs) == 0 {
-				return EMPTY_ARRAY, nil
-			}
-
-			qs.keys = make([]interface{}, len(oldKeyRVs))
-			qs.values = make([]interface{}, len(oldKeyRVs))
-			for i := 0; i < len(oldKeyRVs); i++ {
-				qs.keys[i] = oldKeyRVs[i].Interface()
-				qs.values[i] = sourceRV.MapIndex(oldKeyRVs[i]).Interface()
-			}
-		} else {
-			if sourceRV.Len() == 0 {
-				return EMPTY_ARRAY, nil
-			}
-
-			qs.keys = make([]interface{}, sourceRV.Len())
-			qs.values = make([]interface{}, sourceRV.Len())
-			for i := 0; i < sourceRV.Len(); i++ {
-				qs.keys[i] = i
-				qs.values[i] = sourceRV.Index(i).Interface()
-			}
+	qs := sortQuery{}
+	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+		if qs.Len() == 0 {
+			qs.valuesRV = makeSliceRVWithElem(
+				args[0].Type(),
+				0,
+			)
+			qs.keysRV = makeSliceRVWithElem(
+				selectorRV.Type().Out(0),
+				0,
+			)
 		}
 
+		values := selectorRV.Call(args)
+		if !isErrorRVValid(values[1]) {
+			qs.valuesRV = reflect.Append(qs.valuesRV, args[0])
+			qs.keysRV = reflect.Append(qs.keysRV, values[0])
+		}
+		
+		return false, values[1]
+	})
+	if err == nil && qs.Len() > 0 {
 		sort.Sort(qs)
-		return qs.values, nil
+		return qs.valuesRV.Interface(), nil
 	}
-	return EMPTY_ARRAY, nil
+
+	return nil, err
 }
 
-func SortBy(source interface{}, property string) ([]interface{}, error) {
-	sourceRV := reflect.ValueOf(source)
-	if sourceRV.Kind() == reflect.Array || sourceRV.Kind() == reflect.Slice || sourceRV.Kind() == reflect.Map {
-		var propertyKind reflect.Kind
-		qs := sortQuery{}
-		qs.compare = func (_, thisKey, _, thatKey interface{}) bool {
-			switch propertyKind {
-				case reflect.Float32:
-					return thisKey.(float32) < thatKey.(float32)
-				case reflect.Float64:
-					return thisKey.(float64) < thatKey.(float64)
-				case reflect.Int:
-					return thisKey.(int) < thatKey.(int)
-				case reflect.Int16:
-					return thisKey.(int16) < thatKey.(int16)
-				case reflect.Int32:
-					return thisKey.(int) < thatKey.(int)
-				case reflect.Int64:
-					return thisKey.(int64) < thatKey.(int64)
-				case reflect.String:
-					return thisKey.(string) < thatKey.(string)
-				default:
-					return false
+func SortBy(source interface{}, property string) (interface{}, error) {
+	qs := sortQuery{}
+	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+		pRV, err := getPropertyRV(args[0], property)
+		if err == nil {
+			if qs.Len() == 0 {
+				qs.valuesRV = makeSliceRVWithElem(
+					args[0].Type(),
+					0,
+				)
+				qs.keysRV = makeSliceRVWithElem(
+					pRV.Type(),
+					0,
+				)
 			}
+
+			qs.valuesRV = reflect.Append(qs.valuesRV, args[0])
+			qs.keysRV = reflect.Append(qs.keysRV, pRV)		
 		}
 
-		if sourceRV.Kind() == reflect.Map {
-			oldKeyRVs := sourceRV.MapKeys()
-			if len(oldKeyRVs) == 0 {
-				return EMPTY_ARRAY, nil
-			}
-
-			qs.keys = make([]interface{}, len(oldKeyRVs))
-			qs.values = make([]interface{}, len(oldKeyRVs))
-			for i := 0; i < len(oldKeyRVs); i++ {
-				qs.values[i] = sourceRV.MapIndex(oldKeyRVs[i]).Interface()
-				value, err := getPropertyValue(qs.values[i], property)
-				if err != nil {
-					return EMPTY_ARRAY, err
-				}
-
-				if i == 0 {
-					propertyKind = reflect.ValueOf(qs.values[i]).FieldByName(property).Kind()
-				}
-				qs.keys[i] = value
-			}
-		} else {
-			if sourceRV.Len() == 0 {
-				return EMPTY_ARRAY, nil
-			}
-
-			qs.keys = make([]interface{}, sourceRV.Len())
-			qs.values = make([]interface{}, sourceRV.Len())
-			for i := 0; i < sourceRV.Len(); i++ {
-				qs.values[i] = sourceRV.Index(i).Interface()
-				value, err := getPropertyValue(qs.values[i], property)
-				if err != nil {
-					return EMPTY_ARRAY, nil
-				}
-
-				if i == 0 {
-					propertyKind = reflect.ValueOf(qs.values[i]).FieldByName(property).Kind()
-				}
-				qs.keys[i] = value
-			}
-		}
-
+		return false, reflect.ValueOf(err)
+	})
+	if err == nil && qs.Len() > 0 {
 		sort.Sort(qs)
-		return qs.values, nil
+		return qs.valuesRV.Interface(), nil
 	}
-	return EMPTY_ARRAY, nil
+
+	return nil, err
 }
 
 //chain
-func (this *Query) Sort(compare func(thisValue, thisKey, thatValue, thatKey interface{}) bool) Queryer {
+func (this *Query) Sort(selector interface{}) Queryer {
 	if this.err == nil {
-		this.source, this.err = Sort(this.source, compare)
+		this.source, this.err = Sort(this.source, selector)
 	}
 	return this
 }

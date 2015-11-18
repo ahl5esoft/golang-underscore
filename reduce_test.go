@@ -5,13 +5,11 @@ import (
 )
 
 func TestReduce(t *testing.T) {
-	v, err := Reduce([]int{ 1, 2 }, func (memo, value, _ interface{}) (interface{}, error) {
-		arr := memo.([]int)
-		num := value.(int)
-		arr = append(arr, num)
-		arr = append(arr, num + 10)
-		return arr, nil
-	}, make([]int, 0))	
+	v, err := Reduce([]int{ 1, 2 }, func (memo []int, n, _ int) ([]int, error) {
+		memo = append(memo, n)
+		memo = append(memo, n + 10)
+		return memo, nil
+	}, make([]int, 0))
 	if err != nil {
 		t.Error(err)
 	}
@@ -27,12 +25,10 @@ func TestReduce(t *testing.T) {
 }
 
 func TestChain_Reduce(t *testing.T) {
-	v, err := Chain([]int{ 1, 2 }).Reduce(func (memo, value, _ interface{}) (interface{}, error) {
-		arr := memo.([]int)
-		num := value.(int)
-		arr = append(arr, num)
-		arr = append(arr, num + 10)
-		return arr, nil
+	v, err := Chain([]int{ 1, 2 }).Reduce(func (memo []int, n, _ int) ([]int, error) {
+		memo = append(memo, n)
+		memo = append(memo, n + 10)
+		return memo, nil
 	}, make([]int, 0)).Value()	
 	if err != nil {
 		t.Error(err)

@@ -7,63 +7,40 @@ import (
 
 var EMPTY_MAP = make(map[interface{}]interface{})
 
-func Index(source interface{}, indexSelector func(interface{}, interface{}) (interface{}, error)) (map[interface{}]interface{}, error) {
-	if indexSelector == nil {
-		return EMPTY_MAP, errors.New("underscore: Index's indexSelector is nil")
+func Index(source, indexSelector interface{}) (interface{}, error) {
+	selectorRV := reflect.ValueOf(indexSelector)
+	if selectorRV.Kind() != reflect.Func {
+		return nil, errors.New("underscore: Index's indexSelector is not func")
 	}
 
-	if source == nil {
-		return EMPTY_MAP, nil
+	var mapRV reflect.Value
+	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+		if !mapRV.IsValid() {
+			mapRV = makeMapRV(selectorRV.Type().Out(0), args[0].Type())
+		}
+
+		values := selectorRV.Call(args)
+		if !isErrorRVValid(values[1]) {
+			mapRV.SetMapIndex(values[0], args[0])
+		}
+
+		return false, values[1]
+	})
+	if err == nil && mapRV.IsValid() {
+		return mapRV.Interface(), nil
 	}
 
-	sourceRV := reflect.ValueOf(source)
-	switch sourceRV.Kind() {
-		case reflect.Array:
-		case reflect.Slice:
-			if sourceRV.Len() == 0 {
-				return EMPTY_MAP, nil
-			}
-
-			dict := make(map[interface{}]interface{})
-			for i := 0; i < sourceRV.Len(); i++ {
-				value := sourceRV.Index(i).Interface()
-				index, err := indexSelector(value, i)
-				if err != nil {
-					return EMPTY_MAP, err
-				}
-
-				dict[index] = value
-			}
-			return dict, nil
-		case reflect.Map:
-			oldKeyRVs := sourceRV.MapKeys()
-			if len(oldKeyRVs) == 0 {
-				return EMPTY_MAP, nil
-			}
-
-			dict := make(map[interface{}]interface{})
-			for i := 0; i < len(oldKeyRVs); i++ {
-				value := sourceRV.MapIndex(oldKeyRVs[i]).Interface()
-				index, err := indexSelector(value, oldKeyRVs[i].Interface())
-				if err != nil {
-					return EMPTY_MAP, err
-				}
-
-				dict[index] = value
-			}
-			return dict, nil
-	}
-	return EMPTY_MAP, nil
+	return nil, err
 }
 
-func IndexBy(source interface{}, property string) (map[interface{}]interface{}, error) {
-	return Index(source, func (item interface{}, _ interface{}) (interface{}, error) {
+func IndexBy(source interface{}, property string) (interface{}, error) {
+	return Index(source, func (item, _ interface{}) (interface{}, error) {
 		return getPropertyValue(item, property)
 	})
 }
 
 //Chain
-func (this *Query) Index(indexSelector func(interface{}, interface{}) (interface{}, error)) Queryer {
+func (this *Query) Index(indexSelector interface{}) Queryer {
 	if this.err == nil {
 		this.source, this.err = Index(this.source, indexSelector)
 	}

@@ -13,54 +13,20 @@ func Map(source, selector interface{}) (interface{}, error) {
 		return nil, errors.New("underscore: Map's selector is not func")
 	}
 
-	if source == nil {
-		return nil, nil
+	arrRV := makeSliceRVWithElem(selectorRV.Type().Out(0), 0)
+	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+		values := selectorRV.Call(args)
+		if !isErrorRVValid(values[1]) {
+			arrRV = reflect.Append(arrRV, values[0])
+		}
+
+		return false, values[1]
+	})
+	if err == nil && arrRV.IsValid() {
+		return arrRV.Interface(), nil
 	}
 
-	resultRV := makeSliceRVWithElem(selectorRV.Type().Out(0))
-	sourceRV := reflect.ValueOf(source)
-	switch sourceRV.Kind() {
-		case reflect.Array:
-		case reflect.Slice:
-			if sourceRV.Len() == 0 {
-				return nil, nil
-			}
-
-			for i := 0; i < sourceRV.Len(); i++ {
-				values := selectorRV.Call(
-					[]reflect.Value{
-						sourceRV.Index(i),
-						reflect.ValueOf(i),
-					},
-				)
-				if !values[1].IsNil() {
-					return nil, values[1].Interface().(error)
-				}
-
-				resultRV = reflect.Append(resultRV, values[0])
-			}
-		case reflect.Map:
-			keyRVs := sourceRV.MapKeys()
-			if len(keyRVs) == 0 {
-				return nil, nil
-			}
-
-			for i := 0; i < len(keyRVs); i++ {
-				values := selectorRV.Call(
-					[]reflect.Value{
-						sourceRV.MapIndex(keyRVs[i]),
-						keyRVs[i],
-					},
-				)
-				if !values[1].IsNil() {
-					return nil, values[1].Interface().(error)
-				}
-
-				resultRV = reflect.Append(resultRV, values[0])
-			}
-	}
-	
-	return resultRV.Interface(), nil
+	return nil, err
 }
 
 //chain

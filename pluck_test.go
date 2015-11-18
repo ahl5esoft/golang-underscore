@@ -10,17 +10,20 @@ func TestPluck(t *testing.T) {
 		TestModel{ 2, "two" },
 		TestModel{ 3, "three" },
 	}
-	res, err := Pluck(arr, "Name")
+	v, err := Pluck(arr, "Name")
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
-	if len(res) != len(arr) {
+	res, ok := v.([]string)
+	if !(ok && len(res) == len(arr)) {
 		t.Error("wrong length")
+		return
 	}
 
 	for i := 0; i < 3; i++ {
-		if res[i].(string) != arr[i].Name {
+		if res[i] != arr[i].Name {
 			t.Error("wrong result")
 		}
 	}
@@ -35,15 +38,17 @@ func TestChain_Pluck(t *testing.T) {
 	v, err := Chain(arr).Pluck("Name").Value()
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
-	res, ok := v.([]interface{})
+	res, ok := v.([]string)
 	if !(ok && len(res) == len(arr)) {
 		t.Error("wrong length")
+		return
 	}
 
 	for i := 0; i < 3; i++ {
-		if res[i].(string) != arr[i].Name {
+		if res[i] != arr[i].Name {
 			t.Error("wrong result")
 		}
 	}
