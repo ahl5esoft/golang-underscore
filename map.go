@@ -5,8 +5,6 @@ import (
 	"reflect"
 )
 
-var EMPTY_ARRAY = make([]interface{}, 0)
-
 func Map(source, selector interface{}) (interface{}, error) {
 	selectorRV := reflect.ValueOf(selector)
 	if selectorRV.Kind() != reflect.Func {

@@ -5,8 +5,6 @@ import (
 	"reflect"
 )
 
-var EMPTY_MAP = make(map[interface{}]interface{})
-
 func Index(source, indexSelector interface{}) (interface{}, error) {
 	selectorRV := reflect.ValueOf(indexSelector)
 	if selectorRV.Kind() != reflect.Func {
@@ -34,9 +32,26 @@ func Index(source, indexSelector interface{}) (interface{}, error) {
 }
 
 func IndexBy(source interface{}, property string) (interface{}, error) {
-	return Index(source, func (item, _ interface{}) (interface{}, error) {
-		return getPropertyValue(item, property)
+	var mapRV reflect.Value
+	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+		pRV, err := getPropertyRV(args[0], property)
+		if err == nil {
+			if !mapRV.IsValid() {
+				mapRV = makeMapRV(pRV.Type(), args[0].Type())
+			}
+
+			mapRV.SetMapIndex(pRV, args[0])
+		}
+		return false, reflect.ValueOf(err)
 	})
+	if err == nil && mapRV.IsValid() {
+		return mapRV.Interface(), nil
+	}
+
+	return nil, err
+	//return Index(source, func (item, _ interface{}) (interface{}, error) {
+		//return getPropertyValue(item, property)
+	//})
 }
 
 //Chain

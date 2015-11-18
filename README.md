@@ -299,7 +299,7 @@ __Arguments__
 
 __Return__
 
-* interface{} - map[interface{}][]element
+* interface{} - map[propertyType][]element
 * error
 
 __Examples__
@@ -316,7 +316,7 @@ if err != nil {
 	// wrong
 }
 
-dict, ok := v.(map[interface{}][]TestModel)
+dict, ok := v.(map[string][]TestModel)
 if !(ok && len(dict) == 2) {
 	// wrong
 }
@@ -357,7 +357,7 @@ __Arguments__
 
 __Return__
 
-* interface{} - map[anyType]element
+* interface{} - map[propertyType]element
 * error
 
 __Examples__
@@ -374,7 +374,7 @@ if err != nil {
 	// wrong
 }
 
-dict, ok := res.(map[interface{}]TestModel)
+dict, ok := res.(map[string]TestModel)
 if !(ok && len(dict) == 2) {
 	// wrong
 }

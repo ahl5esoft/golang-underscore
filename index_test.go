@@ -36,7 +36,7 @@ func TestIndexBy(t *testing.T) {
 		t.Error(err)
 	}
 
-	dict, ok := res.(map[interface{}]TestModel)
+	dict, ok := res.(map[string]TestModel)
 	if !(ok && len(dict) == 2) {
 		t.Error("wrong")
 	}
@@ -54,7 +54,7 @@ func TestChain_IndexBy(t *testing.T) {
 		t.Error(err)
 	}
 
-	dict, ok := res.(map[interface{}]TestModel)
+	dict, ok := res.(map[string]TestModel)
 	if !(ok && len(dict) == 2) {
 		t.Error("wrong")
 	}

@@ -43,7 +43,7 @@ func TestGroupBy(t *testing.T) {
 		return
 	}
 
-	dict, ok := v.(map[interface{}][]TestModel)
+	dict, ok := v.(map[string][]TestModel)
 	if !(ok && len(dict) == 2) {
 		t.Error("wrong")
 	}
@@ -62,7 +62,7 @@ func TestChain_GroupBy(t *testing.T) {
 		return
 	}
 
-	dict, ok := v.(map[interface{}][]TestModel)
+	dict, ok := v.(map[string][]TestModel)
 	if !(ok && len(dict) == 2) {
 		t.Error("wrong")
 	}

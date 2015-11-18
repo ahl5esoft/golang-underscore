@@ -5,6 +5,14 @@ import (
 	"reflect"
 )
 
+/*
+	@source		数据源,array or map
+	@iterator	迭代器
+		@in_1	source的元素
+		@in_2	下标或者map的key
+		@out_1	提前终止标志
+		@out_2	error(reflect.Value)
+*/
 func each(source interface{}, iterator func([]reflect.Value) (bool, reflect.Value)) error {
 	if source == nil {
 		return nil

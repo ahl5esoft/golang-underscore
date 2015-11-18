@@ -8,7 +8,7 @@ import (
 func Select(source, predicate interface{}) (interface{}, error) {
 	predicateRV := reflect.ValueOf(predicate)
 	if predicateRV.Kind() != reflect.Func {
-		return EMPTY_ARRAY, errors.New("underscore: Select's predicate is not func")
+		return nil, errors.New("underscore: Select's predicate is not func")
 	}
 
 	var arrRV reflect.Value
@@ -33,7 +33,7 @@ func Select(source, predicate interface{}) (interface{}, error) {
 
 func SelectBy(source interface{}, properties map[string]interface{}) (interface{}, error) {
 	if source == nil || properties == nil || len(properties) == 0 {
-		return EMPTY_ARRAY, nil
+		return nil, nil
 	}
 
 	return Select(source, func (item, _ interface{}) (bool, error) {

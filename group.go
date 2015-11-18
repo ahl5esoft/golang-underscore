@@ -5,8 +5,6 @@ import (
 	"reflect"
 )
 
-var EMPTY_GROUP = make(map[interface{}][]interface{})
-
 func Group(source, keySelector interface{}) (interface{}, error) {
 	ksRV := reflect.ValueOf(keySelector)
 	if ksRV.Kind() != reflect.Func {
@@ -40,9 +38,29 @@ func Group(source, keySelector interface{}) (interface{}, error) {
 }
 
 func GroupBy(source interface{}, property string) (interface{}, error) {
-	return Group(source, func (item, _ interface{}) (interface{}, error) {
-		return getPropertyValue(item, property)
+	var groupRV reflect.Value
+	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+		pRV, err := getPropertyRV(args[0], property)
+		if err == nil {
+			if !groupRV.IsValid() {
+				groupRV = makeGroupRV(pRV.Type(), args[0].Type())
+			}
+
+			valuesRV := groupRV.MapIndex(pRV)
+			if !valuesRV.IsValid() {
+				valuesRV = makeSliceRVWithElem(args[0].Type(), 0)
+			}
+			valuesRV = reflect.Append(valuesRV, args[0])
+			
+			groupRV.SetMapIndex(pRV, valuesRV)
+		}
+		return false, reflect.ValueOf(err)
 	})
+	if err == nil && groupRV.IsValid() {
+		return groupRV.Interface(), nil
+	}
+
+	return nil, err
 }
 
 //Chain
