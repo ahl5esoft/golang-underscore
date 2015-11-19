@@ -40,3 +40,39 @@ func Test_getPropertyValue(t *testing.T) {
 		t.Error("fail")
 	}
 }
+
+func TestToJson(t *testing.T) {
+	b := true
+	v, _ := ToJson(b)
+	if v != "true" {
+		t.Error("bool fail")
+		return
+	}
+
+	str := "a"
+	v, _ = ToJson(str)
+	if v != str {
+		t.Error("string fail")
+		return
+	}
+
+	v, _ = ToJson(1)
+	if v != "1" {
+		t.Error("int fail")
+		return
+	}
+
+	arr := []int{ 1, 2, 3 }
+	v, _ = ToJson(arr)
+	if v != "[1,2,3]" {
+		t.Error("array fail")
+		return
+	}
+
+	obj := TestModel{ 1, "name" }
+	v, _ = ToJson(obj)
+	if v != `{"Id":1,"Name":"name"}` {
+		t.Error("obj fail")
+		return
+	}
+}

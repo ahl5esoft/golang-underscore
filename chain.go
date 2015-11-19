@@ -6,12 +6,14 @@ type Queryer interface {
 	Any(interface{}) Queryer
 	AnyBy(map[string]interface{}) Queryer
 	Clone() Queryer
+	Each(interface{}) Queryer
 	Find(interface{}) Queryer
 	FindBy(map[string]interface{}) Queryer
 	Group(interface{}) Queryer
 	GroupBy(string) Queryer
 	Index(interface{}) Queryer
 	IndexBy(string) Queryer
+	Keys() Queryer
 	Map(interface{}) Queryer
 	Pluck(string) Queryer
 	Reduce(interface{}, interface{}) Queryer
@@ -23,6 +25,7 @@ type Queryer interface {
 	Uniq(interface{}) Queryer
 	UniqBy(string) Queryer
 	Value() (interface{}, error)
+	Values() Queryer
 }
 
 type Query struct {

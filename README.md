@@ -26,16 +26,20 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Any`](#any), [`AnyBy`](#anyBy)
 * [`Chain`](#chain)
 * [`Clone`](#clone)
+* [`Each`](#each)
 * [`Find`](#find), [`FindBy`](#findBy)
 * [`Group`](#group), [`GroupBy`](#groupBy)
 * [`Index`](#index), [`IndexBy`](#indexBy)
+* [`Keys`](#keys)
 * [`Map`](#map)
 * [`Pluck`](#pluck)
 * [`Reduce`](#reduce)
 * [`Select`](#select), [`SelectBy`](#selectBy)
 * [`Size`](#size)
 * [`Sort`](#sort), [`SortBy`](#sortBy)
+* [`ToJson`](#toJson)
 * [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
+* [`Values`](#values)
 
 <a name="all" />
 ### All(source, predicate)
@@ -195,6 +199,33 @@ v, _ := Clone(arr)
 dstArr, _ := v.([]int)
 dstArr[0] = 11
 if arr[0] == dstArr[0] {
+	// wrong
+}
+```
+
+<a name="each" />
+### Each(source, iterator)
+
+__Arguments__
+
+* `source` - array or map
+* `iterator` - func(element, index or key) error
+
+__Return__
+
+* error
+
+__Examples__
+
+```go
+arr := []int{ 1, 2, 3 }
+err := Each(arr, func (n, i int) error {
+	if n != arr[i] {
+		return errors.New("each")
+	}
+	return nil
+})
+if err != nil {
 	// wrong
 }
 ```
@@ -376,6 +407,34 @@ if err != nil {
 
 dict, ok := res.(map[string]TestModel)
 if !(ok && len(dict) == 2) {
+	// wrong
+}
+```
+
+<a name="keys" />
+### Keys(source)
+
+__Arguments__
+
+* `source` - map
+
+__Return__
+
+* interface{} - an array of `source`'s keys
+* error
+
+__Examples__
+
+```go
+dict := map[int]string{	
+	1: "a",
+	2: "b",
+	3: "c",
+	4: "d",
+}
+v, _ := Keys(dict)
+res, ok := v.([]int)
+if !(ok && len(res) == len(dict)) {
 	// wrong
 }
 ```
@@ -641,6 +700,50 @@ if !(res[0].Id < res[1].Id && res[1].Id < res[2].Id) {
 }
 ```
 
+<a name="toJson" />
+### ToJson(value)
+
+__Arguments__
+
+* `value` - interface{}, anyType
+
+__Return__
+
+* string, error
+
+__Examples__
+
+```go
+b := true
+v, _ := ToJson(b)
+if v != "true" {
+	// wrong
+}
+
+str := "a"
+v, _ = ToJson(str)
+if v != str {
+	// wrong
+}
+
+v, _ = ToJson(1)
+if v != "1" {
+	// wrong
+}
+
+arr := []int{ 1, 2, 3 }
+v, _ = ToJson(arr)
+if v != "[1,2,3]" {
+	// wrong
+}
+
+obj := TestModel{ 1, "name" }
+v, _ = ToJson(obj)
+if v != `{"Id":1,"Name":"name"}` {
+	// wrong
+}
+```
+
 <a name="uniq" />
 ### Uniq(source, selector)
 
@@ -689,6 +792,34 @@ arr := []TestModel{
 v, _ := UniqBy(arr, "Name")
 res, ok := v.([]TestModel)
 if !(ok && len(res) == 1) {
+	// wrong
+}
+```
+
+<a name="values" />
+### Values(source)
+
+__Arguments__
+
+* `source` - map
+
+__Return__
+
+* interface{} - an array of `source`'s values
+* error
+
+__Examples__
+
+```go
+dict := map[int]string{	
+	1: "a",
+	2: "b",
+	3: "c",
+	4: "d",
+}
+v, _ := Values(dict)
+res, ok := v.([]string)
+if !(ok && len(res) == len(dict)) {
 	// wrong
 }
 ```
