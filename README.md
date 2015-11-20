@@ -19,6 +19,9 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 
     $ go get github.com/ahl5esoft/golang-underscore
 
+## Update
+	$ go get -u github.com/ahl5esoft/golang-underscore
+
 ## Documentation
 
 ### API
