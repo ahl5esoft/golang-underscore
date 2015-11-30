@@ -41,6 +41,15 @@ func Test_getPropertyValue(t *testing.T) {
 	}
 }
 
+func TestParseJson(t *testing.T) {
+	str := `["a","b"]`
+	var arr []string
+	err := ParseJson(str, &arr)
+	if !(err == nil && len(arr) == 2) {
+		t.Error("wrong")
+	}
+}
+
 func TestToJson(t *testing.T) {
 	b := true
 	v, _ := ToJson(b)

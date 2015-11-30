@@ -35,6 +35,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Index`](#index), [`IndexBy`](#indexBy)
 * [`Keys`](#keys)
 * [`Map`](#map)
+* [`ParseJson`](#parseJson)
 * [`Pluck`](#pluck)
 * [`Reduce`](#reduce)
 * [`Select`](#select), [`SelectBy`](#selectBy)
@@ -476,6 +477,29 @@ for i, s := range arr {
 	if n != res[i] {
 		// wrong
 	}
+}
+```
+
+<a name="parseJson" />
+### ParseJson(str, container)
+
+__Arguments__
+
+* `str` - json string
+* `container` - interface{}
+
+__Return__
+
+* error
+
+__Examples__
+
+```go
+str := `["a","b"]`
+var arr []string
+err := ParseJson(str, &arr)
+if !(err == nil && len(arr) == 2) {
+	// wrong
 }
 ```
 
