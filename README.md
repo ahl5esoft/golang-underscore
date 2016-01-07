@@ -22,6 +22,14 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 ## Update
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
+## Lack
+	* First
+	* FindIndex
+	* FindLastIndex
+	* Last
+	* Range
+	* Parallel(暂未考虑)
+
 ## Documentation
 
 ### API
