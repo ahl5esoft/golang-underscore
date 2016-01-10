@@ -23,7 +23,6 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-	* First
 	* FindIndex
 	* FindLastIndex
 	* Last
@@ -39,6 +38,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Clone`](#clone)
 * [`Each`](#each)
 * [`Find`](#find), [`FindBy`](#findBy)
+* [`First`](#first), [`Take`](#take)
 * [`Group`](#group), [`GroupBy`](#groupBy)
 * [`Index`](#index), [`IndexBy`](#indexBy)
 * [`Keys`](#keys)
@@ -301,6 +301,33 @@ if err != nil || res == nil {
 m, ok := res.(TestModel)
 if !(ok && m.Name == "one") {
 	// wrong
+}
+```
+
+<a name="first" />
+### First(source)
+
+__Arguments__
+
+* `source` - array or map
+
+__Return__
+
+* interface{}, error
+
+__Examples__
+
+```go
+arr := []int{ 1, 2, 3 }
+v, _ := First(arr)
+n, ok := v.(int)
+if !(ok && n == 1) {
+	//wrong
+}
+
+v, _ = First(nil)
+if v != nil {
+	//wrong
 }
 ```
 
@@ -731,6 +758,33 @@ if !(ok && len(res) == len(arr)) {
 }
 
 if !(res[0].Id < res[1].Id && res[1].Id < res[2].Id) {
+	// wrong
+}
+```
+
+<a name="take" />
+### Take(source, count)
+
+__Arguments__
+
+* `source` - array or map
+* `count` - int
+
+__Return__
+
+* interface{}, error
+
+__Examples__
+
+```go
+arr := []int{ 1, 2, 3 }
+v, _ := Take(arr, 1)
+res, ok := v.([]int)
+if !ok {
+	// wrong
+}
+
+if res[0] != 1 {
 	// wrong
 }
 ```

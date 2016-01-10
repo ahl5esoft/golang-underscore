@@ -18,7 +18,7 @@ func Select(source, predicate interface{}) (interface{}, error) {
 		}
 
 		values := predicateRV.Call(args)
-		if !isErrorRVValid(values[1]) && values[0].Bool() {			
+		if !isErrorRVValid(values[1]) && values[0].Bool() {
 			arrRV = reflect.Append(arrRV, args[0])
 		}
 

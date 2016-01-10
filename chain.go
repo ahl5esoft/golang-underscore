@@ -9,6 +9,7 @@ type Queryer interface {
 	Each(interface{}) Queryer
 	Find(interface{}) Queryer
 	FindBy(map[string]interface{}) Queryer
+	First() Queryer
 	Group(interface{}) Queryer
 	GroupBy(string) Queryer
 	Index(interface{}) Queryer
@@ -22,6 +23,7 @@ type Queryer interface {
 	Size() Queryer
 	Sort(interface{}) Queryer
 	SortBy(string) Queryer
+	Take(int) Queryer
 	Uniq(interface{}) Queryer
 	UniqBy(string) Queryer
 	Value() (interface{}, error)
