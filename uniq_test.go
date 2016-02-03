@@ -7,7 +7,7 @@ import (
 func TestUniq(t *testing.T) {
 	v, _ := Uniq([]int{ 1, 2, 1, 2, 1, 3 }, nil)
 	res, ok := v.([]int)
-	if !(ok && res[0] == 1 && res[1] == 2 && res[2] == 3) {
+	if !(ok && len(res) == 3) {
 		t.Error("wrong")
 	}
 }

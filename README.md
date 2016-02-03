@@ -26,7 +26,6 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 	* FindIndex
 	* FindLastIndex
 	* Last
-	* Range
 	* Parallel(暂未考虑)
 
 ## Documentation
@@ -45,6 +44,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Map`](#map)
 * [`ParseJson`](#parseJson)
 * [`Pluck`](#pluck)
+* [`Range`](#range)
 * [`Reduce`](#reduce)
 * [`Select`](#select), [`SelectBy`](#selectBy)
 * [`Size`](#size)
@@ -574,6 +574,49 @@ for i := 0; i < 3; i++ {
 		// wrong
 	}
 }
+```
+
+<a name="range" />
+### Range(start, stop, step)
+
+__Arguments__
+
+* `start` - int
+* `stop` - int
+* `step` - int
+
+__Return__
+
+* []int
+
+__Examples__
+
+```go
+arr := Range(0, 0, 1)
+if len(arr) != 0 {
+	// wrong
+}
+
+arr = Range(0, 10, 0)
+if len(arr) != 0 {
+	// wrong
+}
+
+arr = Range(10, 0, 1)
+if len(arr) != 0 {
+	// wrong
+}
+
+arr = Range(0, 2, 1)
+if !(len(arr) == 2 && arr[0] == 0 && arr[1] == 1) {
+	// wrong
+}
+
+arr = Range(0, 3, 2)
+if !(len(arr) == 2 && arr[0] == 0 && arr[1] == 2) {
+	// wrong
+}
+
 ```
 
 <a name="reduce" />

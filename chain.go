@@ -17,6 +17,7 @@ type Queryer interface {
 	Keys() Queryer
 	Map(interface{}) Queryer
 	Pluck(string) Queryer
+	Range(int, int, int) Queryer
 	Reduce(interface{}, interface{}) Queryer
 	Select(interface{}) Queryer
 	SelectBy(map[string]interface{}) Queryer
