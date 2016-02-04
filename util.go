@@ -140,7 +140,7 @@ func each(source interface{}, iterator func([]reflect.Value) (bool, reflect.Valu
 				}
 
 				if isBreak {
-					return nil
+					break
 				}
 			}
 		case reflect.Map:
@@ -162,7 +162,7 @@ func each(source interface{}, iterator func([]reflect.Value) (bool, reflect.Valu
 				}
 
 				if isBreak {
-					return nil
+					break
 				}
 			}
 	}
