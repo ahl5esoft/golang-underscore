@@ -7,7 +7,6 @@
   \/___/  \/_/\/_/\/__,_ /\/____/ \/_/ \/___/  \/____/\/___/  \/_/ \/____/\/_/ \/___L\ \/___/
                                                                                  /\____/
                                                                                  \_/__/
-																			--by ahl5esoft
 ```
 
 Underscore.go
@@ -41,6 +40,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Group`](#group), [`GroupBy`](#groupBy)
 * [`Index`](#index), [`IndexBy`](#indexBy)
 * [`Keys`](#keys)
+* [`Md5`](#md5)
 * [`Map`](#map)
 * [`ParseJson`](#parseJson)
 * [`Pluck`](#pluck)
@@ -51,6 +51,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Sort`](#sort), [`SortBy`](#sortBy)
 * [`ToJson`](#toJson)
 * [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
+* [`UUID`](#uuid)
 * [`Values`](#values)
 
 <a name="all" />
@@ -476,6 +477,25 @@ res, ok := v.([]int)
 if !(ok && len(res) == len(dict)) {
 	// wrong
 }
+```
+
+<a name="md5" />
+### Md5(plaintext)
+
+__Arguments__
+
+* `plaintext` - string
+
+__Return__
+
+* string - md5 string
+
+__Examples__
+
+```go
+if Md5("123456") != "e10adc3949ba59abbe56e057f20f883e" {
+	// wrong
+}	
 ```
 
 <a name="map" />
@@ -926,6 +946,20 @@ res, ok := v.([]TestModel)
 if !(ok && len(res) == 1) {
 	// wrong
 }
+```
+
+<a name="uuid" />
+### UUID()
+
+__Return__
+
+* string - uuid string
+
+__Examples__
+
+```go
+uuid := UUID()
+//1a40272540e57d1c80e7b06042219d0c
 ```
 
 <a name="values" />
