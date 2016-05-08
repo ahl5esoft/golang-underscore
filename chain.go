@@ -5,10 +5,13 @@ type Queryer interface {
 	AllBy(map[string]interface{}) Queryer
 	Any(interface{}) Queryer
 	AnyBy(map[string]interface{}) Queryer
+	AsParallel() Queryer
 	Clone() Queryer
 	Each(interface{}) Queryer
 	Find(interface{}) Queryer
 	FindBy(map[string]interface{}) Queryer
+	FindIndex(interface{}) Queryer
+	FindIndexBy(map[string]interface{}) Queryer
 	First() Queryer
 	Group(interface{}) Queryer
 	GroupBy(string) Queryer
@@ -16,6 +19,7 @@ type Queryer interface {
 	IndexBy(string) Queryer
 	Keys() Queryer
 	Map(interface{}) Queryer
+	MapBy(string) Queryer
 	Pluck(string) Queryer
 	Range(int, int, int) Queryer
 	Reduce(interface{}, interface{}) Queryer
@@ -27,19 +31,26 @@ type Queryer interface {
 	Take(int) Queryer
 	Uniq(interface{}) Queryer
 	UniqBy(string) Queryer
-	Value() (interface{}, error)
+	Value() interface{}
 	Values() Queryer
 }
 
 type Query struct {
-	err error
+	isParallel bool
 	source interface{}
 }
 
-func (this *Query) Value() (interface{}, error) {
-	return this.source, this.err
+func (this *Query) Value() interface{} {
+	return this.source
+}
+
+func (this *Query) AsParallel() Queryer {
+	this.isParallel = true
+	return this
 }
 
 func Chain(source interface{}) Queryer {
-	return &Query{ nil, source };
+	q := new(Query)
+	q.source = source
+	return q
 }

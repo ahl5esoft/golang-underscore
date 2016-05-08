@@ -26,8 +26,6 @@ func Range(start, stop, step int) []int {
 
 //Chain
 func (this *Query) Range(start, stop, step int) Queryer {
-	if this.err == nil {
-		this.source = Range(start, stop, step)
-	}
+	this.source = Range(start, stop, step)
 	return this
 }

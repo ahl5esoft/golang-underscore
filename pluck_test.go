@@ -10,12 +10,7 @@ func TestPluck(t *testing.T) {
 		TestModel{ 2, "two" },
 		TestModel{ 3, "three" },
 	}
-	v, err := Pluck(arr, "Name")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
+	v := Pluck(arr, "name")
 	res, ok := v.([]string)
 	if !(ok && len(res) == len(arr)) {
 		t.Error("wrong length")
@@ -35,12 +30,7 @@ func TestChain_Pluck(t *testing.T) {
 		TestModel{ 2, "two" },
 		TestModel{ 3, "three" },
 	}
-	v, err := Chain(arr).Pluck("Name").Value()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
+	v := Chain(arr).Pluck("Name").Value()
 	res, ok := v.([]string)
 	if !(ok && len(res) == len(arr)) {
 		t.Error("wrong length")

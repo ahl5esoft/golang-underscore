@@ -6,22 +6,21 @@ import (
 
 func TestAny(t *testing.T) {
 	arr := []int{ 1, 3 }
-	res, _ := Any(arr, func (n, _ int) (bool, error) {
-		return n % 2 == 0, nil	
+	ok := Any(arr, func (n, _ int) bool {
+		return n % 2 == 0
 	})
-	if res {
-		t.Error("wrong result")
+	if ok {
+		t.Error("wrong")
 	}
 }
 
 func TestChain_Any(t *testing.T) {
 	arr := []int{ 1, 3 }
-	v, _ := Chain(arr).Any(func (n, _ int) (bool, error) {
-		return n % 2 == 0, nil	
+	res := Chain(arr).Any(func (n, _ int) bool {
+		return n % 2 == 0
 	}).Value()
-	res, ok := v.(bool)
-	if !ok || res {
-		t.Error("wrong result")
+	if res.(bool) {
+		t.Error("wrong")
 	}
 }
 
@@ -31,16 +30,20 @@ func TestAnyBy(t *testing.T) {
 		TestModel{ 2, "two" },
 		TestModel{ 3, "three" },
 	}
-	res, err := AnyBy(arr, map[string]interface{}{
-		"Id": 2,
-		"Name": "two",
+	ok := AnyBy(arr, map[string]interface{}{
+		"Id": 0,
 	})
-	if err != nil {
-		t.Error(err)
+	if ok {
+		t.Error("wrong")
+		return
 	}
-
-	if !res {
-		t.Error("wrong result")
+	
+	ok = AnyBy(arr, map[string]interface{}{
+		"id": arr[0].Id,
+		"name": arr[0].Name,
+	})
+	if !ok {
+		t.Error("wrong")
 	}
 }
 
@@ -50,16 +53,10 @@ func TestChain_AnyBy(t *testing.T) {
 		TestModel{ 2, "two" },
 		TestModel{ 3, "three" },
 	}
-	v, err := Chain(arr).AnyBy(map[string]interface{}{
-		"Id": 2,
-		"Name": "two",
+	res := Chain(arr).AnyBy(map[string]interface{}{
+		"id": 0,
 	}).Value()
-	if err != nil {
-		t.Error(err)
-	}
-
-	res, ok := v.(bool)
-	if !(ok && res) {
-		t.Error("wrong result")
+	if res.(bool) {
+		t.Error("wrong")
 	}
 }

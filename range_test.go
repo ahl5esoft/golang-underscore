@@ -36,24 +36,14 @@ func TestRange(t *testing.T) {
 }
 
 func TestChain_Range(t *testing.T) {
-	v, err := Chain(nil).Range(0, 10, 0).Value()
-	if err != nil {
-		t.Error("wrong")
-		return
-	}
-
+	v := Chain(nil).Range(0, 10, 0).Value()
 	arr, ok := v.([]int)
 	if !(ok && len(arr) == 0) {
 		t.Error("wrong")
 		return
 	}
 	
-	v, err = Chain(nil).Range(0, 3, 1).Value()
-	if err != nil {
-		t.Error("wrong")
-		return
-	}
-
+	v = Chain(nil).Range(0, 3, 1).Value()
 	arr, ok = v.([]int)
 	if !(ok && len(arr) == 3) {
 		t.Error("wrong")

@@ -1,70 +1,42 @@
 package underscore
 
 import (
-	"errors"
 	"reflect"
 )
 
-func Index(source, indexSelector interface{}) (interface{}, error) {
-	selectorRV := reflect.ValueOf(indexSelector)
-	if selectorRV.Kind() != reflect.Func {
-		return nil, errors.New("underscore: Index's indexSelector is not func")
-	}
-
-	var mapRV reflect.Value
-	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
-		if !mapRV.IsValid() {
-			mapRV = makeMapRV(selectorRV.Type().Out(0), args[0].Type())
+func Index(source, indexSelector interface{}) interface{} {
+	var dictRV reflect.Value
+	each(source, indexSelector, func (indexRV, valueRV, _ reflect.Value) bool {
+		if !dictRV.IsValid() {
+			dictRT := reflect.MapOf(indexRV.Type(), valueRV.Type())
+			dictRV = reflect.MakeMap(dictRT)
 		}
 
-		values := selectorRV.Call(args)
-		if !isErrorRVValid(values[1]) {
-			mapRV.SetMapIndex(values[0], args[0])
-		}
-
-		return false, values[1]
+		dictRV.SetMapIndex(indexRV, valueRV)
+		return false
 	})
-	if err == nil && mapRV.IsValid() {
-		return mapRV.Interface(), nil
+	if dictRV.IsValid() {
+		return dictRV.Interface()
 	}
 
-	return nil, err
+	return nil
 }
 
-func IndexBy(source interface{}, property string) (interface{}, error) {
-	var mapRV reflect.Value
-	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
-		pRV, err := getPropertyRV(args[0], property)
-		if err == nil {
-			if !mapRV.IsValid() {
-				mapRV = makeMapRV(pRV.Type(), args[0].Type())
-			}
-
-			mapRV.SetMapIndex(pRV, args[0])
-		}
-		return false, reflect.ValueOf(err)
+func IndexBy(source interface{}, property string) interface{} {
+	getPropertyRV := PropertyRV(property)
+	return Index(source, func (value, _ interface{}) Facade {
+		rv, _ := getPropertyRV(value)
+		return Facade{ rv }
 	})
-	if err == nil && mapRV.IsValid() {
-		return mapRV.Interface(), nil
-	}
-
-	return nil, err
-	//return Index(source, func (item, _ interface{}) (interface{}, error) {
-		//return getPropertyValue(item, property)
-	//})
 }
 
 //Chain
 func (this *Query) Index(indexSelector interface{}) Queryer {
-	if this.err == nil {
-		this.source, this.err = Index(this.source, indexSelector)
-	}
+	this.source = Index(this.source, indexSelector)
 	return this
 }
 
 func (this *Query) IndexBy(property string) Queryer {
-	if this.err == nil {
-		this.source, this.err = IndexBy(this.source, property)
-	}
+	this.source = IndexBy(this.source, property)
 	return this
 }

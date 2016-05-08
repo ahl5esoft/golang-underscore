@@ -11,7 +11,7 @@ func TestValues(t *testing.T) {
 		3: "c",
 		4: "d",
 	}
-	v, _ := Values(dict)
+	v := Values(dict)
 	res, ok := v.([]string)
 	if !(ok && len(res) == len(dict)) {
 		t.Error("wrong")
@@ -20,8 +20,8 @@ func TestValues(t *testing.T) {
 
 func TestChain_Values(t *testing.T) {
 	arr := []string{ "a", "b" }
-	_, err := Chain(arr).Values().Value()
-	if err == nil {
+	res := Chain(arr).Values().Value()
+	if res != nil {
 		t.Error("wrong")
 	}
 }

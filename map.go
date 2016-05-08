@@ -1,36 +1,42 @@
 package underscore
 
 import (
-	"errors"
 	"reflect"
 )
 
-func Map(source, selector interface{}) (interface{}, error) {
-	selectorRV := reflect.ValueOf(selector)
-	if selectorRV.Kind() != reflect.Func {
-		return nil, errors.New("underscore: Map's selector is not func")
-	}
-
-	arrRV := makeSliceRVWithElem(selectorRV.Type().Out(0), 0)
-	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
-		values := selectorRV.Call(args)
-		if !isErrorRVValid(values[1]) {
-			arrRV = reflect.Append(arrRV, values[0])
+func Map(source, selector interface{}) interface{} {
+	var arrRV reflect.Value
+	each(source, selector, func (resRV, valueRV, _ reflect.Value) bool {
+		if !arrRV.IsValid() {
+			arrRT := reflect.SliceOf(resRV.Type())
+			arrRV = reflect.MakeSlice(arrRT, 0, 0)
 		}
 
-		return false, values[1]
+		arrRV = reflect.Append(arrRV, resRV)
+		return false
 	})
-	if err == nil && arrRV.IsValid() {
-		return arrRV.Interface(), nil
+	if arrRV.IsValid() {
+		return arrRV.Interface()
 	}
 
-	return nil, err
+	return nil
+}
+
+func MapBy(source interface{}, property string) interface{} {
+	getPropertyRV := PropertyRV(property)
+	return Map(source, func (value, _ interface{}) Facade {
+		rv, _ := getPropertyRV(value)
+		return Facade{ rv }
+	})
 }
 
 //chain
 func (this *Query) Map(selector interface{}) Queryer {
-	if this.err == nil {
-		this.source, this.err = Map(this.source, selector)
-	}
+	this.source = Map(this.source, selector)
+	return this
+}
+
+func (this *Query) MapBy(property string) Queryer {
+	this.source = MapBy(this.source, property)
 	return this
 }

@@ -6,20 +6,23 @@ import (
 
 func TestClone(t *testing.T) {
 	arr := []int{ 1, 2, 3 }
-	v, _ := Clone(arr)
-	dstArr, _ := v.([]int)
-	dstArr[0] = 11
-	if arr[0] == dstArr[0] {
+	duplicate := Clone(arr)
+	ok := All(duplicate, func (n, i int) bool {
+		return arr[i] == n
+	})
+	if !ok {
 		t.Error("wrong")
 	}
 }
 
 func TestChain_Clone(t *testing.T) {
 	dict := map[string]int{ "a": 1, "b": 2 }
-	v, _ := Chain(dict).Clone().Value()
-	dstMap, _ := v.(map[string]int)
-	dstMap["a"] = 11
-	if dict["a"] == dstMap["a"] {
+	res := Chain(dict).Clone().Value()
+	duplicate := res.(map[string]int)
+	ok := All(duplicate, func (n int, key string) bool {
+		return dict[key] == n
+	})
+	if !ok {
 		t.Error("wrong")
 	}
 }

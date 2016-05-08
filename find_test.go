@@ -6,31 +6,21 @@ import (
 
 func TestFind(t *testing.T) {
 	arr := []int{ 1, 2, 3, 4 }
-	res, _ := Find(arr, func (n, _ int) (bool, error) {
-		return n % 2 == 0, nil
+	n := Find(arr, func (n, _ int) bool {
+		return n % 2 == 0
 	})
-	if res == nil {
+	if n != 2 {
 		t.Error("wrong")
-	} else {
-		v, ok := res.(int)
-		if !(ok && v == 2) {
-			t.Error("wrong")
-		}
 	}
 }
 
 func TestChain_Find(t *testing.T) {
 	arr := []int{ 1, 2, 3, 4 }
-	res, _ := Chain(arr).Find(func (n, _ int) (bool, error) {
-		return n % 2 == 0, nil
+	res := Chain(arr).Find(func (n, _ int) bool {
+		return n % 2 == 0
 	}).Value()
-	if res == nil {
+	if res.(int) != 2 {
 		t.Error("wrong")
-	} else {
-		v, ok := res.(int)
-		if !(ok && v == 2) {
-			t.Error("wrong")
-		}
 	}
 }
 
@@ -40,15 +30,16 @@ func TestFindBy(t *testing.T) {
 		TestModel{ 2, "two" },
 		TestModel{ 3, "three" },
 	}
-	res, err := FindBy(arr, map[string]interface{}{
-		"Id": 1,
+	res := FindBy(arr, map[string]interface{}{
+		"id": 1,
 	})
-	if err != nil || res == nil {
+	if res == nil {
 		t.Error("wrong")
+		return
 	}
 
-	m, ok := res.(TestModel)
-	if !(ok && m.Name == "one") {
+	matcher := res.(TestModel)
+	if !(matcher.Id == arr[0].Id && matcher.Name == arr[0].Name) {
 		t.Error("wrong")
 	}
 }
@@ -59,15 +50,16 @@ func TestChain_FindBy(t *testing.T) {
 		TestModel{ 2, "two" },
 		TestModel{ 3, "three" },
 	}
-	res, err := Chain(arr).FindBy(map[string]interface{}{
-		"Id": 1,
+	res := Chain(arr).FindBy(map[string]interface{}{
+		"id": 1,
 	}).Value()
-	if err != nil || res == nil {
+	if res == nil {
 		t.Error("wrong")
+		return
 	}
 
-	m, ok := res.(TestModel)
-	if !(ok && m.Name == "one") {
+	matcher := res.(TestModel)
+	if !(matcher.Id == arr[0].Id && matcher.Name == arr[0].Name) {
 		t.Error("wrong")
 	}
 }

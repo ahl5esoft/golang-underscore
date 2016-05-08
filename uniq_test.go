@@ -5,7 +5,7 @@ import (
 )
 
 func TestUniq(t *testing.T) {
-	v, _ := Uniq([]int{ 1, 2, 1, 2, 1, 3 }, nil)
+	v := Uniq([]int{ 1, 2, 1, 2, 1, 3 }, nil)
 	res, ok := v.([]int)
 	if !(ok && len(res) == 3) {
 		t.Error("wrong")
@@ -13,7 +13,7 @@ func TestUniq(t *testing.T) {
 }
 
 func TestChain_Uniq(t *testing.T) {
-	v, _ := Chain([]int{ 1, 2, 1, 4, 1, 3 }).Uniq(func (n, _ int) (int, error) {
+	v := Chain([]int{ 1, 2, 1, 4, 1, 3 }).Uniq(func (n, _ int) (int, error) {
 		return n % 2, nil
 	}).Value()
 	res, ok := v.([]int)
@@ -28,7 +28,7 @@ func TestUniqBy(t *testing.T) {
 		TestModel{ 2, "one" },
 		TestModel{ 3, "one" },
 	}
-	v, _ := UniqBy(arr, "Name")
+	v := UniqBy(arr, "Name")
 	res, ok := v.([]TestModel)
 	if !(ok && len(res) == 1) {
 		t.Error("wrong")
@@ -41,7 +41,7 @@ func TestChain_UniqBy(t *testing.T) {
 		TestModel{ 2, "one" },
 		TestModel{ 3, "one" },
 	}
-	v, _ := Chain(arr).UniqBy("Name").Value()
+	v := Chain(arr).UniqBy("Name").Value()
 	res, ok := v.([]TestModel)
 	if !(ok && len(res) == 1) {
 		t.Error("wrong")

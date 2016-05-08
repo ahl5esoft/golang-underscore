@@ -1,7 +1,6 @@
 package underscore
 
 import (
-	"errors"
 	"reflect"
 	"sort"
 )
@@ -55,82 +54,44 @@ func (this sortQuery) Less(i, j int) bool {
 	}
 }
 
-func Sort(source, selector interface{}) (interface{}, error) {
-	selectorRV := reflect.ValueOf(selector)
-	if selectorRV.Kind() != reflect.Func {
-		return nil, errors.New("underscore: Sort's selector is not func")
-	}
-
+func Sort(source, selector interface{}) interface{} {
 	qs := sortQuery{}
-	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
+	each(source, selector, func (sortRV, valueRV, _ reflect.Value) bool {
 		if qs.Len() == 0 {
-			qs.valuesRV = makeSliceRVWithElem(
-				args[0].Type(),
-				0,
-			)
-			qs.keysRV = makeSliceRVWithElem(
-				selectorRV.Type().Out(0),
-				0,
-			)
+			keysRT := reflect.SliceOf(sortRV.Type())
+			qs.keysRV = reflect.MakeSlice(keysRT, 0, 0)
+
+			valuesRT := reflect.SliceOf(valueRV.Type())
+			qs.valuesRV = reflect.MakeSlice(valuesRT, 0, 0)
 		}
 
-		values := selectorRV.Call(args)
-		if !isErrorRVValid(values[1]) {
-			qs.valuesRV = reflect.Append(qs.valuesRV, args[0])
-			qs.keysRV = reflect.Append(qs.keysRV, values[0])
-		}
-		
-		return false, values[1]
+		qs.keysRV = reflect.Append(qs.keysRV, sortRV)
+		qs.valuesRV = reflect.Append(qs.valuesRV, valueRV)
+		return false
 	})
-	if err == nil && qs.Len() > 0 {
+	if qs.Len() > 0 {
 		sort.Sort(qs)
-		return qs.valuesRV.Interface(), nil
+		return qs.valuesRV.Interface()
 	}
 
-	return nil, err
+	return nil
 }
 
-func SortBy(source interface{}, property string) (interface{}, error) {
-	qs := sortQuery{}
-	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
-		pRV, err := getPropertyRV(args[0], property)
-		if err == nil {
-			if qs.Len() == 0 {
-				qs.valuesRV = makeSliceRVWithElem(
-					args[0].Type(),
-					0,
-				)
-				qs.keysRV = makeSliceRVWithElem(
-					pRV.Type(),
-					0,
-				)
-			}
-
-			qs.valuesRV = reflect.Append(qs.valuesRV, args[0])
-			qs.keysRV = reflect.Append(qs.keysRV, pRV)		
-		}
-
-		return false, reflect.ValueOf(err)
+func SortBy(source interface{}, property string) interface{} {
+	getPropertyRV := PropertyRV(property)
+	return Sort(source, func (value, _ interface{}) Facade {
+		rv, _ := getPropertyRV(value)
+		return Facade{ rv }
 	})
-	if err == nil && qs.Len() > 0 {
-		sort.Sort(qs)
-		return qs.valuesRV.Interface(), nil
-	}
-
-	return nil, err
 }
 
 //chain
 func (this *Query) Sort(selector interface{}) Queryer {
-	if this.err == nil {
-		this.source, this.err = Sort(this.source, selector)
-	}
+	this.source = Sort(this.source, selector)
 	return this
 }
 
 func (this *Query) SortBy(property string) Queryer {
-	if this.err == nil {
-		this.source, this.err = SortBy(this.source, property)
-	}
+	this.source = SortBy(this.source, property)
 	return this
 }

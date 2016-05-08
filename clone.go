@@ -4,13 +4,12 @@ import (
 	"reflect"
 )
 
-func Clone(source interface{}) (interface{}, error) {
+func Clone(source interface{}) interface{} {
 	rv := reflect.ValueOf(source)
 	switch rv.Kind() {
 		case reflect.Array:
 		case reflect.Slice:
 			dstRV := reflect.MakeSlice(rv.Type(), rv.Len(), rv.Len())
-
 			if rv.Len() != 0 {
 				for i := 0; i < rv.Len(); i++ {
 					dstRV.Index(i).Set(
@@ -19,7 +18,7 @@ func Clone(source interface{}) (interface{}, error) {
 				}
 			}
 
-			return dstRV.Interface(), nil
+			return dstRV.Interface()
 		case reflect.Map:
 			dstRV := reflect.MakeMap(rv.Type())
 
@@ -32,17 +31,15 @@ func Clone(source interface{}) (interface{}, error) {
 					)
 				}
 			}
-			return dstRV.Interface(), nil
+			return dstRV.Interface()
 		case reflect.Ptr:
 			return Clone(reflect.Indirect(rv).Interface())
 	}
-	return source, nil
+	return source
 }
 
 //Chain
 func (this *Query) Clone() Queryer {
-	if this.err == nil {
-		this.source, this.err = Clone(this.source)
-	}
+	this.source = Clone(this.source)
 	return this
 }

@@ -5,15 +5,11 @@ import (
 )
 
 func TestReduce(t *testing.T) {
-	v, err := Reduce([]int{ 1, 2 }, func (memo []int, n, _ int) ([]int, error) {
+	v := Reduce([]int{ 1, 2 }, func (memo []int, n, _ int) []int {
 		memo = append(memo, n)
 		memo = append(memo, n + 10)
-		return memo, nil
+		return memo
 	}, make([]int, 0))
-	if err != nil {
-		t.Error(err)
-	}
-
 	res, ok := v.([]int)
 	if !(ok && len(res) == 4) {
 		t.Error("wrong length")
@@ -25,15 +21,11 @@ func TestReduce(t *testing.T) {
 }
 
 func TestChain_Reduce(t *testing.T) {
-	v, err := Chain([]int{ 1, 2 }).Reduce(func (memo []int, n, _ int) ([]int, error) {
+	v := Chain([]int{ 1, 2 }).Reduce(func (memo []int, n, _ int) []int {
 		memo = append(memo, n)
 		memo = append(memo, n + 10)
-		return memo, nil
+		return memo
 	}, make([]int, 0)).Value()	
-	if err != nil {
-		t.Error(err)
-	}
-
 	res, ok := v.([]int)
 	if !(ok && len(res) == 4) {
 		t.Error("wrong length")

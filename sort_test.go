@@ -6,8 +6,8 @@ import (
 
 func TestSort(t *testing.T) {
 	arr := []int{ 1, 2, 3, 5 }
-	v, _ := Sort([]int{ 5, 3, 2, 1 }, func (n, _ int) (int, error) {
-		return n, nil
+	v := Sort([]int{ 5, 3, 2, 1 }, func (n, _ int) int {
+		return n
 	})
 	res, ok := v.([]int)
 	if !(ok && len(res) == len(arr)) {
@@ -25,8 +25,8 @@ func TestSort(t *testing.T) {
 
 func TestChain_Sort(t *testing.T) {
 	arr := []int{ 1, 2, 3, 5 }
-	v, _ := Chain([]int{ 5, 3, 2, 1 }).Sort(func (n, _ int) (int, error) {
-		return n, nil
+	v := Chain([]int{ 5, 3, 2, 1 }).Sort(func (n, _ int) int {
+		return n
 	}).Value()
 
 	res, ok := v.([]int)
@@ -48,7 +48,7 @@ func TestSortBy(t *testing.T) {
 		TestModel{ 1, "one" },
 		TestModel{ 2, "two" },
 	}
-	v, _ := SortBy(arr, "Id")
+	v := SortBy(arr, "id")
 	res, ok := v.([]TestModel)
 	if !(ok && len(res) == len(arr)) {
 		t.Error("wrong length")
@@ -66,7 +66,7 @@ func TestChain_SortBy(t *testing.T) {
 		TestModel{ 1, "one" },
 		TestModel{ 2, "two" },
 	}
-	v, _ := Chain(arr).SortBy("Id").Value()
+	v := Chain(arr).SortBy("id").Value()
 	res, ok := v.([]TestModel)
 	if !(ok && len(res) == len(arr)) {
 		t.Error("wrong length")

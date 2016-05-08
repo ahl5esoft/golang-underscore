@@ -5,11 +5,11 @@ import (
 )
 
 func TestGroup(t *testing.T) {
-	v, _ := Group([]int{ 1, 2, 3, 4, 5 }, func (n, _ int) (string, error) {
+	v := Group([]int{ 1, 2, 3, 4, 5 }, func (n, _ int) string {
 		if n % 2 == 0 {
-			return "even", nil
+			return "even"
 		}
-		return "odd", nil
+		return "odd"
 	})
 	dict, ok := v.(map[string][]int)
 	if !(ok && len(dict["even"]) == 2) {
@@ -18,11 +18,11 @@ func TestGroup(t *testing.T) {
 }
 
 func TestChain_Group(t *testing.T) {
-	v, _ := Chain([]int{ 1, 2, 3, 4, 5 }).Group(func (n, _ int) (string, error) {
+	v := Chain([]int{ 1, 2, 3, 4, 5 }).Group(func (n, _ int) string {
 		if n % 2 == 0 {
-			return "even", nil
+			return "even"
 		}
-		return "odd", nil
+		return "odd"
 	}).Value()
 	dict, ok := v.(map[string][]int)
 	if !(ok && len(dict["even"]) == 2) {
@@ -37,12 +37,7 @@ func TestGroupBy(t *testing.T) {
 		TestModel{ 3, "b" },
 		TestModel{ 4, "b" },
 	}
-	v, err := GroupBy(arr, "Name")
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
+	v := GroupBy(arr, "name")
 	dict, ok := v.(map[string][]TestModel)
 	if !(ok && len(dict) == 2) {
 		t.Error("wrong")
@@ -56,12 +51,7 @@ func TestChain_GroupBy(t *testing.T) {
 		TestModel{ 3, "b" },
 		TestModel{ 4, "b" },
 	}
-	v, err := Chain(arr).GroupBy("Name").Value()
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
+	v := Chain(arr).GroupBy("Name").Value()
 	dict, ok := v.(map[string][]TestModel)
 	if !(ok && len(dict) == 2) {
 		t.Error("wrong")

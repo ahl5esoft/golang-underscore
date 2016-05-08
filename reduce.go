@@ -1,40 +1,39 @@
 package underscore
 
 import (
-	"errors"
 	"reflect"
 )
 
-func Reduce(source, iterator, memo interface{}) (interface{}, error) {
+func Reduce(source, iterator, memo interface{}) interface{} {
+	length, getKeyValue := parseSource(source)
+	if length == 0 {
+		return memo
+	}
+	
+	origin := Clone(memo)
 	iteratorRV := reflect.ValueOf(iterator)
-	if iteratorRV.Kind() != reflect.Func {
-		return nil, errors.New("underscore: Reduce's iterator is not func")
-	}
-
 	memoRV := reflect.ValueOf(memo)
-	err := each(source, func (args []reflect.Value) (bool, reflect.Value) {
-		values := iteratorRV.Call(
-			append([]reflect.Value{
+	for i := 0; i < length; i++ {
+		valueRV, keyRV := getKeyValue(i)
+		returnRVs := iteratorRV.Call(
+			[]reflect.Value{
 				memoRV,
-			}, args...),
+				valueRV,
+				keyRV,
+			},
 		)
-		if !isErrorRVValid(values[1]) {
-			memoRV = values[0]
-		}
-
-		return false, values[1]
-	})
-	if err == nil  {
-		return memoRV.Interface(), nil
+		memoRV = returnRVs[0]
 	}
 
-	return nil, err
+	if memoRV.IsValid() {
+		return memoRV.Interface()
+	}
+
+	return origin
 }
 
 //Chain
 func (this *Query) Reduce(iterator, memo interface{}) Queryer {
-	if this.err == nil {
-		this.source, this.err = Reduce(this.source, iterator, memo)
-	}
+	this.source = Reduce(this.source, iterator, memo)
 	return this
 }
