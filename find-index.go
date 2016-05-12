@@ -7,8 +7,7 @@ import (
 func FindIndex(source, predicate interface{}) int {
 	index := -1
 
-	sourceRV := reflect.ValueOf(source)
-	if !(sourceRV.Kind() == reflect.Array || sourceRV.Kind() == reflect.Slice) {
+	if !IsArray(source) {
 		return index
 	}
 

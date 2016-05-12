@@ -1,17 +1,17 @@
 package underscore
 
-func First(source interface{}) interface{} {
+func Last(source interface{}) interface{} {
 	length, getKeyValue := parseSource(source)
 	if length == 0 {
 		return nil
 	}
 
-	valueRV, _ := getKeyValue(0)
+	valueRV, _ := getKeyValue(length - 1)
 	return valueRV.Interface() 
 }
 
 //# chain
-func (this *Query) First() Queryer {
-	this.source = First(this.source)
+func (this *Query) Last() Queryer {
+	this.source = Last(this.source)
 	return this
 }

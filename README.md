@@ -23,7 +23,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 
 ## Lack
 	* FindLastIndex
-	* Last
+	* Sample
 	* more...
 
 ## Documentation
@@ -39,6 +39,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`FindIndex`](#findIndex), [`FindIndexBy`](#findIndexBy)
 * [`First`](#first)
 * [`Group`](#group), [`GroupBy`](#groupBy)
+* [`IsArray`](#isArray)
 * [`IsMatch`](#isMatch)
 * [`Keys`](#keys)
 * [`Map`](#map), [`MapBy`](#mapBy)
@@ -48,6 +49,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Property`](#property), [`PropertyRV`](#propertyRV)
 * [`Range`](#range)
 * [`Reduce`](#reduce)
+* [`Reject`](#reject), [`RejectBy`](#rejectBy)
 * [`Select`](#select), [`SelectBy`](#selectBy)
 * [`Size`](#size)
 * [`Sort`](#sort), [`SortBy`](#sortBy)
@@ -432,6 +434,29 @@ if !(ok && len(dict) == 2) {
 }
 ```
 
+<a name="isArray" />
+### IsArray(element)
+
+__Arguments__
+
+* `element` - object
+
+__Return__
+
+* bool
+
+__Examples__
+
+```go
+if !IsArray([]int{}) {
+	// wrong
+}
+
+if IsArray(map[string]int{}) {
+	// wrong
+}
+```
+
 <a name="isMatch" />
 ### IsMatch(element, properties)
 
@@ -764,6 +789,64 @@ if !(ok && len(res) == 4) {
 }
 
 if !(res[0] == 1 && res[1] == 11 && res[2] == 2 && res[3] == 12) {
+	// wrong
+}
+```
+
+<a name="reject" />
+### Reject(source, predicate)
+
+__Arguments__
+
+* `source` - array or map
+* `predicate` - func(element or value, index or key) bool
+
+__Return__
+
+* interface{} - an array of all the values that without pass a truth test `predicate`
+
+__Examples__
+
+```go
+arr := []int{ 1, 2, 3, 4 }
+v := Reject(arr, func (n, i int) bool {
+	return n % 2 == 0
+})
+res, ok := v.([]int)
+if !(ok && len(res) == 2) {
+	// wrong
+}
+
+if !(res[0] == 1 && res[1] == 3) {
+	// wrong
+}
+```
+
+<a name="rejectBy" />
+### RejectBy(source, properties)
+
+__Arguments__
+
+* `source` - array or map
+* `properties` - map[string]interface{}
+
+__Return__
+
+* interface{} - an array of all the values that without pass a truth test `properties`
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{ 1, "one" },
+	TestModel{ 2, "two" },
+	TestModel{ 3, "three" },
+}
+v := RejectBy(arr, map[string]interface{}{
+	"Id": 1,
+})
+res, ok := v.([]TestModel)
+if !(ok && len(res) == 2) {
 	// wrong
 }
 ```

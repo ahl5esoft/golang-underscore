@@ -18,6 +18,7 @@ type Queryer interface {
 	Index(interface{}) Queryer
 	IndexBy(string) Queryer
 	Keys() Queryer
+	Last() Queryer
 	Map(interface{}) Queryer
 	MapBy(string) Queryer
 	Pluck(string) Queryer
