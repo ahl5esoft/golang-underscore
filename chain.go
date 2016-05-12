@@ -23,6 +23,8 @@ type Queryer interface {
 	Pluck(string) Queryer
 	Range(int, int, int) Queryer
 	Reduce(interface{}, interface{}) Queryer
+	Reject(interface{}) Queryer
+	RejectBy(map[string]interface{}) Queryer
 	Select(interface{}) Queryer
 	SelectBy(map[string]interface{}) Queryer
 	Size() Queryer
