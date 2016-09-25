@@ -34,14 +34,14 @@ func TestToJson(t *testing.T) {
 		return
 	}
 
-	arr := []int{ 1, 2, 3 }
+	arr := []int{1, 2, 3}
 	v, _ = ToJson(arr)
 	if v != "[1,2,3]" {
 		t.Error("array fail")
 		return
 	}
 
-	obj := TestModel{ 1, "name" }
+	obj := TestModel{1, "name"}
 	v, _ = ToJson(obj)
 	if v != `{"Id":1,"Name":"name"}` {
 		t.Error("obj fail")
@@ -52,7 +52,7 @@ func TestToJson(t *testing.T) {
 func TestMd5(t *testing.T) {
 	if Md5("123456") != "e10adc3949ba59abbe56e057f20f883e" {
 		t.Error("wrong")
-	}	
+	}
 }
 
 func TestUUID(t *testing.T) {

@@ -5,7 +5,7 @@ import (
 )
 
 func TestFirst(t *testing.T) {
-	arr := []int{ 1, 2, 3 }
+	arr := []int{1, 2, 3}
 	v := First(arr)
 	n, ok := v.(int)
 	if !(ok && n == 1) {
@@ -20,7 +20,7 @@ func TestFirst(t *testing.T) {
 }
 
 func TestChain_Test(t *testing.T) {
-	arr := []int{ 1, 2, 3 }
+	arr := []int{1, 2, 3}
 	v := Chain(arr).First().Value()
 	n, ok := v.(int)
 	if !(ok && n == 1) {

@@ -5,7 +5,7 @@ import (
 )
 
 func TestIsMatch(t *testing.T) {
-	m := TestModel{ 1, "one" }
+	m := TestModel{1, "one"}
 	ok := IsMatch(nil, nil)
 	if ok {
 		t.Error("wrong")
@@ -19,7 +19,7 @@ func TestIsMatch(t *testing.T) {
 	}
 
 	ok = IsMatch(m, map[string]interface{}{
-		"id": m.Id,
+		"id":   m.Id,
 		"name": "a",
 	})
 	if ok {
@@ -28,7 +28,7 @@ func TestIsMatch(t *testing.T) {
 	}
 
 	ok = IsMatch(m, map[string]interface{}{
-		"id": m.Id,
+		"id":   m.Id,
 		"name": m.Name,
 	})
 	if !ok {

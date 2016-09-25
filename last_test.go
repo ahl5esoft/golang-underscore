@@ -5,7 +5,7 @@ import (
 )
 
 func TestLast(t *testing.T) {
-	arr := []int{ 1, 2, 3 }
+	arr := []int{1, 2, 3}
 	n, ok := Last(arr).(int)
 	if !(ok && n == 3) {
 		t.Error("wrong")
@@ -23,7 +23,7 @@ func TestLast(t *testing.T) {
 }
 
 func TestChain_Last(t *testing.T) {
-	arr := []int{ 1, 2, 3 }
+	arr := []int{1, 2, 3}
 	n, ok := Chain(arr).Last().Value().(int)
 	if !(ok && n == 3) {
 		t.Error("wrong")

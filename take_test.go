@@ -5,7 +5,7 @@ import (
 )
 
 func TestTake(t *testing.T) {
-	arr := []int{ 1, 2, 3 }
+	arr := []int{1, 2, 3}
 	v := Take(arr, 1)
 	res, ok := v.([]int)
 	if !ok {
@@ -19,7 +19,7 @@ func TestTake(t *testing.T) {
 }
 
 func TestChain_Take(t *testing.T) {
-	arr := []int{ 1, 2, 3 }
+	arr := []int{1, 2, 3}
 	v := Chain(arr).Take(1).Value()
 	res, ok := v.([]int)
 	if !ok {

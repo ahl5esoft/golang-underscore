@@ -5,9 +5,9 @@ import (
 )
 
 func TestReject(t *testing.T) {
-	arr := []int{ 1, 2, 3, 4 }
-	v := Reject(arr, func (n, i int) bool {
-		return n % 2 == 0
+	arr := []int{1, 2, 3, 4}
+	v := Reject(arr, func(n, i int) bool {
+		return n%2 == 0
 	})
 	res, ok := v.([]int)
 	if !(ok && len(res) == 2) {
@@ -21,9 +21,9 @@ func TestReject(t *testing.T) {
 }
 
 func TestChain_Reject(t *testing.T) {
-	arr := []int{ 1, 2, 3, 4 }
-	v := Chain(arr).Reject(func (n, i int) bool {
-		return n % 2 == 0
+	arr := []int{1, 2, 3, 4}
+	v := Chain(arr).Reject(func(n, i int) bool {
+		return n%2 == 0
 	}).Value()
 	res, ok := v.([]int)
 	if !(ok && len(res) == 2) {
@@ -38,9 +38,9 @@ func TestChain_Reject(t *testing.T) {
 
 func TestRejectBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ 1, "one" },
-		TestModel{ 2, "two" },
-		TestModel{ 3, "three" },
+		TestModel{1, "one"},
+		TestModel{2, "two"},
+		TestModel{3, "three"},
 	}
 	v := RejectBy(arr, map[string]interface{}{
 		"Id": 1,
@@ -53,9 +53,9 @@ func TestRejectBy(t *testing.T) {
 
 func TestChain_RejectBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ 1, "one" },
-		TestModel{ 2, "two" },
-		TestModel{ 3, "three" },
+		TestModel{1, "one"},
+		TestModel{2, "two"},
+		TestModel{3, "three"},
 	}
 	v := Chain(arr).RejectBy(map[string]interface{}{
 		"Id": 1,
