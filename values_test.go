@@ -5,7 +5,7 @@ import (
 )
 
 func TestValues(t *testing.T) {
-	dict := map[int]string{	
+	dict := map[int]string{
 		1: "a",
 		2: "b",
 		3: "c",
@@ -19,7 +19,7 @@ func TestValues(t *testing.T) {
 }
 
 func TestChain_Values(t *testing.T) {
-	arr := []string{ "a", "b" }
+	arr := []string{"a", "b"}
 	res := Chain(arr).Values().Value()
 	if res != nil {
 		t.Error("wrong")

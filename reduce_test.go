@@ -5,9 +5,9 @@ import (
 )
 
 func TestReduce(t *testing.T) {
-	v := Reduce([]int{ 1, 2 }, func (memo []int, n, _ int) []int {
+	v := Reduce([]int{1, 2}, func(memo []int, n, _ int) []int {
 		memo = append(memo, n)
-		memo = append(memo, n + 10)
+		memo = append(memo, n+10)
 		return memo
 	}, make([]int, 0))
 	res, ok := v.([]int)
@@ -21,11 +21,11 @@ func TestReduce(t *testing.T) {
 }
 
 func TestChain_Reduce(t *testing.T) {
-	v := Chain([]int{ 1, 2 }).Reduce(func (memo []int, n, _ int) []int {
+	v := Chain([]int{1, 2}).Reduce(func(memo []int, n, _ int) []int {
 		memo = append(memo, n)
-		memo = append(memo, n + 10)
+		memo = append(memo, n+10)
 		return memo
-	}, make([]int, 0)).Value()	
+	}, make([]int, 0)).Value()
 	res, ok := v.([]int)
 	if !(ok && len(res) == 4) {
 		t.Error("wrong length")

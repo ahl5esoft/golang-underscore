@@ -1,6 +1,6 @@
 package underscore
 
 type TestModel struct {
-	Id int
+	Id   int
 	Name string
 }

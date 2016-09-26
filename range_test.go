@@ -42,7 +42,7 @@ func TestChain_Range(t *testing.T) {
 		t.Error("wrong")
 		return
 	}
-	
+
 	v = Chain(nil).Range(0, 3, 1).Value()
 	arr, ok = v.([]int)
 	if !(ok && len(arr) == 3) {

@@ -16,7 +16,7 @@ func TestSize(t *testing.T) {
 }
 
 func TestChain_Size(t *testing.T) {
-	arr := []string{ "a", "b", "c" }
+	arr := []string{"a", "b", "c"}
 	v := Chain(arr).Size().Value()
 	res, ok := v.(int)
 	if !(ok && res == len(arr)) {

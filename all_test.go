@@ -5,9 +5,9 @@ import (
 )
 
 func TestAll(t *testing.T) {
-	arr := []int{ 2, 4 }
-	ok := All(arr, func (n, _ int) bool {
-		return n % 2 == 0
+	arr := []int{2, 4}
+	ok := All(arr, func(n, _ int) bool {
+		return n%2 == 0
 	})
 	if !ok {
 		t.Error("wrong")
@@ -15,9 +15,9 @@ func TestAll(t *testing.T) {
 }
 
 func TestChain_All(t *testing.T) {
-	arr := []int{ 2, 4 }
-	res := Chain(arr).All(func (n, _ int) bool {
-		return n % 2 == 0
+	arr := []int{2, 4}
+	res := Chain(arr).All(func(n, _ int) bool {
+		return n%2 == 0
 	}).Value()
 	if !res.(bool) {
 		t.Error("wrong")
@@ -26,9 +26,9 @@ func TestChain_All(t *testing.T) {
 
 func TestAllBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ 1, "one" },
-		TestModel{ 1, "two" },
-		TestModel{ 1, "three" },
+		TestModel{1, "one"},
+		TestModel{1, "two"},
+		TestModel{1, "three"},
 	}
 	ok := AllBy(arr, nil)
 	if ok {
@@ -54,9 +54,9 @@ func TestAllBy(t *testing.T) {
 
 func TestChain_AllBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ 1, "one" },
-		TestModel{ 2, "two" },
-		TestModel{ 3, "three" },
+		TestModel{1, "one"},
+		TestModel{2, "two"},
+		TestModel{3, "three"},
 	}
 	res := Chain(arr).AllBy(map[string]interface{}{
 		"Name": "a",

@@ -5,9 +5,9 @@ import (
 )
 
 func TestSelect(t *testing.T) {
-	arr := []int{ 1, 2, 3, 4 }
-	v := Select(arr, func (n, i int) bool {
-		return n % 2 == 0
+	arr := []int{1, 2, 3, 4}
+	v := Select(arr, func(n, i int) bool {
+		return n%2 == 0
 	})
 	res, ok := v.([]int)
 	if !(ok && len(res) == 2) {
@@ -21,9 +21,9 @@ func TestSelect(t *testing.T) {
 }
 
 func TestChain_Select(t *testing.T) {
-	arr := []int{ 1, 2, 3, 4 }
-	v := Chain(arr).Select(func (n, i int) bool {
-		return n % 2 == 0
+	arr := []int{1, 2, 3, 4}
+	v := Chain(arr).Select(func(n, i int) bool {
+		return n%2 == 0
 	}).Value()
 	res, ok := v.([]int)
 	if !(ok && len(res) == 2) {
@@ -38,9 +38,9 @@ func TestChain_Select(t *testing.T) {
 
 func TestSelectBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ 1, "one" },
-		TestModel{ 2, "two" },
-		TestModel{ 3, "three" },
+		TestModel{1, "one"},
+		TestModel{2, "two"},
+		TestModel{3, "three"},
 	}
 	v := SelectBy(arr, map[string]interface{}{
 		"Id": 1,
@@ -53,9 +53,9 @@ func TestSelectBy(t *testing.T) {
 
 func TestChain_SelectBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ 1, "one" },
-		TestModel{ 2, "two" },
-		TestModel{ 3, "three" },
+		TestModel{1, "one"},
+		TestModel{2, "two"},
+		TestModel{3, "three"},
 	}
 	v := Chain(arr).SelectBy(map[string]interface{}{
 		"Id": 1,

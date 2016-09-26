@@ -5,7 +5,7 @@ import (
 )
 
 func TestIndex(t *testing.T) {
-	v := Index([]string{ "a", "b" }, func (item string, _ int) string {
+	v := Index([]string{"a", "b"}, func(item string, _ int) string {
 		return item
 	})
 	res, ok := v.(map[string]string)
@@ -15,7 +15,7 @@ func TestIndex(t *testing.T) {
 }
 
 func TestChain_Index(t *testing.T) {
-	v := Chain([]string{ "a", "b" }).Index(func (item string, _ int) string {
+	v := Chain([]string{"a", "b"}).Index(func(item string, _ int) string {
 		return item
 	}).Value()
 	res, ok := v.(map[string]string)
@@ -26,10 +26,10 @@ func TestChain_Index(t *testing.T) {
 
 func TestIndexBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ 1, "a" },
-		TestModel{ 2, "a" },
-		TestModel{ 3, "b" },
-		TestModel{ 4, "b" },
+		TestModel{1, "a"},
+		TestModel{2, "a"},
+		TestModel{3, "b"},
+		TestModel{4, "b"},
 	}
 	res := IndexBy(arr, "Name")
 	dict, ok := res.(map[string]TestModel)
@@ -40,10 +40,10 @@ func TestIndexBy(t *testing.T) {
 
 func TestChain_IndexBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ 1, "a" },
-		TestModel{ 2, "a" },
-		TestModel{ 3, "b" },
-		TestModel{ 4, "b" },
+		TestModel{1, "a"},
+		TestModel{2, "a"},
+		TestModel{3, "b"},
+		TestModel{4, "b"},
 	}
 	res := Chain(arr).IndexBy("Name").Value()
 	dict, ok := res.(map[string]TestModel)
