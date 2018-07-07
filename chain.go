@@ -1,5 +1,6 @@
 package underscore
 
+// Queryer is interface
 type Queryer interface {
 	All(interface{}) Queryer
 	AllBy(map[string]interface{}) Queryer
@@ -38,20 +39,24 @@ type Queryer interface {
 	Values() Queryer
 }
 
+// Query is a wrapper
 type Query struct {
 	isParallel bool
-	source interface{}
+	source     interface{}
 }
 
-func (this *Query) Value() interface{} {
-	return this.source
+// Value will return final result
+func (q *Query) Value() interface{} {
+	return q.source
 }
 
-func (this *Query) AsParallel() Queryer {
-	this.isParallel = true
-	return this
+// AsParallel will turn on parallel
+func (q *Query) AsParallel() Queryer {
+	q.isParallel = true
+	return q
 }
 
+// Chain will cause all future method calls to return wrapped objects
 func Chain(source interface{}) Queryer {
 	q := new(Query)
 	q.source = source

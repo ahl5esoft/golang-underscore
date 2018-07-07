@@ -5,19 +5,17 @@ import (
 	"sync"
 )
 
+// Each will iterate over a list of elements
+// @source		map or array
+// @iterator	func(value or item, key or index) bool
 func Each(source, iterator interface{}) {
 	each(source, iterator, nil)
 }
 
-/*
-	@source		数据源,array or map
-	@iterator	迭代器
-	@predicate	值判断
-		@in1		iterator结果值
-		@in2		value(reflect.Value)
-		@in3		key(reflect.Value)
-		@out		是否break
-*/
+// each will iterate over a list of elements
+// @source		map or array
+// @iterator	func(value or item, key or index) bool
+// @predicate	stop traversing if pass the `predicate` truth test
 func each(source interface{}, iterator interface{}, predicate func(reflect.Value, reflect.Value, reflect.Value) bool) {
 	length, getKeyValue := parseSource(source)
 	if length == 0 {
@@ -25,12 +23,12 @@ func each(source interface{}, iterator interface{}, predicate func(reflect.Value
 	}
 
 	if predicate == nil {
-		predicate = func (resRV, _, _ reflect.Value) bool {
+		predicate = func(resRV, _, _ reflect.Value) bool {
 			if resRV.Kind() == reflect.Bool {
 				return resRV.Bool()
-			} else {
-				return false
 			}
+
+			return false
 		}
 	}
 
@@ -38,7 +36,7 @@ func each(source interface{}, iterator interface{}, predicate func(reflect.Value
 	for i := 0; i < length; i++ {
 		valueRV, keyRV := getKeyValue(i)
 		returnRVs := iteratorRV.Call(
-			[]reflect.Value{ valueRV, keyRV },
+			[]reflect.Value{valueRV, keyRV},
 		)
 		if len(returnRVs) > 0 {
 			resRV := returnRVs[0]
@@ -53,6 +51,9 @@ func each(source interface{}, iterator interface{}, predicate func(reflect.Value
 	}
 }
 
+// eachAsParallel will parallel iterate over a list of elements
+// @source		map or array
+// @iterator	func(value or item, key or index) bool
 func eachAsParallel(source interface{}, iterator interface{}) {
 	length, getKeyValue := parseSource(source)
 	if length == 0 {
@@ -64,12 +65,12 @@ func eachAsParallel(source interface{}, iterator interface{}) {
 
 	iteratorRV := reflect.ValueOf(iterator)
 	for i := 0; i < length; i++ {
-		go func (index int) {
+		go func(index int) {
 			valueRV, keyRV := getKeyValue(index)
 			iteratorRV.Call(
-				[]reflect.Value{ valueRV, keyRV },
+				[]reflect.Value{valueRV, keyRV},
 			)
-			
+
 			task.Done()
 		}(i)
 	}
@@ -77,32 +78,33 @@ func eachAsParallel(source interface{}, iterator interface{}) {
 	task.Wait()
 }
 
-func parseSource(source interface{}) (int, func (i int) (reflect.Value, reflect.Value)) {
+// parseSource is ...
+func parseSource(source interface{}) (int, func(i int) (reflect.Value, reflect.Value)) {
 	if source != nil {
 		sourceRV := reflect.ValueOf(source)
 		switch sourceRV.Kind() {
-			case reflect.Array:
-			case reflect.Slice:
-				return sourceRV.Len(), func (i int) (reflect.Value, reflect.Value) {
-					return sourceRV.Index(i), reflect.ValueOf(i)
-				}
-			case reflect.Map:
-				keyRVs := sourceRV.MapKeys()
-				return len(keyRVs), func (i int) (reflect.Value, reflect.Value) {
-					return sourceRV.MapIndex(keyRVs[i]), keyRVs[i]
-				}
+		case reflect.Array:
+		case reflect.Slice:
+			return sourceRV.Len(), func(i int) (reflect.Value, reflect.Value) {
+				return sourceRV.Index(i), reflect.ValueOf(i)
+			}
+		case reflect.Map:
+			keyRVs := sourceRV.MapKeys()
+			return len(keyRVs), func(i int) (reflect.Value, reflect.Value) {
+				return sourceRV.MapIndex(keyRVs[i]), keyRVs[i]
+			}
 		}
 	}
 	return 0, nil
 }
 
-//Chain
-func (this *Query) Each(iterator interface{}) Queryer {
-	if this.isParallel {
-		eachAsParallel(this.source, iterator)
+// Each is Queryer's method
+func (q *Query) Each(iterator interface{}) Queryer {
+	if q.isParallel {
+		eachAsParallel(q.source, iterator)
 	} else {
-		each(this.source, iterator, nil)
+		each(q.source, iterator, nil)
 	}
 
-	return this
+	return q
 }

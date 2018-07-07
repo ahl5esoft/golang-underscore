@@ -2,44 +2,34 @@ package underscore
 
 import (
 	"reflect"
+
+	fjson "github.com/json-iterator/go"
 )
 
+// Clone will create a deep-copied clone of the `source`
 func Clone(source interface{}) interface{} {
-	rv := reflect.ValueOf(source)
-	switch rv.Kind() {
-		case reflect.Array:
-		case reflect.Slice:
-			dstRV := reflect.MakeSlice(rv.Type(), rv.Len(), rv.Len())
-			if rv.Len() != 0 {
-				for i := 0; i < rv.Len(); i++ {
-					dstRV.Index(i).Set(
-						rv.Index(i),
-					)
-				}
-			}
+	var (
+		bytes  []byte
+		cloned interface{}
+	)
 
-			return dstRV.Interface()
-		case reflect.Map:
-			dstRV := reflect.MakeMap(rv.Type())
-
-			keyRVs := rv.MapKeys()
-			if len(keyRVs) != 0 {
-				for i := 0; i < len(keyRVs); i++ {
-					dstRV.SetMapIndex(
-						keyRVs[i],
-						rv.MapIndex(keyRVs[i]),
-					)
-				}
-			}
-			return dstRV.Interface()
-		case reflect.Ptr:
-			return Clone(reflect.Indirect(rv).Interface())
+	rt := reflect.TypeOf(source)
+	if rt.Kind() == reflect.Ptr {
+		cloned = reflect.New(rt.Elem()).Interface()
+		bytes, _ = fjson.Marshal(
+			reflect.ValueOf(source).Elem().Interface(),
+		)
+	} else {
+		cloned = reflect.New(rt).Interface()
+		bytes, _ = fjson.Marshal(source)
 	}
-	return source
+
+	fjson.Unmarshal(bytes, cloned)
+	return reflect.ValueOf(cloned).Elem().Interface()
 }
 
-//Chain
-func (this *Query) Clone() Queryer {
-	this.source = Clone(this.source)
-	return this
+// Clone is Queryer's method
+func (q *Query) Clone() Queryer {
+	q.source = Clone(q.source)
+	return q
 }

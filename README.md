@@ -74,13 +74,15 @@ __Return__
 __Examples__
 
 ```go
-arr := []int{ 2, 4 }
-ok := All(arr, func (n, _ int) bool {
-	return n % 2 == 0
-})
-if !ok {
-	// wrong
+arr := []TestModel{
+	TestModel{1, "one"},
+	TestModel{1, "two"},
+	TestModel{1, "three"},
 }
+ok := All(arr, func(r TestModel, _ int) bool {
+	return r.Id == 1
+})
+// ok == true
 ```
 
 <a name="allBy" />
@@ -99,16 +101,22 @@ __Examples__
 
 ```go
 arr := []TestModel{
-	TestModel{ 1, "one" },
-	TestModel{ 2, "two" },
-	TestModel{ 3, "three" },
+	TestModel{1, "one"},
+	TestModel{1, "two"},
+	TestModel{1, "three"},
 }
-ok := AllBy(arr, map[string]interface{}{
+ok := AllBy(arr, nil)
+// ok == true
+
+ok = AllBy(arr, map[string]interface{}{
 	"name": "a",
 })
-if ok {
-	// wrong
-}
+// ok == false
+
+ok = AllBy(arr, map[string]interface{}{
+	"id": 1,
+})
+// ok == true
 ```
 
 <a name="any" />
@@ -126,13 +134,15 @@ __Return__
 __Examples__
 
 ```go
-arr := []int{ 1, 3 }
-ok := Any(arr, func (n, _ int) bool {
-	return n % 2 == 0
-})
-if ok {
-	// wrong
+arr := []TestModel{
+	TestModel{1, "one"},
+	TestModel{2, "two"},
+	TestModel{3, "three"},
 }
+ok := Any(arr, func(r TestModel, _ int) bool {
+	return r.Id == 0
+})
+// ok == false
 ```
 
 <a name="anyBy" />
@@ -151,17 +161,20 @@ __Examples__
 
 ```go
 arr := []TestModel{
-	TestModel{ 1, "one" },
-	TestModel{ 2, "two" },
-	TestModel{ 3, "three" },
+	TestModel{1, "one"},
+	TestModel{2, "two"},
+	TestModel{3, "three"},
 }
 ok := AnyBy(arr, map[string]interface{}{
-	"Id": 2,
-	"name": "two",
+	"Id": 0,
 })
-if !ok {
-	// wrong
-}
+// ok == false
+
+ok = AnyBy(arr, map[string]interface{}{
+	"id":   arr[0].Id,
+	"name": arr[0].Name,
+})
+// ok == true
 ```
 
 <a name="asParallel" />
@@ -193,17 +206,14 @@ __Return__
 __Examples__
 
 ```go
-res := Chain([]int{ 1, 2, 1, 4, 1, 3 }).Uniq(nil).Group(func (n, _ int) string {
-	if (n % 2 == 0) {
+res, ok := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
+	if n%2 == 0 {
 		return "even"
 	}
 
-	return "odd"
-}).Value()
-dict := res.(map[string][]int)
-if !(len(dict) == 2 && len(dict["odd]) == 2) {
-	// wrong
-}
+	return "old"
+}).Value().(map[string][]int)
+// len(res) == 2 && ok == true
 ```
 
 <a name="clone" />
@@ -216,14 +226,12 @@ __Return__
 __Examples__
 
 ```go
-arr := []int{ 1, 2, 3 }
+arr := []int{1, 2, 3}
 duplicate := Clone(arr)
-ok := All(duplicate, func (n, i int) bool {
+ok := All(duplicate, func(n, i int) bool {
 	return arr[i] == n
 })
-if !ok {
-	// wrong
-}
+// ok == true
 ```
 
 <a name="each" />
@@ -237,9 +245,13 @@ __Arguments__
 __Examples__
 
 ```go
-arr := []int{ 1, 2, 3 }
-Each(arr, func (n, i int) {
-	// code
+arr := []TestModel{
+	TestModel{1, "one"},
+	TestModel{1, "two"},
+	TestModel{1, "three"},
+}
+Each(arr, func (r TestModel, i int) {
+	// coding
 })
 ```
 
@@ -258,13 +270,15 @@ __Return__
 __Examples__
 
 ```go
-arr := []int{ 1, 2, 3, 4 }
-n := Find(arr, func (n, _ int) bool {
-	return n % 2 == 0
-})
-if n != 2 {
-	// wrong
+arr := []TestModel{
+	TestModel{1, "one"},
+	TestModel{2, "two"},
+	TestModel{3, "three"},
 }
+item := Find(arr, func(r TestModel, _ int) bool {
+	return r.Id == 1
+})
+// item == arr[0]
 ```
 
 <a name="findBy" />
@@ -283,21 +297,66 @@ __Examples__
 
 ```go
 arr := []TestModel{
-	TestModel{ 1, "one" },
-	TestModel{ 2, "two" },
-	TestModel{ 3, "three" },
+	TestModel{1, "one"},
+	TestModel{2, "two"},
+	TestModel{3, "three"},
 }
-res := FindBy(arr, map[string]interface{}{
+item := FindBy(arr, map[string]interface{}{
+	"id": 2,
+})
+// item == arr[1]
+```
+
+<a name="findIndex" />
+### FindIndex(source, predicate)
+
+__Arguments__
+
+* `source` - array or map
+* `predicate` - func(element or value, index or key) bool
+
+__Return__
+
+* int - index
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{1, "one"},
+	TestModel{1, "two"},
+	TestModel{1, "three"},
+}
+i := FindIndex(arr, func(r TestModel, _ int) bool {
+	return r.Name == arr[1].Name
+})
+// i == 1
+```
+
+<a name="findIndexBy" />
+### FindIndexBy(source, properties)
+
+__Arguments__
+
+* `source` - array or map
+* `properties` - map[string]interface{}
+
+__Return__
+
+* int - index
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{1, "one"},
+	TestModel{2, "two"},
+	TestModel{3, "three"},
+}
+i := FindIndexBy(arr, map[string]interface{}{
 	"id": 1,
 })
-if res == nil {
-	// wrong
-}
-
-matcher := res.(TestModel)
-if !(matcher.Id == arr[0].Id && matcher.Name == arr[0].Name) {
-	// wrong
-}
+// i == 0
 ```
 
 <a name="first" />

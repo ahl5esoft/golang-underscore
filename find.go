@@ -4,10 +4,11 @@ import (
 	"reflect"
 )
 
+// Find is 根据断言获取元素
 func Find(source, predicate interface{}) interface{} {
 	var ok bool
 	var matcher interface{}
-	each(source, predicate, func (resRV, valueRV, _ reflect.Value) bool {
+	each(source, predicate, func(resRV, valueRV, _ reflect.Value) bool {
 		ok = resRV.Bool()
 		if ok {
 			matcher = valueRV.Interface()
@@ -17,19 +18,21 @@ func Find(source, predicate interface{}) interface{} {
 	return matcher
 }
 
+// FindBy is 根据属性值获取元素
 func FindBy(source interface{}, properties map[string]interface{}) interface{} {
-	return Find(source, func (value, _ interface{}) bool {
+	return Find(source, func(value, _ interface{}) bool {
 		return IsMatch(value, properties)
 	})
 }
 
-//# chain
-func (this *Query) Find(predicate interface{}) Queryer {
-	this.source = Find(this.source, predicate)
-	return this
+// Find is Queryer's method
+func (q *Query) Find(predicate interface{}) Queryer {
+	q.source = Find(q.source, predicate)
+	return q
 }
 
-func (this *Query) FindBy(properties map[string]interface{}) Queryer {
-	this.source = FindBy(this.source, properties)
-	return this
+// FindBy is Queryer's method
+func (q *Query) FindBy(properties map[string]interface{}) Queryer {
+	q.source = FindBy(q.source, properties)
+	return q
 }
