@@ -27,8 +27,6 @@ type Queryer interface {
 	Reduce(interface{}, interface{}) Queryer
 	Reject(interface{}) Queryer
 	RejectBy(map[string]interface{}) Queryer
-	Select(interface{}) Queryer
-	SelectBy(map[string]interface{}) Queryer
 	Size() Queryer
 	Sort(interface{}) Queryer
 	SortBy(string) Queryer
@@ -37,6 +35,8 @@ type Queryer interface {
 	UniqBy(string) Queryer
 	Value() interface{}
 	Values() Queryer
+	Where(interface{}) Queryer
+	WhereBy(map[string]interface{}) Queryer
 }
 
 // Query is a wrapper

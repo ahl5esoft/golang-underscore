@@ -4,18 +4,19 @@ import (
 	"reflect"
 )
 
+// Keys is 获取map的所有key
 func Keys(source interface{}) interface{} {
 	sourceRV := reflect.ValueOf(source)
 	if sourceRV.Kind() != reflect.Map {
 		return nil
 	}
 
-	return Map(source, func (_, key interface{}) Facade {
-		return Facade{ reflect.ValueOf(key) }
+	return Map(source, func(_, key interface{}) Facade {
+		return Facade{reflect.ValueOf(key)}
 	})
 }
 
-//Chain
+// Keys is Queryer's method
 func (this *Query) Keys() Queryer {
 	this.source = Keys(this.source)
 	return this
