@@ -50,7 +50,6 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Range`](#range)
 * [`Reduce`](#reduce)
 * [`Reject`](#reject), [`RejectBy`](#rejectBy)
-* [`Select`](#select), [`SelectBy`](#selectBy)
 * [`Size`](#size)
 * [`Sort`](#sort), [`SortBy`](#sortBy)
 * [`Take`](#take)
@@ -58,6 +57,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
 * [`UUID`](#uuid)
 * [`Values`](#values)
+* [`Where`](#where), [`WhereBy`](#whereBy)
 
 <a name="all" />
 ### All(source, predicate)
@@ -910,65 +910,6 @@ if !(ok && len(res) == 2) {
 }
 ```
 
-<a name="select" />
-### Select(source, predicate)
-
-__Arguments__
-
-* `source` - array or map
-* `predicate` - func(element or value, index or key) bool
-
-__Return__
-
-* interface{} - an array of all the values that pass a truth test `predicate`
-
-__Examples__
-
-```go
-arr := []int{ 1, 2, 3, 4 }
-v := Select(arr, func (n, i int) bool {
-	return n % 2 == 0
-})
-res, ok := v.([]int)
-if !(ok && len(res) == 2) {
-	t.Error("wrong length")
-	return
-}
-
-if !(res[0] == 2 && res[1] == 4) {
-	t.Error("wrong result")
-}
-```
-
-<a name="selectBy" />
-### SelectBy(source, properties)
-
-__Arguments__
-
-* `source` - array or map
-* `properties` - map[string]interface{}
-
-__Return__
-
-* interface{} - an array of all the values that pass a truth test `properties`
-
-__Examples__
-
-```go
-arr := []TestModel{
-	TestModel{ 1, "one" },
-	TestModel{ 2, "two" },
-	TestModel{ 3, "three" },
-}
-v := SelectBy(arr, map[string]interface{}{
-	"Id": 1,
-})
-res, ok := v.([]TestModel)
-if !(ok && len(res) == 1 && res[0] == arr[0]) {
-	// wrong
-}
-```
-
 <a name="size" />
 ### Size(source)
 
@@ -1217,3 +1158,67 @@ res, ok := v.([]string)
 if !(ok && len(res) == len(dict)) {
 	// wrong
 }
+
+<a name="where" />
+### Where(source, predicate)
+
+__Arguments__
+
+* `source` - array or map
+* `predicate` - func(element or value, index or key) bool
+
+__Return__
+
+* interface{} - an array of all the values that pass a truth test `predicate`
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{1, "one"},
+	TestModel{2, "two"},
+	TestModel{3, "three"},
+	TestModel{4, "three"},
+}
+v := Where(arr, func(r TestModel, i int) bool {
+	return r.Id%2 == 0
+})
+res, ok := v.([]TestModel)
+if !(ok && len(res) == 2) {
+	// wrong
+}
+
+if !(res[0].Id == 2 && res[1].Id == 4) {
+	// wrong
+}
+```
+
+<a name="whereBy" />
+### WhereBy(source, properties)
+
+__Arguments__
+
+* `source` - array or map
+* `properties` - map[string]interface{}
+
+__Return__
+
+* interface{} - an array of all the values that pass a truth test `properties`
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{1, "one"},
+	TestModel{2, "one"},
+	TestModel{3, "three"},
+	TestModel{4, "three"},
+}
+v := WhereBy(arr, map[string]interface{}{
+	"Name": "one",
+})
+res, ok := v.([]TestModel)
+if !(ok && len(res) == 2 && res[0] == arr[0] && res[1] == arr[1]) {
+	// wrong
+}
+```

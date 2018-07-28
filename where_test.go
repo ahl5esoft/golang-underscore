@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestSelect(t *testing.T) {
+func TestWhere(t *testing.T) {
 	arr := []TestModel{
 		TestModel{1, "one"},
 		TestModel{2, "two"},
@@ -25,7 +25,7 @@ func TestSelect(t *testing.T) {
 	}
 }
 
-func TestChain_Select(t *testing.T) {
+func TestChain_Where(t *testing.T) {
 	arr := []TestModel{
 		TestModel{1, "one"},
 		TestModel{2, "two"},
@@ -46,7 +46,7 @@ func TestChain_Select(t *testing.T) {
 	}
 }
 
-func TestSelectBy(t *testing.T) {
+func TestWhereBy(t *testing.T) {
 	arr := []TestModel{
 		TestModel{1, "one"},
 		TestModel{2, "one"},
@@ -62,7 +62,7 @@ func TestSelectBy(t *testing.T) {
 	}
 }
 
-func TestChain_SelectBy(t *testing.T) {
+func TestChain_WhereBy(t *testing.T) {
 	arr := []TestModel{
 		TestModel{1, "one"},
 		TestModel{2, "one"},
