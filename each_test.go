@@ -12,7 +12,7 @@ func TestEach(t *testing.T) {
 		TestModel{1, "three"},
 	}
 	Each(arr, func(r TestModel, i int) {
-		if !(r.Id == arr[i].Id && r.Name == arr[i].Name) {
+		if !(r.ID == arr[i].ID && r.Name == arr[i].Name) {
 			t.Error("wrong")
 		}
 	})
@@ -25,7 +25,7 @@ func TestChain_Each(t *testing.T) {
 		TestModel{1, "three"},
 	}
 	Chain(arr).Each(func(r TestModel, i int) {
-		if !(r.Id == arr[i].Id && r.Name == arr[i].Name) {
+		if !(r.ID == arr[i].ID && r.Name == arr[i].Name) {
 			t.Error("wrong")
 		}
 	})

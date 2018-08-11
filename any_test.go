@@ -11,7 +11,7 @@ func TestAny(t *testing.T) {
 		TestModel{3, "three"},
 	}
 	ok := Any(arr, func(r TestModel, _ int) bool {
-		return r.Id == 0
+		return r.ID == 0
 	})
 	if ok {
 		t.Error("wrong")
@@ -25,7 +25,7 @@ func TestChain_Any(t *testing.T) {
 		TestModel{3, "three"},
 	}
 	res := Chain(arr).Any(func(r TestModel, _ int) bool {
-		return r.Id == 0
+		return r.ID == 0
 	}).Value()
 	if res.(bool) {
 		t.Error("wrong")
@@ -47,7 +47,7 @@ func TestAnyBy(t *testing.T) {
 	}
 
 	ok = AnyBy(arr, map[string]interface{}{
-		"id":   arr[0].Id,
+		"id":   arr[0].ID,
 		"name": arr[0].Name,
 	})
 	if !ok {

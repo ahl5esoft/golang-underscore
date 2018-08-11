@@ -11,7 +11,7 @@ func TestAll(t *testing.T) {
 		TestModel{1, "three"},
 	}
 	ok := All(arr, func(r TestModel, _ int) bool {
-		return r.Id == 1
+		return r.ID == 1
 	})
 	if !ok {
 		t.Error("wrong")
@@ -25,7 +25,7 @@ func TestChain_All(t *testing.T) {
 		TestModel{1, "three"},
 	}
 	res := Chain(arr).All(func(r TestModel, _ int) bool {
-		return r.Id == 1
+		return r.ID == 1
 	}).Value()
 	if !res.(bool) {
 		t.Error("wrong")

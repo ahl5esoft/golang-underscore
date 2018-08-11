@@ -5,8 +5,8 @@ import (
 )
 
 func TestSort(t *testing.T) {
-	arr := []int{ 1, 2, 3, 5 }
-	v := Sort([]int{ 5, 3, 2, 1 }, func (n, _ int) int {
+	arr := []int{1, 2, 3, 5}
+	v := Sort([]int{5, 3, 2, 1}, func(n, _ int) int {
 		return n
 	})
 	res, ok := v.([]int)
@@ -24,8 +24,8 @@ func TestSort(t *testing.T) {
 }
 
 func TestChain_Sort(t *testing.T) {
-	arr := []int{ 1, 2, 3, 5 }
-	v := Chain([]int{ 5, 3, 2, 1 }).Sort(func (n, _ int) int {
+	arr := []int{1, 2, 3, 5}
+	v := Chain([]int{5, 3, 2, 1}).Sort(func(n, _ int) int {
 		return n
 	}).Value()
 
@@ -44,9 +44,9 @@ func TestChain_Sort(t *testing.T) {
 
 func TestSortBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ 3, "three" },
-		TestModel{ 1, "one" },
-		TestModel{ 2, "two" },
+		TestModel{3, "three"},
+		TestModel{1, "one"},
+		TestModel{2, "two"},
 	}
 	v := SortBy(arr, "id")
 	res, ok := v.([]TestModel)
@@ -55,16 +55,16 @@ func TestSortBy(t *testing.T) {
 		return
 	}
 
-	if !(res[0].Id < res[1].Id && res[1].Id < res[2].Id) {
+	if !(res[0].ID < res[1].ID && res[1].ID < res[2].ID) {
 		t.Error("wrong result")
 	}
 }
 
 func TestChain_SortBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ 3, "three" },
-		TestModel{ 1, "one" },
-		TestModel{ 2, "two" },
+		TestModel{3, "three"},
+		TestModel{1, "one"},
+		TestModel{2, "two"},
 	}
 	v := Chain(arr).SortBy("id").Value()
 	res, ok := v.([]TestModel)
@@ -73,7 +73,7 @@ func TestChain_SortBy(t *testing.T) {
 		return
 	}
 
-	if !(res[0].Id < res[1].Id && res[1].Id < res[2].Id) {
+	if !(res[0].ID < res[1].ID && res[1].ID < res[2].ID) {
 		t.Error("wrong result")
 	}
 }

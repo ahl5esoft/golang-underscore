@@ -56,7 +56,7 @@ func TestChain_FindIndexBy(t *testing.T) {
 		"id": 1,
 	}).Value()
 	i := res.(int)
-	if i == -1 || arr[i].Id != 1 {
+	if i == -1 || arr[i].ID != 1 {
 		t.Error("wrong")
 	}
 }

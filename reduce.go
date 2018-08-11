@@ -4,12 +4,13 @@ import (
 	"reflect"
 )
 
+// Reduce is 聚合
 func Reduce(source, iterator, memo interface{}) interface{} {
 	length, getKeyValue := parseSource(source)
 	if length == 0 {
 		return memo
 	}
-	
+
 	origin := Clone(memo)
 	iteratorRV := reflect.ValueOf(iterator)
 	memoRV := reflect.ValueOf(memo)
@@ -32,8 +33,8 @@ func Reduce(source, iterator, memo interface{}) interface{} {
 	return origin
 }
 
-//Chain
-func (this *Query) Reduce(iterator, memo interface{}) Queryer {
-	this.source = Reduce(this.source, iterator, memo)
-	return this
+// Reduce is Queryer's method
+func (q *Query) Reduce(iterator, memo interface{}) Queryer {
+	q.source = Reduce(q.source, iterator, memo)
+	return q
 }

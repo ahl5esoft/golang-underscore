@@ -1,6 +1,7 @@
 package underscore
 
+// TestModel is 测试模型
 type TestModel struct {
-	Id int
+	ID   int
 	Name string
 }

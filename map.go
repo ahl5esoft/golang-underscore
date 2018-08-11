@@ -4,9 +4,10 @@ import (
 	"reflect"
 )
 
+// Map is 映射
 func Map(source, selector interface{}) interface{} {
 	var arrRV reflect.Value
-	each(source, selector, func (resRV, valueRV, _ reflect.Value) bool {
+	each(source, selector, func(resRV, valueRV, _ reflect.Value) bool {
 		if !arrRV.IsValid() {
 			arrRT := reflect.SliceOf(resRV.Type())
 			arrRV = reflect.MakeSlice(arrRT, 0, 0)
@@ -22,21 +23,23 @@ func Map(source, selector interface{}) interface{} {
 	return nil
 }
 
+// MapBy is 从source中取出所有property
 func MapBy(source interface{}, property string) interface{} {
 	getPropertyRV := PropertyRV(property)
-	return Map(source, func (value, _ interface{}) Facade {
+	return Map(source, func(value, _ interface{}) Facade {
 		rv, _ := getPropertyRV(value)
-		return Facade{ rv }
+		return Facade{rv}
 	})
 }
 
-//chain
-func (this *Query) Map(selector interface{}) Queryer {
-	this.source = Map(this.source, selector)
-	return this
+// Map is Queryer's method
+func (q *Query) Map(selector interface{}) Queryer {
+	q.source = Map(q.source, selector)
+	return q
 }
 
-func (this *Query) MapBy(property string) Queryer {
-	this.source = MapBy(this.source, property)
-	return this
+// MapBy is Queryer's method
+func (q *Query) MapBy(property string) Queryer {
+	q.source = MapBy(q.source, property)
+	return q
 }

@@ -44,7 +44,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Keys`](#keys)
 * [`Map`](#map), [`MapBy`](#mapBy)
 * [`Md5`](#md5)
-* [`ParseJson`](#parseJson)
+* [`Object`](#object)
 * [`Pluck`](#pluck)
 * [`Property`](#property), [`PropertyRV`](#propertyRV)
 * [`Range`](#range)
@@ -53,7 +53,6 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Size`](#size)
 * [`Sort`](#sort), [`SortBy`](#sortBy)
 * [`Take`](#take)
-* [`ToJson`](#toJson)
 * [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
 * [`UUID`](#uuid)
 * [`Values`](#values)
@@ -637,25 +636,34 @@ if Md5("123456") != "e10adc3949ba59abbe56e057f20f883e" {
 }	
 ```
 
-<a name="parseJson" />
-### ParseJson(str, container)
+<a name="object" />
+### Object(arr)
 
 __Arguments__
 
-* `str` - json string
-* `container` - interface{}
+* `arr` - array
 
 __Return__
 
-* error
+* map, error
 
 __Examples__
 
 ```go
-str := `["a","b"]`
-var arr []string
-err := ParseJson(str, &arr)
-if !(err == nil && len(arr) == 2) {
+arr := []interface{}{
+	[]interface{}{"a", 1},
+	[]interface{}{"b", 2},
+}
+dic, ok := Object(arr).(map[string]int)
+if !(ok && len(dic) == 2) {
+	// wrong
+}
+
+if v1, ok := dic["a"]; !(ok && v1 == 1) {
+	// wrong
+}
+
+if v1, ok := dic["b"]; !(ok && v1 == 2) {
 	// wrong
 }
 ```
@@ -1019,50 +1027,6 @@ if !ok {
 }
 
 if res[0] != 1 {
-	// wrong
-}
-```
-
-<a name="toJson" />
-### ToJson(value)
-
-__Arguments__
-
-* `value` - interface{}, anyType
-
-__Return__
-
-* string, error
-
-__Examples__
-
-```go
-b := true
-v, _ := ToJson(b)
-if v != "true" {
-	// wrong
-}
-
-str := "a"
-v, _ = ToJson(str)
-if v != str {
-	// wrong
-}
-
-v, _ = ToJson(1)
-if v != "1" {
-	// wrong
-}
-
-arr := []int{ 1, 2, 3 }
-v, _ = ToJson(arr)
-if v != "[1,2,3]" {
-	// wrong
-}
-
-obj := TestModel{ 1, "name" }
-v, _ = ToJson(obj)
-if v != `{"Id":1,"Name":"name"}` {
 	// wrong
 }
 ```

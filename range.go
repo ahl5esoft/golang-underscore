@@ -1,5 +1,6 @@
 package underscore
 
+// Range is 生成区间数据
 func Range(start, stop, step int) []int {
 	arr := make([]int, 0)
 	if step == 0 {
@@ -24,8 +25,8 @@ func Range(start, stop, step int) []int {
 	return arr
 }
 
-//Chain
-func (this *Query) Range(start, stop, step int) Queryer {
-	this.source = Range(start, stop, step)
-	return this
+// Range is Queryer's method
+func (q *Query) Range(start, stop, step int) Queryer {
+	q.source = Range(start, stop, step)
+	return q
 }

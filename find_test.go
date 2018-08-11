@@ -11,7 +11,7 @@ func TestFind(t *testing.T) {
 		TestModel{3, "three"},
 	}
 	item := Find(arr, func(r TestModel, _ int) bool {
-		return r.Id == 1
+		return r.ID == 1
 	})
 	if item != arr[0] {
 		t.Error("wrong")
@@ -25,7 +25,7 @@ func TestChain_Find(t *testing.T) {
 		TestModel{3, "three"},
 	}
 	item := Chain(arr).Find(func(r TestModel, _ int) bool {
-		return r.Id == 1
+		return r.ID == 1
 	}).Value()
 	if item.(TestModel) != arr[0] {
 		t.Error("wrong")

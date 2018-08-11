@@ -17,7 +17,7 @@ func Keys(source interface{}) interface{} {
 }
 
 // Keys is Queryer's method
-func (this *Query) Keys() Queryer {
-	this.source = Keys(this.source)
-	return this
+func (q *Query) Keys() Queryer {
+	q.source = Keys(q.source)
+	return q
 }

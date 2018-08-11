@@ -40,7 +40,7 @@ func each(source interface{}, iterator interface{}, predicate func(reflect.Value
 		)
 		if len(returnRVs) > 0 {
 			resRV := returnRVs[0]
-			if resRV.Type() == FACADE_RT {
+			if resRV.Type() == FacadeRt {
 				resRV = resRV.Interface().(Facade).Real
 			}
 
@@ -78,7 +78,6 @@ func eachAsParallel(source interface{}, iterator interface{}) {
 	task.Wait()
 }
 
-// parseSource is ...
 func parseSource(source interface{}) (int, func(i int) (reflect.Value, reflect.Value)) {
 	if source != nil {
 		sourceRV := reflect.ValueOf(source)

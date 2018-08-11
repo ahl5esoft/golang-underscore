@@ -12,7 +12,7 @@ func TestWhere(t *testing.T) {
 		TestModel{4, "three"},
 	}
 	v := Where(arr, func(r TestModel, i int) bool {
-		return r.Id%2 == 0
+		return r.ID%2 == 0
 	})
 	res, ok := v.([]TestModel)
 	if !(ok && len(res) == 2) {
@@ -20,7 +20,7 @@ func TestWhere(t *testing.T) {
 		return
 	}
 
-	if !(res[0].Id == 2 && res[1].Id == 4) {
+	if !(res[0].ID == 2 && res[1].ID == 4) {
 		t.Error("wrong result")
 	}
 }
@@ -33,7 +33,7 @@ func TestChain_Where(t *testing.T) {
 		TestModel{4, "three"},
 	}
 	v := Chain(arr).Where(func(r TestModel, i int) bool {
-		return r.Id%2 == 0
+		return r.ID%2 == 0
 	}).Value()
 	res, ok := v.([]TestModel)
 	if !(ok && len(res) == 2) {
@@ -41,7 +41,7 @@ func TestChain_Where(t *testing.T) {
 		return
 	}
 
-	if !(res[0].Id == 2 && res[1].Id == 4) {
+	if !(res[0].ID == 2 && res[1].ID == 4) {
 		t.Error("wrong result")
 	}
 }
