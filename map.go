@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-// Map is 映射
+// Map 映射
 func Map(source, selector interface{}) interface{} {
 	var arrRV reflect.Value
 	each(source, selector, func(resRV, valueRV, _ reflect.Value) bool {
@@ -23,7 +23,7 @@ func Map(source, selector interface{}) interface{} {
 	return nil
 }
 
-// MapBy is 从source中取出所有property
+// MapBy 从source中取出所有property
 func MapBy(source interface{}, property string) interface{} {
 	getPropertyRV := PropertyRV(property)
 	return Map(source, func(value, _ interface{}) Facade {

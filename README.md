@@ -181,6 +181,7 @@ ok = AnyBy(arr, map[string]interface{}{
 
 __Support__
 * `Each`
+* `Object`
 
 __Examples__
 
@@ -617,6 +618,34 @@ if !(ok && len(res) == len(arr)) {
 }
 ```
 
+<a name="mapBy" />
+### MapBy(source, property)
+
+__Arguments__
+
+* `source` - array or map
+* `property` - property name
+
+__Return__
+
+* interface{} - []propertyType
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{ 1, "a" },
+	TestModel{ 2, "a" },
+	TestModel{ 3, "b" },
+	TestModel{ 4, "b" },
+}
+v := MapBy(arr, "name")
+res, ok := v.([]string)
+if !(ok && len(res) == 4) {
+	// wrong
+}
+```
+
 <a name="md5" />
 ### Md5(plaintext)
 
@@ -664,34 +693,6 @@ if v1, ok := dic["a"]; !(ok && v1 == 1) {
 }
 
 if v1, ok := dic["b"]; !(ok && v1 == 2) {
-	// wrong
-}
-```
-
-<a name="mapBy" />
-### MapBy(source, property)
-
-__Arguments__
-
-* `source` - array or map
-* `property` - property name
-
-__Return__
-
-* interface{} - []propertyType
-
-__Examples__
-
-```go
-arr := []TestModel{
-	TestModel{ 1, "a" },
-	TestModel{ 2, "a" },
-	TestModel{ 3, "b" },
-	TestModel{ 4, "b" },
-}
-v := MapBy(arr, "name")
-res, ok := v.([]string)
-if !(ok && len(res) == 4) {
 	// wrong
 }
 ```

@@ -22,6 +22,7 @@ type Queryer interface {
 	Last() Queryer
 	Map(interface{}) Queryer
 	MapBy(string) Queryer
+	Object() Queryer
 	Pluck(string) Queryer
 	Range(int, int, int) Queryer
 	Reduce(interface{}, interface{}) Queryer

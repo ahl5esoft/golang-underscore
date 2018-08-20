@@ -25,3 +25,28 @@ func Test_Object(t *testing.T) {
 		return
 	}
 }
+
+const COUNT = 10000
+
+func Test_objectAsParallel(t *testing.T) {
+	arr := [COUNT][]int{}
+	for i := 0; i < COUNT; i++ {
+		arr[i] = []int{i, i}
+	}
+	finalArr, ok := objectAsParallel(arr).(map[int]int)
+	if !(ok && len(finalArr) == COUNT) {
+		t.Error("err", ok, len(finalArr))
+	}
+}
+
+func Test_Chain_Object(t *testing.T) {
+	arr := [COUNT][]int{}
+	for i := 0; i < COUNT; i++ {
+		arr[i] = []int{i, i}
+	}
+
+	finalArr, ok := Chain(arr).AsParallel().Object().Value().(map[int]int)
+	if !(ok && len(finalArr) == COUNT) {
+		t.Error("err", ok, len(finalArr))
+	}
+}

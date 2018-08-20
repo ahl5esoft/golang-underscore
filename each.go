@@ -82,8 +82,7 @@ func parseSource(source interface{}) (int, func(i int) (reflect.Value, reflect.V
 	if source != nil {
 		sourceRV := reflect.ValueOf(source)
 		switch sourceRV.Kind() {
-		case reflect.Array:
-		case reflect.Slice:
+		case reflect.Array, reflect.Slice:
 			return sourceRV.Len(), func(i int) (reflect.Value, reflect.Value) {
 				return sourceRV.Index(i), reflect.ValueOf(i)
 			}
