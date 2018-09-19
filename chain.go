@@ -12,6 +12,7 @@ type Queryer interface {
 	Find(interface{}) Queryer
 	FindBy(map[string]interface{}) Queryer
 	FindIndex(interface{}) Queryer
+	FindLastIndex() Queryer
 	FindIndexBy(map[string]interface{}) Queryer
 	First() Queryer
 	Group(interface{}) Queryer
