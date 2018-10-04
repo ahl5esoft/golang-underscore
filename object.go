@@ -62,8 +62,8 @@ func objectAsParallel(source interface{}) interface{} {
 	return mapRv.Interface()
 }
 
-// Object is Queryer'e method
-func (m *Query) Object() Queryer {
+// Object is IQuery'e method
+func (m *Query) Object() IQuery {
 	if m.isParallel {
 		m.source = objectAsParallel(m.source)
 	} else {

@@ -87,14 +87,14 @@ func SortBy(source interface{}, property string) interface{} {
 	})
 }
 
-// Sort is Queryer's method
-func (q *Query) Sort(selector interface{}) Queryer {
+// Sort is IQuery's method
+func (q *Query) Sort(selector interface{}) IQuery {
 	q.source = Sort(q.source, selector)
 	return q
 }
 
-// SortBy is Queryer's method
-func (q *Query) SortBy(property string) Queryer {
+// SortBy is IQuery's method
+func (q *Query) SortBy(property string) IQuery {
 	q.source = SortBy(q.source, property)
 	return q
 }

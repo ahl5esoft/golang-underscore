@@ -42,7 +42,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`IsArray`](#isArray)
 * [`IsMatch`](#isMatch)
 * [`Keys`](#keys)
-* [`Map`](#map), [`MapBy`](#mapBy)
+* [`Map`](#map)
 * [`Md5`](#md5)
 * [`Object`](#object)
 * [`Pluck`](#pluck)
@@ -614,34 +614,6 @@ v := Map(arr, func (s string, _ int) int {
 })
 res, ok := v.([]int)
 if !(ok && len(res) == len(arr)) {
-	// wrong
-}
-```
-
-<a name="mapBy" />
-### MapBy(source, property)
-
-__Arguments__
-
-* `source` - array or map
-* `property` - property name
-
-__Return__
-
-* interface{} - []propertyType
-
-__Examples__
-
-```go
-arr := []TestModel{
-	TestModel{ 1, "a" },
-	TestModel{ 2, "a" },
-	TestModel{ 3, "b" },
-	TestModel{ 4, "b" },
-}
-v := MapBy(arr, "name")
-res, ok := v.([]string)
-if !(ok && len(res) == 4) {
 	// wrong
 }
 ```

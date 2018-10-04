@@ -11,8 +11,8 @@ func First(source interface{}) interface{} {
 	return valueRV.Interface()
 }
 
-// First is Queryer's method
-func (q *Query) First() Queryer {
+// First is IQuery's method
+func (q *Query) First() IQuery {
 	q.source = First(q.source)
 	return q
 }

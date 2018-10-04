@@ -46,14 +46,14 @@ func UniqBy(source interface{}, property string) interface{} {
 	})
 }
 
-// Uniq is Queryer's method
-func (q *Query) Uniq(selector interface{}) Queryer {
+// Uniq is IQuery's method
+func (q *Query) Uniq(selector interface{}) IQuery {
 	q.source = Uniq(q.source, selector)
 	return q
 }
 
-// UniqBy is Queryer's method
-func (q *Query) UniqBy(property string) Queryer {
+// UniqBy is IQuery's method
+func (q *Query) UniqBy(property string) IQuery {
 	q.source = UniqBy(q.source, property)
 	return q
 }

@@ -28,8 +28,8 @@ func Clone(source interface{}) interface{} {
 	return reflect.ValueOf(cloned).Elem().Interface()
 }
 
-// Clone is Queryer's method
-func (q *Query) Clone() Queryer {
+// Clone is IQuery's method
+func (q *Query) Clone() IQuery {
 	q.source = Clone(q.source)
 	return q
 }
