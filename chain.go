@@ -34,6 +34,7 @@ type IQuery interface {
 	Uniq(interface{}) IQuery
 	UniqBy(string) IQuery
 	Value() interface{}
+	ValueOrDefault(interface{}) interface{}
 	Values() IQuery
 	Where(interface{}) IQuery
 	WhereBy(map[string]interface{}) IQuery
@@ -47,6 +48,15 @@ type Query struct {
 
 // Value will return final result
 func (q *Query) Value() interface{} {
+	return q.source
+}
+
+// ValueOrDefault will return final result or default value(if final result is nil)
+func (q *Query) ValueOrDefault(defaultValue interface{}) interface{} {
+	if q.source == nil {
+		return defaultValue
+	}
+
 	return q.source
 }
 

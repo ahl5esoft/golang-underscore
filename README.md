@@ -55,6 +55,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Take`](#take)
 * [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
 * [`UUID`](#uuid)
+* [`Value`](#value), [`ValueOrDefault`](#valueOrDefault)
 * [`Values`](#values)
 * [`Where`](#where), [`WhereBy`](#whereBy)
 
@@ -1067,6 +1068,55 @@ __Examples__
 ```go
 uuid := UUID()
 //1a40272540e57d1c80e7b06042219d0c
+```
+
+<a name="value" />
+### Value()
+
+__Return__
+
+* interface{} - Chain final result
+
+__Examples__
+
+```go
+res, ok := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
+	if n%2 == 0 {
+		return "even"
+	}
+
+	return "old"
+}).Value().(map[string][]int)
+if !(ok && len(res) == 2) {
+	// wrong
+}
+```
+
+<a name="valueOrDefault" />
+### ValueOrDefault(defaultValue interface{})
+
+__Return__
+
+* interface{} - Chain final result or default value(if final result is nil)
+
+__Examples__
+
+```go
+res, ok := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
+	if n%2 == 0 {
+		return "even"
+	}
+
+	return "old"
+}).ValueOrDefault(make(map[string][]int)).(map[string][]int)
+if !(ok && len(res) == 2) {
+	// wrong
+}
+
+res, ok = Chain([]int{}).GroupBy("unknow").ValueOrDefault(make(map[string][]int)).(map[string][]int)
+if !(ok && len(res) == 0) {
+	// wrong
+}
 ```
 
 <a name="values" />
