@@ -60,6 +60,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Where`](#where), [`WhereBy`](#whereBy)
 
 <a name="all" />
+
 ### All(source, predicate)
 
 __Arguments__
@@ -86,6 +87,7 @@ ok := All(arr, func(r TestModel, _ int) bool {
 ```
 
 <a name="allBy" />
+
 ### AllBy(source, properties)
 
 __Arguments__
@@ -120,6 +122,7 @@ ok = AllBy(arr, map[string]interface{}{
 ```
 
 <a name="any" />
+
 ### Any(source, predicate)
 
 __Arguments__
