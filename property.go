@@ -16,6 +16,10 @@ func PropertyRV(name string) func(interface{}) (reflect.Value, error) {
 			itemRV = reflect.ValueOf(item)
 		}
 
+		if itemRV.Kind() == reflect.Ptr {
+			itemRV = itemRV.Elem()
+		}
+
 		itemRT := itemRV.Type()
 		for i := 0; i < itemRT.NumField(); i++ {
 			if strings.ToLower(name) == strings.ToLower(itemRT.Field(i).Name) {
