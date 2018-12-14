@@ -2,7 +2,6 @@ package underscore
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"strings"
 )
@@ -25,11 +24,6 @@ func PropertyRV(name string) GetProeprtyRVFunc {
 			}
 
 			if strings.ToLower(name) == strings.ToLower(field.Name) {
-				fmt.Println("nested", field, field.Anonymous)
-				if field.Anonymous {
-					fmt.Println("nested", field)
-				}
-
 				return itemRV.Field(i), nil
 			}
 		}

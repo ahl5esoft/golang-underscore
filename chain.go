@@ -13,6 +13,7 @@ type IQuery interface {
 	FindBy(map[string]interface{}) IQuery
 	FindIndex(interface{}) IQuery
 	FindIndexBy(map[string]interface{}) IQuery
+	FindLastIndex() IQuery
 	First() IQuery
 	Group(interface{}) IQuery
 	GroupBy(string) IQuery
