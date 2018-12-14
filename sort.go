@@ -82,8 +82,9 @@ func Sort(source, selector interface{}) interface{} {
 func SortBy(source interface{}, property string) interface{} {
 	getPropertyRV := PropertyRV(property)
 	return Sort(source, func(value, _ interface{}) Facade {
-		rv, _ := getPropertyRV(value)
-		return Facade{rv}
+		return Facade{
+			getPropertyRV(value),
+		}
 	})
 }
 

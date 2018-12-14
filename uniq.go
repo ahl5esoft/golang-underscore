@@ -39,10 +39,11 @@ func Uniq(source, selector interface{}) interface{} {
 
 // UniqBy is 根据某个属性去重
 func UniqBy(source interface{}, property string) interface{} {
-	getProeprtyRV := PropertyRV(property)
+	getPropertyRV := PropertyRV(property)
 	return Uniq(source, func(value, _ interface{}) Facade {
-		rv, _ := getProeprtyRV(value)
-		return Facade{rv}
+		return Facade{
+			getPropertyRV(value),
+		}
 	})
 }
 

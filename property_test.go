@@ -5,43 +5,53 @@ import (
 )
 
 func TestPropertyRV(t *testing.T) {
-	item := TestModel{1, "one"}
+	item := TestModel{ID: 1, Name: "one"}
 
-	getAgeRV := PropertyRV("age")
-	_, err := getAgeRV(item)
-	if err == nil {
+	rv := PropertyRV("$$")(item)
+	if rv != NullRv {
 		t.Fatal("wrong")
 	}
 
 	getNameRV := PropertyRV("name")
-	nameRV, err := getNameRV(item)
-	if !(err == nil && nameRV.String() == item.Name) {
+	nameRV := getNameRV(item)
+	if nameRV.String() != item.Name {
 		t.Error("wrong")
 	}
 }
 
 func TestProperty(t *testing.T) {
-	item := TestModel{1, "one"}
+	item := TestModel{ID: 1, Name: "one"}
 
-	getAge := Property("age")
-	_, err := getAge(item)
-	if err == nil {
+	rv := PropertyRV("$$")(item)
+	if rv != NullRv {
 		t.Fatal("wrong")
 	}
 
 	getName := Property("name")
-	name, err := getName(item)
-	if !(err == nil && name.(string) == item.Name) {
+	name := getName(item)
+	if name.(string) != item.Name {
 		t.Error("wrong")
 	}
 }
 
 func TestProperty_Ptr(t *testing.T) {
-	item := &TestModel{1, "ptr"}
+	item := &TestModel{ID: 1, Name: "ptr"}
 
 	nameGetter := Property("name")
-	name, err := nameGetter(item)
-	if err != nil || name != item.Name {
-		t.Error(name, err)
+	name := nameGetter(item)
+	if name != item.Name {
+		t.Error(name)
+	}
+}
+
+func TestProperty_Nested(t *testing.T) {
+	item := TestModel{
+		TestNestedModel: TestNestedModel{
+			Age: 11,
+		},
+	}
+	age, ok := Property("age")(item).(int)
+	if !(ok && age == 11) {
+		t.Error("err")
 	}
 }

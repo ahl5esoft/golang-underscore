@@ -6,9 +6,9 @@ import (
 
 func TestAll(t *testing.T) {
 	arr := []TestModel{
-		TestModel{1, "one"},
-		TestModel{1, "two"},
-		TestModel{1, "three"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 1, Name: "two"},
+		TestModel{ID: 1, Name: "three"},
 	}
 	ok := All(arr, func(r TestModel, _ int) bool {
 		return r.ID == 1
@@ -20,9 +20,9 @@ func TestAll(t *testing.T) {
 
 func TestChain_All(t *testing.T) {
 	arr := []TestModel{
-		TestModel{1, "one"},
-		TestModel{1, "two"},
-		TestModel{1, "three"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 1, Name: "two"},
+		TestModel{ID: 1, Name: "three"},
 	}
 	res := Chain(arr).All(func(r TestModel, _ int) bool {
 		return r.ID == 1
@@ -34,9 +34,9 @@ func TestChain_All(t *testing.T) {
 
 func TestAllBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{1, "one"},
-		TestModel{1, "two"},
-		TestModel{1, "three"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 1, Name: "two"},
+		TestModel{ID: 1, Name: "three"},
 	}
 	ok := AllBy(arr, nil)
 	if ok {
@@ -62,9 +62,9 @@ func TestAllBy(t *testing.T) {
 
 func TestChain_AllBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{1, "one"},
-		TestModel{2, "two"},
-		TestModel{3, "three"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 2, Name: "two"},
+		TestModel{ID: 3, Name: "three"},
 	}
 	res := Chain(arr).AllBy(map[string]interface{}{
 		"Name": "a",

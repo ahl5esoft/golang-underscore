@@ -27,8 +27,9 @@ func Index(source, indexSelector interface{}) interface{} {
 func IndexBy(source interface{}, property string) interface{} {
 	getPropertyRV := PropertyRV(property)
 	return Index(source, func(value, _ interface{}) Facade {
-		rv, _ := getPropertyRV(value)
-		return Facade{rv}
+		return Facade{
+			getPropertyRV(value),
+		}
 	})
 }
 

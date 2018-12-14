@@ -6,9 +6,9 @@ import (
 
 func TestFindIndex(t *testing.T) {
 	arr := []TestModel{
-		TestModel{1, "one"},
-		TestModel{1, "two"},
-		TestModel{1, "three"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 1, Name: "two"},
+		TestModel{ID: 1, Name: "three"},
 	}
 	i := FindIndex(arr, func(r TestModel, _ int) bool {
 		return r.Name == arr[1].Name
@@ -20,9 +20,9 @@ func TestFindIndex(t *testing.T) {
 
 func TestChain_FindIndex(t *testing.T) {
 	arr := []TestModel{
-		TestModel{1, "one"},
-		TestModel{1, "two"},
-		TestModel{1, "three"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 2, Name: "two"},
+		TestModel{ID: 3, Name: "three"},
 	}
 	res := Chain(arr).FindIndex(func(r TestModel, _ int) bool {
 		return r.Name == arr[1].Name
@@ -34,9 +34,9 @@ func TestChain_FindIndex(t *testing.T) {
 
 func TestFindIndexBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{1, "one"},
-		TestModel{2, "two"},
-		TestModel{3, "three"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 2, Name: "two"},
+		TestModel{ID: 3, Name: "three"},
 	}
 	i := FindIndexBy(arr, map[string]interface{}{
 		"id": 1,
@@ -48,9 +48,9 @@ func TestFindIndexBy(t *testing.T) {
 
 func TestChain_FindIndexBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{1, "one"},
-		TestModel{2, "two"},
-		TestModel{3, "three"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 2, Name: "two"},
+		TestModel{ID: 3, Name: "three"},
 	}
 	res := Chain(arr).FindIndexBy(map[string]interface{}{
 		"id": 1,

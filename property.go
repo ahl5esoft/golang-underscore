@@ -1,34 +1,36 @@
 package underscore
 
 import (
-	"errors"
 	"reflect"
 	"strings"
 )
 
 // GetProeprtyRVFunc is get property reflect.Value func
-type GetProeprtyRVFunc func(interface{}) (reflect.Value, error)
+type GetProeprtyRVFunc func(interface{}) reflect.Value
 
 // PropertyRV is 获取reflect.Value
 func PropertyRV(name string) GetProeprtyRVFunc {
 	var getter GetProeprtyRVFunc
-	getter = func(item interface{}) (reflect.Value, error) {
+	getter = func(item interface{}) reflect.Value {
 		itemRV := getRV(item)
 		itemRT := itemRV.Type()
 		for i := 0; i < itemRT.NumField(); i++ {
 			field := itemRT.Field(i)
 			if field.Anonymous {
-				return getter(
+				rv := getter(
 					itemRV.Field(i),
 				)
+				if rv != NullRv {
+					return rv
+				}
 			}
 
 			if strings.ToLower(name) == strings.ToLower(field.Name) {
-				return itemRV.Field(i), nil
+				return itemRV.Field(i)
 			}
 		}
 
-		return NullRv, errors.New("invalid field: [" + name + "]")
+		return NullRv
 	}
 	return getter
 }
@@ -46,14 +48,9 @@ func getRV(v interface{}) reflect.Value {
 }
 
 // Property is 获取属性函数
-func Property(name string) func(interface{}) (interface{}, error) {
+func Property(name string) func(interface{}) interface{} {
 	fn := PropertyRV(name)
-	return func(item interface{}) (interface{}, error) {
-		rv, err := fn(item)
-		if err != nil {
-			return nil, err
-		}
-
-		return rv.Interface(), nil
+	return func(item interface{}) interface{} {
+		return fn(item).Interface()
 	}
 }

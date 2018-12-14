@@ -6,9 +6,9 @@ import (
 
 func TestSort(t *testing.T) {
 	arr := []TestModel{
-		TestModel{3, "three"},
-		TestModel{1, "one"},
-		TestModel{2, "two"},
+		TestModel{ID: 2, Name: "two"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 3, Name: "three"},
 	}
 	v := Sort(arr, func(n TestModel, _ int) int {
 		return -n.ID
@@ -44,9 +44,9 @@ func TestChain_Sort(t *testing.T) {
 
 func TestSortBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{3, "three"},
-		TestModel{1, "one"},
-		TestModel{2, "two"},
+		TestModel{ID: 2, Name: "two"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 3, Name: "three"},
 	}
 	v := SortBy(arr, "id")
 	res, ok := v.([]TestModel)
@@ -62,9 +62,9 @@ func TestSortBy(t *testing.T) {
 
 func TestChain_SortBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{3, "three"},
-		TestModel{1, "one"},
-		TestModel{2, "two"},
+		TestModel{ID: 3, Name: "three"},
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 2, Name: "two"},
 	}
 	v := Chain(arr).SortBy("id").Value()
 	res, ok := v.([]TestModel)

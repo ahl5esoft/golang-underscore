@@ -34,8 +34,9 @@ func Group(source, keySelector interface{}) interface{} {
 func GroupBy(source interface{}, property string) interface{} {
 	getPropertyRV := PropertyRV(property)
 	return Group(source, func(value, _ interface{}) Facade {
-		rv, _ := getPropertyRV(value)
-		return Facade{rv}
+		return Facade{
+			getPropertyRV(value),
+		}
 	})
 }
 

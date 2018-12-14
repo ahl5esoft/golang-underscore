@@ -5,7 +5,7 @@ import (
 )
 
 func TestIsMatch(t *testing.T) {
-	m := TestModel{1, "one"}
+	m := TestModel{ID: 1, Name: "one"}
 	ok := IsMatch(nil, nil)
 	if ok {
 		t.Error("wrong")
