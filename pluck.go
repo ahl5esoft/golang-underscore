@@ -9,8 +9,8 @@ func Pluck(source interface{}, property string) interface{} {
 	})
 }
 
-// Pluck is Queryer's method
-func (q *Query) Pluck(property string) Queryer {
+// Pluck is IQuery's method
+func (q *Query) Pluck(property string) IQuery {
 	q.source = Pluck(q.source, property)
 	return q
 }

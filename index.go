@@ -32,14 +32,14 @@ func IndexBy(source interface{}, property string) interface{} {
 	})
 }
 
-// Index is Queryer's method
-func (q *Query) Index(indexSelector interface{}) Queryer {
+// Index is IQuery's method
+func (q *Query) Index(indexSelector interface{}) IQuery {
 	q.source = Index(q.source, indexSelector)
 	return q
 }
 
-// IndexBy is Queryer's method
-func (q *Query) IndexBy(property string) Queryer {
+// IndexBy is IQuery's method
+func (q *Query) IndexBy(property string) IQuery {
 	q.source = IndexBy(q.source, property)
 	return q
 }

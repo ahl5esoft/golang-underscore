@@ -42,7 +42,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`IsArray`](#isArray)
 * [`IsMatch`](#isMatch)
 * [`Keys`](#keys)
-* [`Map`](#map), [`MapBy`](#mapBy)
+* [`Map`](#map)
 * [`Md5`](#md5)
 * [`Object`](#object)
 * [`Pluck`](#pluck)
@@ -55,10 +55,12 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Take`](#take)
 * [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
 * [`UUID`](#uuid)
+* [`Value`](#value), [`ValueOrDefault`](#valueOrDefault)
 * [`Values`](#values)
 * [`Where`](#where), [`WhereBy`](#whereBy)
 
 <a name="all" />
+
 ### All(source, predicate)
 
 __Arguments__
@@ -85,6 +87,7 @@ ok := All(arr, func(r TestModel, _ int) bool {
 ```
 
 <a name="allBy" />
+
 ### AllBy(source, properties)
 
 __Arguments__
@@ -119,6 +122,7 @@ ok = AllBy(arr, map[string]interface{}{
 ```
 
 <a name="any" />
+
 ### Any(source, predicate)
 
 __Arguments__
@@ -145,6 +149,7 @@ ok := Any(arr, func(r TestModel, _ int) bool {
 ```
 
 <a name="anyBy" />
+
 ### AnyBy(source, properties)
 
 __Arguments__
@@ -177,6 +182,7 @@ ok = AnyBy(arr, map[string]interface{}{
 ```
 
 <a name="asParallel" />
+
 ### Chain(source).AsParallel()...
 
 __Support__
@@ -193,6 +199,7 @@ Chain(arr).AsParallel().Each(func (n, i int) {
 ```
 
 <a name="chain" />
+
 ### Chain(source)
 
 __Arguments__
@@ -217,6 +224,7 @@ res, ok := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string 
 ```
 
 <a name="clone" />
+
 ### Clone()
 
 __Return__
@@ -235,6 +243,7 @@ ok := All(duplicate, func(n, i int) bool {
 ```
 
 <a name="each" />
+
 ### Each(source, iterator)
 
 __Arguments__
@@ -256,6 +265,7 @@ Each(arr, func (r TestModel, i int) {
 ```
 
 <a name="find" />
+
 ### Find(source, predicate)
 
 __Arguments__
@@ -282,6 +292,7 @@ item := Find(arr, func(r TestModel, _ int) bool {
 ```
 
 <a name="findBy" />
+
 ### FindBy(source, properties)
 
 __Arguments__
@@ -308,6 +319,7 @@ item := FindBy(arr, map[string]interface{}{
 ```
 
 <a name="findIndex" />
+
 ### FindIndex(source, predicate)
 
 __Arguments__
@@ -334,6 +346,7 @@ i := FindIndex(arr, func(r TestModel, _ int) bool {
 ```
 
 <a name="findIndexBy" />
+
 ### FindIndexBy(source, properties)
 
 __Arguments__
@@ -360,6 +373,7 @@ i := FindIndexBy(arr, map[string]interface{}{
 ```
 
 <a name="first" />
+
 ### First(source)
 
 __Arguments__
@@ -387,6 +401,7 @@ if v != nil {
 ```
 
 <a name="group" />
+
 ### Group(source, keySelector)
 
 __Arguments__
@@ -414,6 +429,7 @@ if !(ok && len(dict["even"]) == 2) {
 ```
 
 <a name="groupBy" />
+
 ### GroupBy(source, property)
 
 __Arguments__
@@ -442,6 +458,7 @@ if !(ok && len(dict) == 2) {
 ```
 
 <a name="index" />
+
 ### Index(source, indexSelector)
 
 __Arguments__
@@ -466,6 +483,7 @@ if !(ok && res["a"] == "a") {
 ```
 
 <a name="indexBy" />
+
 ### IndexBy(source, property)
 
 __Arguments__
@@ -494,6 +512,7 @@ if !(ok && len(dict) == 2) {
 ```
 
 <a name="isArray" />
+
 ### IsArray(element)
 
 __Arguments__
@@ -517,6 +536,7 @@ if IsArray(map[string]int{}) {
 ```
 
 <a name="isMatch" />
+
 ### IsMatch(element, properties)
 
 __Arguments__
@@ -560,6 +580,7 @@ if !ok {
 ```
 
 <a name="keys" />
+
 ### Keys()
 
 __Arguments__
@@ -593,6 +614,7 @@ if !(ok && len(res) == len(dict)) {
 ```
 
 <a name="map" />
+
 ### Map(source, selector)
 
 __Arguments__
@@ -618,35 +640,8 @@ if !(ok && len(res) == len(arr)) {
 }
 ```
 
-<a name="mapBy" />
-### MapBy(source, property)
-
-__Arguments__
-
-* `source` - array or map
-* `property` - property name
-
-__Return__
-
-* interface{} - []propertyType
-
-__Examples__
-
-```go
-arr := []TestModel{
-	TestModel{ 1, "a" },
-	TestModel{ 2, "a" },
-	TestModel{ 3, "b" },
-	TestModel{ 4, "b" },
-}
-v := MapBy(arr, "name")
-res, ok := v.([]string)
-if !(ok && len(res) == 4) {
-	// wrong
-}
-```
-
 <a name="md5" />
+
 ### Md5(plaintext)
 
 __Arguments__
@@ -666,6 +661,7 @@ if Md5("123456") != "e10adc3949ba59abbe56e057f20f883e" {
 ```
 
 <a name="object" />
+
 ### Object(arr)
 
 __Arguments__
@@ -698,6 +694,7 @@ if v1, ok := dic["b"]; !(ok && v1 == 2) {
 ```
 
 <a name="pluck" />
+
 ### Pluck(source, property)
 
 __Arguments__
@@ -731,6 +728,7 @@ for i := 0; i < 3; i++ {
 ```
 
 <a name="property" />
+
 ### Property(name)
 
 __Arguments__
@@ -760,6 +758,7 @@ if !(err == nil && name.(string) == item.Name) {
 ```
 
 <a name="propertyRV" />
+
 ### Property(name)
 
 __Arguments__
@@ -789,6 +788,7 @@ if !(err == nil && nameRV.String() == item.Name) {
 ```
 
 <a name="range" />
+
 ### Range(start, stop, step)
 
 __Arguments__
@@ -831,6 +831,7 @@ if !(len(arr) == 2 && arr[0] == 0 && arr[1] == 2) {
 ```
 
 <a name="reduce" />
+
 ### Reduce(source, iterator)
 
 __Arguments__
@@ -862,6 +863,7 @@ if !(res[0] == 1 && res[1] == 11 && res[2] == 2 && res[3] == 12) {
 ```
 
 <a name="reject" />
+
 ### Reject(source, predicate)
 
 __Arguments__
@@ -891,6 +893,7 @@ if !(res[0] == 1 && res[1] == 3) {
 ```
 
 <a name="rejectBy" />
+
 ### RejectBy(source, properties)
 
 __Arguments__
@@ -920,6 +923,7 @@ if !(ok && len(res) == 2) {
 ```
 
 <a name="size" />
+
 ### Size(source)
 
 __Arguments__
@@ -944,6 +948,7 @@ if Size(dict) != len(dict) {
 ```
 
 <a name="sort" />
+
 ### Sort(source, selector)
 
 __Arguments__
@@ -975,6 +980,7 @@ for i, n := range arr {
 ```
 
 <a name="sortBy" />
+
 ### SortBy(source, property)
 
 __Arguments__
@@ -1006,6 +1012,7 @@ if !(res[0].Id < res[1].Id && res[1].Id < res[2].Id) {
 ```
 
 <a name="take" />
+
 ### Take(source, count)
 
 __Arguments__
@@ -1033,6 +1040,7 @@ if res[0] != 1 {
 ```
 
 <a name="uniq" />
+
 ### Uniq(source, selector)
 
 __Arguments__
@@ -1057,6 +1065,7 @@ if !(ok && len(res) == 2) {
 ```
 
 <a name="uniqBy" />
+
 ### UniqBy(source, property)
 
 __Arguments__
@@ -1084,6 +1093,7 @@ if !(ok && len(res) == 1) {
 ```
 
 <a name="uuid" />
+
 ### UUID()
 
 __Return__
@@ -1097,7 +1107,59 @@ uuid := UUID()
 //1a40272540e57d1c80e7b06042219d0c
 ```
 
+<a name="value" />
+
+### Value()
+
+__Return__
+
+* interface{} - Chain final result
+
+__Examples__
+
+```go
+res, ok := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
+	if n%2 == 0 {
+		return "even"
+	}
+
+	return "old"
+}).Value().(map[string][]int)
+if !(ok && len(res) == 2) {
+	// wrong
+}
+```
+
+<a name="valueOrDefault" />
+
+### ValueOrDefault(defaultValue interface{})
+
+__Return__
+
+* interface{} - Chain final result or default value(if final result is nil)
+
+__Examples__
+
+```go
+res, ok := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
+	if n%2 == 0 {
+		return "even"
+	}
+
+	return "old"
+}).ValueOrDefault(make(map[string][]int)).(map[string][]int)
+if !(ok && len(res) == 2) {
+	// wrong
+}
+
+res, ok = Chain([]int{}).GroupBy("unknow").ValueOrDefault(make(map[string][]int)).(map[string][]int)
+if !(ok && len(res) == 0) {
+	// wrong
+}
+```
+
 <a name="values" />
+
 ### Values(source)
 
 __Arguments__
@@ -1123,8 +1185,10 @@ res, ok := v.([]string)
 if !(ok && len(res) == len(dict)) {
 	// wrong
 }
+```
 
 <a name="where" />
+
 ### Where(source, predicate)
 
 __Arguments__
@@ -1159,6 +1223,7 @@ if !(res[0].Id == 2 && res[1].Id == 4) {
 ```
 
 <a name="whereBy" />
+
 ### WhereBy(source, properties)
 
 __Arguments__

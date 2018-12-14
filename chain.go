@@ -1,44 +1,44 @@
 package underscore
 
-// Queryer is interface
-type Queryer interface {
-	All(interface{}) Queryer
-	AllBy(map[string]interface{}) Queryer
-	Any(interface{}) Queryer
-	AnyBy(map[string]interface{}) Queryer
-	AsParallel() Queryer
-	Clone() Queryer
-	Each(interface{}) Queryer
-	Find(interface{}) Queryer
-	FindBy(map[string]interface{}) Queryer
-	FindIndex(interface{}) Queryer
-	FindLastIndex() Queryer
-	FindIndexBy(map[string]interface{}) Queryer
-	First() Queryer
-	Group(interface{}) Queryer
-	GroupBy(string) Queryer
-	Index(interface{}) Queryer
-	IndexBy(string) Queryer
-	Keys() Queryer
-	Last() Queryer
-	Map(interface{}) Queryer
-	MapBy(string) Queryer
-	Object() Queryer
-	Pluck(string) Queryer
-	Range(int, int, int) Queryer
-	Reduce(interface{}, interface{}) Queryer
-	Reject(interface{}) Queryer
-	RejectBy(map[string]interface{}) Queryer
-	Size() Queryer
-	Sort(interface{}) Queryer
-	SortBy(string) Queryer
-	Take(int) Queryer
-	Uniq(interface{}) Queryer
-	UniqBy(string) Queryer
+// IQuery is interface
+type IQuery interface {
+	All(interface{}) IQuery
+	AllBy(map[string]interface{}) IQuery
+	Any(interface{}) IQuery
+	AnyBy(map[string]interface{}) IQuery
+	AsParallel() IQuery
+	Clone() IQuery
+	Each(interface{}) IQuery
+	Find(interface{}) IQuery
+	FindBy(map[string]interface{}) IQuery
+	FindIndex(interface{}) IQuery
+	FindIndexBy(map[string]interface{}) IQuery
+	FindLastIndex() IQuery
+	First() IQuery
+	Group(interface{}) IQuery
+	GroupBy(string) IQuery
+	Index(interface{}) IQuery
+	IndexBy(string) IQuery
+	Keys() IQuery
+	Last() IQuery
+	Map(interface{}) IQuery
+	Object() IQuery
+	Pluck(string) IQuery
+	Range(int, int, int) IQuery
+	Reduce(interface{}, interface{}) IQuery
+	Reject(interface{}) IQuery
+	RejectBy(map[string]interface{}) IQuery
+	Size() IQuery
+	Sort(interface{}) IQuery
+	SortBy(string) IQuery
+	Take(int) IQuery
+	Uniq(interface{}) IQuery
+	UniqBy(string) IQuery
 	Value() interface{}
-	Values() Queryer
-	Where(interface{}) Queryer
-	WhereBy(map[string]interface{}) Queryer
+	ValueOrDefault(interface{}) interface{}
+	Values() IQuery
+	Where(interface{}) IQuery
+	WhereBy(map[string]interface{}) IQuery
 }
 
 // Query is a wrapper
@@ -52,14 +52,23 @@ func (q *Query) Value() interface{} {
 	return q.source
 }
 
+// ValueOrDefault will return final result or default value(if final result is nil)
+func (q *Query) ValueOrDefault(defaultValue interface{}) interface{} {
+	if q.source == nil {
+		return defaultValue
+	}
+
+	return q.source
+}
+
 // AsParallel will turn on parallel
-func (q *Query) AsParallel() Queryer {
+func (q *Query) AsParallel() IQuery {
 	q.isParallel = true
 	return q
 }
 
 // Chain will cause all future method calls to return wrapped objects
-func Chain(source interface{}) Queryer {
+func Chain(source interface{}) IQuery {
 	q := new(Query)
 	q.source = source
 	return q

@@ -24,14 +24,14 @@ func AnyBy(source interface{}, properties map[string]interface{}) bool {
 	})
 }
 
-// Any is Queryer's method
-func (q *Query) Any(predicate interface{}) Queryer {
+// Any is IQuery's method
+func (q *Query) Any(predicate interface{}) IQuery {
 	q.source = Any(q.source, predicate)
 	return q
 }
 
-// AnyBy is Queryer's method
-func (q *Query) AnyBy(properties map[string]interface{}) Queryer {
+// AnyBy is IQuery's method
+func (q *Query) AnyBy(properties map[string]interface{}) IQuery {
 	q.source = AnyBy(q.source, properties)
 	return q
 }

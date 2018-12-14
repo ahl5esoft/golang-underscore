@@ -5,21 +5,21 @@ import (
 )
 
 func TestSort(t *testing.T) {
-	arr := []int{1, 2, 3, 5}
-	v := Sort([]int{5, 3, 2, 1}, func(n, _ int) int {
-		return n
+	arr := []TestModel{
+		TestModel{3, "three"},
+		TestModel{1, "one"},
+		TestModel{2, "two"},
+	}
+	v := Sort(arr, func(n TestModel, _ int) int {
+		return -n.ID
 	})
-	res, ok := v.([]int)
+	res, ok := v.([]TestModel)
 	if !(ok && len(res) == len(arr)) {
-		t.Error("wrong length")
-		return
+		t.Fatal("wrong length")
 	}
 
-	for i, n := range arr {
-		if res[i] != n {
-			t.Error("wrong result")
-			break
-		}
+	if !(res[0].ID == 3 && res[1].ID == 2 && res[2].ID == 1) {
+		t.Fatal("sort error")
 	}
 }
 

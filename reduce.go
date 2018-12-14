@@ -33,8 +33,8 @@ func Reduce(source, iterator, memo interface{}) interface{} {
 	return origin
 }
 
-// Reduce is Queryer's method
-func (q *Query) Reduce(iterator, memo interface{}) Queryer {
+// Reduce is IQuery's method
+func (q *Query) Reduce(iterator, memo interface{}) IQuery {
 	q.source = Reduce(q.source, iterator, memo)
 	return q
 }

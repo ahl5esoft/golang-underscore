@@ -12,14 +12,14 @@ func WhereBy(source interface{}, properties map[string]interface{}) interface{} 
 	})
 }
 
-// Where is Queryer's method
-func (q *Query) Where(predicate interface{}) Queryer {
+// Where is IQuery's method
+func (q *Query) Where(predicate interface{}) IQuery {
 	q.source = Where(q.source, predicate)
 	return q
 }
 
-// WhereBy is Queryer's method
-func (q *Query) WhereBy(properties map[string]interface{}) Queryer {
+// WhereBy is IQuery's method
+func (q *Query) WhereBy(properties map[string]interface{}) IQuery {
 	q.source = WhereBy(q.source, properties)
 	return q
 }

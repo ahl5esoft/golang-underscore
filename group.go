@@ -39,14 +39,14 @@ func GroupBy(source interface{}, property string) interface{} {
 	})
 }
 
-// Group is Queryer's mehtod
-func (q *Query) Group(keySelector interface{}) Queryer {
+// Group is IQuery's mehtod
+func (q *Query) Group(keySelector interface{}) IQuery {
 	q.source = Group(q.source, keySelector)
 	return q
 }
 
-// GroupBy is Queryer's mehtod
-func (q *Query) GroupBy(property string) Queryer {
+// GroupBy is IQuery's mehtod
+func (q *Query) GroupBy(property string) IQuery {
 	q.source = GroupBy(q.source, property)
 	return q
 }

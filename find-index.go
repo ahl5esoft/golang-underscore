@@ -30,14 +30,14 @@ func FindIndexBy(source interface{}, properties map[string]interface{}) int {
 	})
 }
 
-// FindIndex is Queryer's method
-func (q *Query) FindIndex(predicate interface{}) Queryer {
+// FindIndex is IQuery's method
+func (q *Query) FindIndex(predicate interface{}) IQuery {
 	q.source = FindIndex(q.source, predicate)
 	return q
 }
 
-// FindIndexBy is Queryer's method
-func (q *Query) FindIndexBy(properties map[string]interface{}) Queryer {
+// FindIndexBy is IQuery's method
+func (q *Query) FindIndexBy(properties map[string]interface{}) IQuery {
 	q.source = FindIndexBy(q.source, properties)
 	return q
 }

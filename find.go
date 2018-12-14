@@ -25,14 +25,14 @@ func FindBy(source interface{}, properties map[string]interface{}) interface{} {
 	})
 }
 
-// Find is Queryer's method
-func (q *Query) Find(predicate interface{}) Queryer {
+// Find is IQuery's method
+func (q *Query) Find(predicate interface{}) IQuery {
 	q.source = Find(q.source, predicate)
 	return q
 }
 
-// FindBy is Queryer's method
-func (q *Query) FindBy(properties map[string]interface{}) Queryer {
+// FindBy is IQuery's method
+func (q *Query) FindBy(properties map[string]interface{}) IQuery {
 	q.source = FindBy(q.source, properties)
 	return q
 }

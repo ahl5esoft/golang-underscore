@@ -11,8 +11,8 @@ func Last(source interface{}) interface{} {
 	return valueRV.Interface()
 }
 
-// Last is Queryer's method
-func (q *Query) Last() Queryer {
+// Last is IQuery's method
+func (q *Query) Last() IQuery {
 	q.source = Last(q.source)
 	return q
 }
