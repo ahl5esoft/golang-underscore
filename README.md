@@ -22,9 +22,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-	* FindLastIndex
-	* Sample
-	* more...
+	* use `Value(res interface{})` to repalce `Value() interface{}` and `ValueOrDefault(defaultValue interface{}) interface{}`
 
 ## Documentation
 
