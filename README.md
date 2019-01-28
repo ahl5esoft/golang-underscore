@@ -265,16 +265,13 @@ Each(arr, func (r TestModel, i int) {
 
 <a name="find" />
 
-### Find(source, predicate)
+### Find(source, predicate, match)
 
 __Arguments__
 
 * `source` - array or map
 * `predicate` - func(element or value, index or key) bool
-
-__Return__
-
-* interface{}
+* `match` - result
 
 __Examples__
 
@@ -284,24 +281,22 @@ arr := []TestModel{
 	TestModel{2, "two"},
 	TestModel{3, "three"},
 }
-item := Find(arr, func(r TestModel, _ int) bool {
+var item TestModel
+Find(arr, func(r TestModel, _ int) bool {
 	return r.Id == 1
-})
+}, &item)
 // item == arr[0]
 ```
 
 <a name="findBy" />
 
-### FindBy(source, properties)
+### FindBy(source, properties, match)
 
 __Arguments__
 
 * `source` - array or map
 * `properties` - map[string]interface{}
-
-__Return__
-
-* interface{}
+* `match` - result
 
 __Examples__
 
@@ -311,9 +306,10 @@ arr := []TestModel{
 	TestModel{2, "two"},
 	TestModel{3, "three"},
 }
-item := FindBy(arr, map[string]interface{}{
+var item TestModel
+FindBy(arr, map[string]interface{}{
 	"id": 2,
-})
+}, &item)
 // item == arr[1]
 ```
 
@@ -373,28 +369,20 @@ i := FindIndexBy(arr, map[string]interface{}{
 
 <a name="first" />
 
-### First(source)
+### First(source, first)
 
 __Arguments__
 
 * `source` - array or map
-
-__Return__
-
-* interface{}
+* `first` - first element of `source`
 
 __Examples__
 
 ```go
 arr := []int{ 1, 2, 3 }
-v := First(arr)
-n, ok := v.(int)
-if !(ok && n == 1) {
-	//wrong
-}
-
-v = First(nil)
-if v != nil {
+var n int
+First(arr, &n)
+if n != 1 {
 	//wrong
 }
 ```
