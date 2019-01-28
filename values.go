@@ -16,8 +16,7 @@ func Values(source interface{}) interface{} {
 	})
 }
 
-// Values is IQuery's method
-func (q *Query) Values() IQuery {
-	q.source = Values(q.source)
-	return q
+func (m *query) Values() IQuery {
+	m.Source = Values(m.Source)
+	return m
 }

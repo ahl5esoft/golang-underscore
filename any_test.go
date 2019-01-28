@@ -18,20 +18,6 @@ func TestAny(t *testing.T) {
 	}
 }
 
-func TestChain_Any(t *testing.T) {
-	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
-	}
-	res := Chain(arr).Any(func(r TestModel, _ int) bool {
-		return r.ID == 0
-	}).Value()
-	if res.(bool) {
-		t.Error("wrong")
-	}
-}
-
 func TestAnyBy(t *testing.T) {
 	arr := []TestModel{
 		TestModel{ID: 1, Name: "one"},
@@ -55,16 +41,54 @@ func TestAnyBy(t *testing.T) {
 	}
 }
 
-func TestChain_AnyBy(t *testing.T) {
-	arr := []TestModel{
+func TestChain_Any_False(t *testing.T) {
+	ok := Chain([]TestModel{
 		TestModel{ID: 1, Name: "one"},
 		TestModel{ID: 2, Name: "two"},
 		TestModel{ID: 3, Name: "three"},
+	}).Any(func(r TestModel, _ int) bool {
+		return r.ID == 0
+	})
+	if ok {
+		t.Error("wrong")
 	}
-	res := Chain(arr).AnyBy(map[string]interface{}{
+}
+
+func TestChain_Any_True(t *testing.T) {
+	ok := Chain([]TestModel{
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 2, Name: "two"},
+		TestModel{ID: 3, Name: "three"},
+	}).Any(func(r TestModel, _ int) bool {
+		return r.ID == 1
+	})
+	if !ok {
+		t.Error("wrong")
+	}
+}
+
+func TestChain_AnyBy_False(t *testing.T) {
+	ok := Chain([]TestModel{
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 2, Name: "two"},
+		TestModel{ID: 3, Name: "three"},
+	}).AnyBy(map[string]interface{}{
 		"id": 0,
-	}).Value()
-	if res.(bool) {
+	})
+	if ok {
+		t.Error("wrong")
+	}
+}
+
+func TestChain_AnyBy_True(t *testing.T) {
+	ok := Chain([]TestModel{
+		TestModel{ID: 1, Name: "one"},
+		TestModel{ID: 2, Name: "two"},
+		TestModel{ID: 3, Name: "three"},
+	}).AnyBy(map[string]interface{}{
+		"name": "two",
+	})
+	if !ok {
 		t.Error("wrong")
 	}
 }

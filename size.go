@@ -6,8 +6,6 @@ func Size(source interface{}) int {
 	return length
 }
 
-// Size is IQuery's Method
-func (q *Query) Size() IQuery {
-	q.source = Size(q.source)
-	return q
+func (m *query) Size() int {
+	return Size(m.Source)
 }

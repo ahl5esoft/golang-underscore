@@ -9,8 +9,7 @@ func FindLastIndex(source interface{}) int {
 	return Size(source) - 1
 }
 
-// FindLastIndex is Queryer's method
-func (q *Query) FindLastIndex() IQuery {
-	q.source = FindLastIndex(q.source)
-	return q
+func (m *query) FindLastIndex() IQuery {
+	m.Source = FindLastIndex(m.Source)
+	return m
 }

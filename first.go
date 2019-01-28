@@ -1,18 +1,29 @@
 package underscore
 
+import (
+	"fmt"
+	"reflect"
+)
+
 // First is 获取第一个元素
-func First(source interface{}) interface{} {
+func First(source, matcher interface{}) {
+	rv := reflect.ValueOf(matcher)
+	if rv.Kind() != reflect.Ptr {
+		panic(
+			fmt.Sprintf("receive type must be a pointer: `First(_, macther interface{})`"),
+		)
+	}
+
 	length, getKeyValue := parseSource(source)
 	if length == 0 {
-		return nil
+		return
 	}
 
 	valueRV, _ := getKeyValue(0)
-	return valueRV.Interface()
+	rv.Elem().Set(valueRV)
 }
 
-// First is IQuery's method
-func (q *Query) First() IQuery {
-	q.source = First(q.source)
-	return q
+func (m *query) First() IQuery {
+	First(m.Source, &m.Source)
+	return m
 }

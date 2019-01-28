@@ -9,8 +9,7 @@ func Take(source interface{}, count int) interface{} {
 	})
 }
 
-// Take is Query's method
-func (q *Query) Take(count int) IQuery {
-	q.source = Take(q.source, count)
-	return q
+func (m *query) Take(count int) IQuery {
+	m.Source = Take(m.Source, count)
+	return m
 }

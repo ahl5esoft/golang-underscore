@@ -23,25 +23,6 @@ func TestSort(t *testing.T) {
 	}
 }
 
-func TestChain_Sort(t *testing.T) {
-	arr := []int{1, 2, 3, 5}
-	v := Chain([]int{5, 3, 2, 1}).Sort(func(n, _ int) int {
-		return n
-	}).Value()
-
-	res, ok := v.([]int)
-	if !(ok && len(res) == len(arr)) {
-		t.Error("wrong length")
-	}
-
-	for i, n := range arr {
-		if res[i] != n {
-			t.Error("wrong result")
-			break
-		}
-	}
-}
-
 func TestSortBy(t *testing.T) {
 	arr := []TestModel{
 		TestModel{ID: 2, Name: "two"},
@@ -60,20 +41,32 @@ func TestSortBy(t *testing.T) {
 	}
 }
 
+func TestChain_Sort(t *testing.T) {
+	arr := []int{1, 2, 3, 5}
+	res := make([]int, 0)
+	Chain([]int{5, 3, 2, 1}).Sort(func(n, _ int) int {
+		return n
+	}).Value(&res)
+	if len(res) != len(arr) {
+		t.Fatal("wrong length")
+	}
+
+	for i, n := range arr {
+		if res[i] != n {
+			t.Fatal("wrong result")
+		}
+	}
+}
+
 func TestChain_SortBy(t *testing.T) {
 	arr := []TestModel{
 		TestModel{ID: 3, Name: "three"},
 		TestModel{ID: 1, Name: "one"},
 		TestModel{ID: 2, Name: "two"},
 	}
-	v := Chain(arr).SortBy("id").Value()
-	res, ok := v.([]TestModel)
-	if !(ok && len(res) == len(arr)) {
-		t.Error("wrong length")
-		return
-	}
-
-	if !(res[0].ID < res[1].ID && res[1].ID < res[2].ID) {
-		t.Error("wrong result")
+	res := make([]TestModel, 0)
+	Chain(arr).SortBy("id").Value(&res)
+	if !(len(res) == len(arr) && res[0].ID < res[1].ID && res[1].ID < res[2].ID) {
+		t.Error(res)
 	}
 }

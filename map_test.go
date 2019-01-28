@@ -19,11 +19,11 @@ func TestMap(t *testing.T) {
 
 func TestChain_Map(t *testing.T) {
 	arr := []string{"a", "b", "c"}
-	v := Chain(arr).Map(func(item, _ interface{}) string {
+	res := make([]string, 0)
+	Chain(arr).Map(func(item, _ interface{}) string {
 		return item.(string) + "-"
-	}).Value()
-	res, ok := v.([]string)
-	if !(ok && len(res) == len(arr) && res[0] == "a-") {
+	}).Value(&res)
+	if !(len(res) == len(arr) && res[0] == "a-") {
 		t.Error("wrong")
 	}
 }

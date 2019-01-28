@@ -42,8 +42,9 @@ func TestChain_FindLastIndex(t *testing.T) {
 		TestModel{ID: 2, Name: "two"},
 		TestModel{ID: 3, Name: "three"},
 	}
-	res := Chain(arr).FindLastIndex().Value()
-	if res.(int) != 2 {
+	var index int
+	Chain(arr).FindLastIndex().Value(&index)
+	if index != 2 {
 		t.Error("wrong")
 	}
 }

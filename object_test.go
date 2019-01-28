@@ -39,14 +39,28 @@ func Test_objectAsParallel(t *testing.T) {
 	}
 }
 
+func Test_Chain_AsParallel_Object(t *testing.T) {
+	arr := [COUNT][]int{}
+	for i := 0; i < COUNT; i++ {
+		arr[i] = []int{i, i}
+	}
+
+	res := make(map[int]int)
+	Chain(arr).AsParallel().Object().Value(&res)
+	if len(res) != COUNT {
+		t.Error(len(res))
+	}
+}
+
 func Test_Chain_Object(t *testing.T) {
 	arr := [COUNT][]int{}
 	for i := 0; i < COUNT; i++ {
 		arr[i] = []int{i, i}
 	}
 
-	finalArr, ok := Chain(arr).AsParallel().Object().Value().(map[int]int)
-	if !(ok && len(finalArr) == COUNT) {
-		t.Error("err", ok, len(finalArr))
+	res := make(map[int]int)
+	Chain(arr).AsParallel().Object().Value(&res)
+	if len(res) != COUNT {
+		t.Error(len(res))
 	}
 }

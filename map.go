@@ -23,8 +23,7 @@ func Map(source, selector interface{}) interface{} {
 	return nil
 }
 
-// Map is IQuery's method
-func (q *Query) Map(selector interface{}) IQuery {
-	q.source = Map(q.source, selector)
-	return q
+func (m *query) Map(selector interface{}) IQuery {
+	m.Source = Map(m.Source, selector)
+	return m
 }

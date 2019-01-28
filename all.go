@@ -25,14 +25,10 @@ func AllBy(source interface{}, properties map[string]interface{}) bool {
 	})
 }
 
-// All is IQuery's method
-func (q *Query) All(predicate interface{}) IQuery {
-	q.source = All(q.source, predicate)
-	return q
+func (m *query) All(predicate interface{}) bool {
+	return All(m.Source, predicate)
 }
 
-// AllBy is IQuery's method
-func (q *Query) AllBy(properties map[string]interface{}) IQuery {
-	q.source = AllBy(q.source, properties)
-	return q
+func (m *query) AllBy(properties map[string]interface{}) bool {
+	return AllBy(m.Source, properties)
 }

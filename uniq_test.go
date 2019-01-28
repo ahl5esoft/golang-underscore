@@ -12,16 +12,6 @@ func TestUniq(t *testing.T) {
 	}
 }
 
-func TestChain_Uniq(t *testing.T) {
-	v := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(func(n, _ int) (int, error) {
-		return n % 2, nil
-	}).Value()
-	res, ok := v.([]int)
-	if !(ok && len(res) == 2) {
-		t.Error("wrong")
-	}
-}
-
 func TestUniqBy(t *testing.T) {
 	arr := []TestModel{
 		TestModel{ID: 1, Name: "a"},
@@ -35,15 +25,25 @@ func TestUniqBy(t *testing.T) {
 	}
 }
 
+func TestChain_Uniq(t *testing.T) {
+	res := make([]int, 0)
+	Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(func(n, _ int) (int, error) {
+		return n % 2, nil
+	}).Value(&res)
+	if len(res) != 2 {
+		t.Error(res)
+	}
+}
+
 func TestChain_UniqBy(t *testing.T) {
 	arr := []TestModel{
 		TestModel{ID: 1, Name: "a"},
 		TestModel{ID: 2, Name: "a"},
 		TestModel{ID: 3, Name: "a"},
 	}
-	v := Chain(arr).UniqBy("Name").Value()
-	res, ok := v.([]TestModel)
-	if !(ok && len(res) == 1) {
+	res := make([]TestModel, 0)
+	Chain(arr).UniqBy("Name").Value(&res)
+	if len(res) != 1 {
 		t.Error("wrong")
 	}
 }

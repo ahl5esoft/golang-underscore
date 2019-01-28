@@ -5,14 +5,14 @@ import (
 )
 
 func TestKeys(t *testing.T) {
-	arr := []string{ "aa" }
+	arr := []string{"aa"}
 	v := Keys(arr)
 	if v != nil {
 		t.Error("wrong")
 		return
 	}
 
-	dict := map[int]string{	
+	dict := map[int]string{
 		1: "a",
 		2: "b",
 		3: "c",
@@ -26,15 +26,15 @@ func TestKeys(t *testing.T) {
 }
 
 func TestChain_Keys(t *testing.T) {
-	dict := map[int]string{	
+	dict := map[int]string{
 		1: "a",
 		2: "b",
 		3: "c",
 		4: "d",
 	}
-	v := Chain(dict).Keys().Value()
-	res, ok := v.([]int)
-	if !(ok && len(res) == len(dict)) {
+	res := make([]int, 0)
+	Chain(dict).Keys().Value(&res)
+	if len(res) != len(dict) {
 		t.Error("wrong")
 	}
 }

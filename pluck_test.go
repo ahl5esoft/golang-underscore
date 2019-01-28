@@ -29,9 +29,9 @@ func TestChain_Pluck(t *testing.T) {
 		TestModel{ID: 2, Name: "two"},
 		TestModel{ID: 3, Name: "three"},
 	}
-	v := Chain(arr).Pluck("Name").Value()
-	res, ok := v.([]string)
-	if !(ok && len(res) == len(arr)) {
+	res := make([]string, 0)
+	Chain(arr).Pluck("Name").Value(&res)
+	if len(res) != len(arr) {
 		t.Fatal("wrong length")
 	}
 

@@ -4,38 +4,41 @@ import (
 	"testing"
 )
 
-func TestLast(t *testing.T) {
-	arr := []int{ 1, 2, 3 }
+func Test_Last_Array(t *testing.T) {
+	arr := []int{1, 2, 3}
 	n, ok := Last(arr).(int)
 	if !(ok && n == 3) {
 		t.Error("wrong")
-		return
 	}
+}
 
+func Test_Last_Map(t *testing.T) {
 	dict := map[string]string{
 		"a": "aa",
 		"b": "bb",
 	}
 	str, ok := Last(dict).(string)
-	if !(ok && str == "bb") {
+	if !(ok && (str == "aa" || str == "bb")) {
 		t.Error("wrong")
 	}
 }
 
-func TestChain_Last(t *testing.T) {
-	arr := []int{ 1, 2, 3 }
-	n, ok := Chain(arr).Last().Value().(int)
-	if !(ok && n == 3) {
-		t.Error("wrong")
-		return
+func TestChain_Last_Array(t *testing.T) {
+	var item int
+	Chain([]int{1, 2, 3}).Last().Value(&item)
+	if item != 3 {
+		t.Error(item)
 	}
+}
 
+func TestChain_Last_Map(t *testing.T) {
+	var item string
 	dict := map[string]string{
 		"a": "aa",
 		"b": "bb",
 	}
-	str, ok := Chain(dict).Last().Value().(string)
-	if !(ok && str == "bb") {
-		t.Error("wrong")
+	Chain(dict).Last().Value(&item)
+	if !(item == "aa" || item == "bb") {
+		t.Error(item)
 	}
 }

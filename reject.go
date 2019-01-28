@@ -12,14 +12,12 @@ func RejectBy(source interface{}, properties map[string]interface{}) interface{}
 	})
 }
 
-// Reject is IQuery's Method
-func (q *Query) Reject(predicate interface{}) IQuery {
-	q.source = Reject(q.source, predicate)
-	return q
+func (m *query) Reject(predicate interface{}) IQuery {
+	m.Source = Reject(m.Source, predicate)
+	return m
 }
 
-// RejectBy is IQuery's Method
-func (q *Query) RejectBy(properties map[string]interface{}) IQuery {
-	q.source = RejectBy(q.source, properties)
-	return q
+func (m *query) RejectBy(properties map[string]interface{}) IQuery {
+	m.Source = RejectBy(m.Source, properties)
+	return m
 }

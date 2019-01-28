@@ -32,7 +32,8 @@ func Object(source interface{}) interface{} {
 }
 
 func objectAsParallel(source interface{}) interface{} {
-	first := First(source)
+	var first interface{}
+	First(source, &first)
 	if first == nil || Size(first) != 2 {
 		return nil
 	}
@@ -62,12 +63,11 @@ func objectAsParallel(source interface{}) interface{} {
 	return mapRv.Interface()
 }
 
-// Object is IQuery'e method
-func (m *Query) Object() IQuery {
-	if m.isParallel {
-		m.source = objectAsParallel(m.source)
+func (m *query) Object() IQuery {
+	if m.IsParallel {
+		m.Source = objectAsParallel(m.Source)
 	} else {
-		m.source = Object(m.source)
+		m.Source = Object(m.Source)
 	}
 
 	return m

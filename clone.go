@@ -6,30 +6,28 @@ import (
 	fjson "github.com/json-iterator/go"
 )
 
-// Clone will create a deep-copied clone of the `source`
-func Clone(source interface{}) interface{} {
-	var (
-		bytes  []byte
-		cloned interface{}
-	)
-
-	rt := reflect.TypeOf(source)
-	if rt.Kind() == reflect.Ptr {
-		cloned = reflect.New(rt.Elem()).Interface()
-		bytes, _ = fjson.Marshal(
-			reflect.ValueOf(source).Elem().Interface(),
-		)
-	} else {
-		cloned = reflect.New(rt).Interface()
-		bytes, _ = fjson.Marshal(source)
-	}
-
-	fjson.Unmarshal(bytes, cloned)
-	return reflect.ValueOf(cloned).Elem().Interface()
+// Clone will create a deep-copied clone of the `src`
+func Clone(src, dst interface{}) {
+	bf, _ := fjson.Marshal(src)
+	fjson.Unmarshal(bf, dst)
 }
 
-// Clone is IQuery's method
-func (q *Query) Clone() IQuery {
-	q.source = Clone(q.source)
-	return q
+func (m *query) Clone() IQuery {
+	rt := reflect.TypeOf(m.Source)
+	if rt.Kind() == reflect.Ptr {
+		rt = rt.Elem()
+	}
+
+	rv := reflect.New(rt)
+	Clone(
+		m.Source,
+		rv.Interface(),
+	)
+
+	if rt.Kind() == reflect.Array || rt.Kind() == reflect.Map || rt.Kind() == reflect.Slice {
+		m.Source = rv.Elem().Interface()
+	} else {
+		m.Source = rv.Interface()
+	}
+	return m
 }

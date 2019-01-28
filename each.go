@@ -96,13 +96,12 @@ func parseSource(source interface{}) (int, func(i int) (reflect.Value, reflect.V
 	return 0, nil
 }
 
-// Each is IQuery's method
-func (q *Query) Each(iterator interface{}) IQuery {
-	if q.isParallel {
-		eachAsParallel(q.source, iterator)
+func (m *query) Each(iterator interface{}) IQuery {
+	if m.IsParallel {
+		eachAsParallel(m.Source, iterator)
 	} else {
-		each(q.source, iterator, nil)
+		each(m.Source, iterator, nil)
 	}
 
-	return q
+	return m
 }

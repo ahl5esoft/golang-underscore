@@ -10,8 +10,7 @@ func Pluck(source interface{}, property string) interface{} {
 	})
 }
 
-// Pluck is IQuery's method
-func (q *Query) Pluck(property string) IQuery {
-	q.source = Pluck(q.source, property)
-	return q
+func (m *query) Pluck(property string) IQuery {
+	m.Source = Pluck(m.Source, property)
+	return m
 }

@@ -9,7 +9,7 @@
                                                                                  \_/__/
 ```
 
-Underscore.go
+# Underscore.go
 ==========================================
 
 like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
@@ -22,7 +22,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-	* use `Value(res interface{})` to repalce `Value() interface{}` and `ValueOrDefault(defaultValue interface{}) interface{}`
+	* to be continued...
 
 ## Documentation
 
@@ -211,13 +211,14 @@ __Return__
 __Examples__
 
 ```go
-res, ok := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
+res := make(map[string][]int)
+Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
 	if n%2 == 0 {
 		return "even"
 	}
 
 	return "old"
-}).Value().(map[string][]int)
+}).Value(&res)
 // len(res) == 2 && ok == true
 ```
 
@@ -1116,14 +1117,15 @@ __Return__
 __Examples__
 
 ```go
-res, ok := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
+res := make(map[string][]int)
+Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
 	if n%2 == 0 {
 		return "even"
 	}
 
 	return "old"
-}).Value().(map[string][]int)
-if !(ok && len(res) == 2) {
+}).Value(&res)
+if len(res) == 2 {
 	// wrong
 }
 ```

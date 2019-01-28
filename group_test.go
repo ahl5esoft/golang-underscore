@@ -17,19 +17,6 @@ func TestGroup(t *testing.T) {
 	}
 }
 
-func TestChain_Group(t *testing.T) {
-	v := Chain([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
-		if n%2 == 0 {
-			return "even"
-		}
-		return "odd"
-	}).Value()
-	dict, ok := v.(map[string][]int)
-	if !(ok && len(dict["even"]) == 2) {
-		t.Error("wrong")
-	}
-}
-
 func TestGroupBy(t *testing.T) {
 	arr := []TestModel{
 		TestModel{ID: 1, Name: "a"},
@@ -44,16 +31,28 @@ func TestGroupBy(t *testing.T) {
 	}
 }
 
+func TestChain_Group(t *testing.T) {
+	res := make(map[string][]int)
+	Chain([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
+		if n%2 == 0 {
+			return "even"
+		}
+		return "odd"
+	}).Value(&res)
+	if len(res["even"]) != 2 {
+		t.Error("wrong")
+	}
+}
+
 func TestChain_GroupBy(t *testing.T) {
-	arr := []TestModel{
+	res := make(map[string][]TestModel)
+	Chain([]TestModel{
 		TestModel{ID: 1, Name: "a"},
 		TestModel{ID: 2, Name: "a"},
 		TestModel{ID: 3, Name: "b"},
 		TestModel{ID: 4, Name: "b"},
-	}
-	v := Chain(arr).GroupBy("Name").Value()
-	dict, ok := v.(map[string][]TestModel)
-	if !(ok && len(dict) == 2) {
+	}).GroupBy("Name").Value(&res)
+	if len(res) != 2 {
 		t.Error("wrong")
 	}
 }

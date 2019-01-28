@@ -25,8 +25,7 @@ func Range(start, stop, step int) []int {
 	return arr
 }
 
-// Range is IQuery's method
-func (q *Query) Range(start, stop, step int) IQuery {
-	q.source = Range(start, stop, step)
-	return q
+func (m *query) Range(start, stop, step int) IQuery {
+	m.Source = Range(start, stop, step)
+	return m
 }

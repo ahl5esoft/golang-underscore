@@ -36,7 +36,7 @@ func TestChain_Parallel_Each(t *testing.T) {
 	beginUnix := time.Now().Unix()
 	Chain(arr).AsParallel().Each(func(n, i int) {
 		time.Sleep(time.Second)
-	}).Value()
+	})
 	endUnix := time.Now().Unix()
 	if int(endUnix-beginUnix) > len(arr) {
 		t.Error("wrong")
