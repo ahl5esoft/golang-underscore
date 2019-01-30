@@ -1,7 +1,6 @@
 package underscore
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -12,9 +11,7 @@ func (m *query) Value(v interface{}) {
 
 	rv := reflect.ValueOf(v)
 	if rv.Kind() != reflect.Ptr {
-		panic(
-			fmt.Sprintf("receive type must be a pointer: `Chain.Value(v)`"),
-		)
+		panic("receive type must be a pointer")
 	}
 
 	rv.Elem().Set(

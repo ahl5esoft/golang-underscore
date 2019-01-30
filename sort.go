@@ -6,45 +6,38 @@ import (
 )
 
 // Sort is 排序
-func Sort(source, selector interface{}) interface{} {
-	qs := sortQuery{}
-	each(source, selector, func(sortRV, valueRV, _ reflect.Value) bool {
-		if qs.Len() == 0 {
-			keysRT := reflect.SliceOf(sortRV.Type())
-			qs.KeysRV = reflect.MakeSlice(keysRT, 0, 0)
-
-			valuesRT := reflect.SliceOf(valueRV.Type())
-			qs.ValuesRV = reflect.MakeSlice(valuesRT, 0, 0)
-		}
-
-		qs.KeysRV = reflect.Append(qs.KeysRV, sortRV)
-		qs.ValuesRV = reflect.Append(qs.ValuesRV, valueRV)
-		return false
-	})
-	if qs.Len() > 0 {
-		sort.Sort(qs)
-		return qs.ValuesRV.Interface()
+func Sort(source, selector, result interface{}) {
+	rv := reflect.ValueOf(result)
+	if rv.Kind() != reflect.Ptr {
+		panic("receive type must be a pointer")
 	}
 
-	return nil
+	qs := sortQuery{}
+	qs.Sort(source, selector)
+	if qs.Len() == 0 {
+		return
+	}
+
+	sort.Sort(qs)
+	rv.Elem().Set(qs.ValuesRV)
 }
 
 // SortBy is 根据属性排序
-func SortBy(source interface{}, property string) interface{} {
+func SortBy(source interface{}, property string, result interface{}) {
 	getPropertyRV := PropertyRV(property)
-	return Sort(source, func(value, _ interface{}) Facade {
+	Sort(source, func(value, _ interface{}) Facade {
 		return Facade{
 			getPropertyRV(value),
 		}
-	})
+	}, result)
 }
 
 func (m *query) Sort(selector interface{}) IQuery {
-	m.Source = Sort(m.Source, selector)
+	Sort(m.Source, selector, &m.Source)
 	return m
 }
 
 func (m *query) SortBy(property string) IQuery {
-	m.Source = SortBy(m.Source, property)
+	SortBy(m.Source, property, &m.Source)
 	return m
 }

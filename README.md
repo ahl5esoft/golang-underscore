@@ -48,6 +48,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Range`](#range)
 * [`Reduce`](#reduce)
 * [`Reject`](#reject), [`RejectBy`](#rejectBy)
+* [`Reverse`](#reverse), [`ReverseBy`](#reverseBy)
 * [`Size`](#size)
 * [`Sort`](#sort), [`SortBy`](#sortBy)
 * [`Take`](#take)
@@ -389,57 +390,51 @@ if n != 1 {
 
 <a name="group" />
 
-### Group(source, keySelector)
+### Group(source, keySelector, result)
 
 __Arguments__
 
 * `source` - array or map
 * `keySelector` - func(element or value, index or key) anyType
-
-__Return__
-
-* interface{} - map[anyType][](element or value)
+* `result` - map[anyType][](element or value)
 
 __Examples__
 
 ```go
-v := Group([]int{ 1, 2, 3, 4, 5 }, func (n, _ int) string {
-	if n % 2 == 0 {
+dic := make(map[string][]int)
+Group([]int{1, 2, 3, 4, 5}, func(n, _ int) string {
+	if n%2 == 0 {
 		return "even"
 	}
 	return "odd"
-})
-dict, ok := v.(map[string][]int)
-if !(ok && len(dict["even"]) == 2) {
+}, &dic)
+if len(dic["even"]) != 2 {
 	t.Error("wrong")
 }
 ```
 
 <a name="groupBy" />
 
-### GroupBy(source, property)
+### GroupBy(source, property, result)
 
 __Arguments__
 
 * `source` - array or map
 * `property` - property name
-
-__Return__
-
-* interface{} - map[property type][](element or value)
+* `result` - map[property type][](element or value)
 
 __Examples__
 
 ```go
 arr := []TestModel{
-	TestModel{ 1, "a" },
-	TestModel{ 2, "a" },
-	TestModel{ 3, "b" },
-	TestModel{ 4, "b" },
+	TestModel{ID: 1, Name: "a"},
+	TestModel{ID: 2, Name: "a"},
+	TestModel{ID: 3, Name: "b"},
+	TestModel{ID: 4, Name: "b"},
 }
-v := GroupBy(arr, "name")
-dict, ok := v.(map[string][]TestModel)
-if !(ok && len(dict) == 2) {
+dic := make(map[string][]TestModel)
+GroupBy(arr, "name", &dic)
+if len(dic) != 2 {
 	t.Error("wrong")
 }
 ```
@@ -851,16 +846,13 @@ if !(res[0] == 1 && res[1] == 11 && res[2] == 2 && res[3] == 12) {
 
 <a name="reject" />
 
-### Reject(source, predicate)
+### Reject(source, predicate, result)
 
 __Arguments__
 
 * `source` - array or map
 * `predicate` - func(element or value, index or key) bool
-
-__Return__
-
-* interface{} - an array of all the values that without pass a truth test `predicate`
+* `result` - an array of all the values that without pass a truth test `predicate`
 
 __Examples__
 
@@ -881,16 +873,13 @@ if !(res[0] == 1 && res[1] == 3) {
 
 <a name="rejectBy" />
 
-### RejectBy(source, properties)
+### RejectBy(source, properties, result)
 
 __Arguments__
 
 * `source` - array or map
 * `properties` - map[string]interface{}
-
-__Return__
-
-* interface{} - an array of all the values that without pass a truth test `properties`
+* `result` - an array of all the values that without pass a truth test `properties`
 
 __Examples__
 
@@ -906,6 +895,66 @@ v := RejectBy(arr, map[string]interface{}{
 res, ok := v.([]TestModel)
 if !(ok && len(res) == 2) {
 	// wrong
+}
+```
+
+<a name="reverse" />
+
+### Reverse(source, selector, result)
+
+__Arguments__
+
+* `source` - array or map
+* `selector` - func(element, key or index) anyType
+* `result` - an array of `source` that reversed
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{ID: 2, Name: "two"},
+	TestModel{ID: 1, Name: "one"},
+	TestModel{ID: 3, Name: "three"},
+}
+res := make([]TestModel, 0)
+Reverse(arr, func(n TestModel, _ int) int {
+	return n.ID
+}, &res)
+if len(res) != len(arr) {
+	// error
+}
+
+if !(res[0].ID == 3 && res[1].ID == 2 && res[2].ID == 1) {
+	// error
+}
+```
+
+<a name="reverseBy" />
+
+### ReverseBy(source, selector, result)
+
+__Arguments__
+
+* `source` - array or map
+* `property` - string
+* `result` - an array of `source` that reversed
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{ID: 2, Name: "two"},
+	TestModel{ID: 1, Name: "one"},
+	TestModel{ID: 3, Name: "three"},
+}
+res := make([]TestModel, 0)
+ReverseBy(arr, "id", &res)
+if len(res) != len(arr) {
+	// error
+}
+
+if !(res[0].ID == 3 && res[1].ID == 2 && res[2].ID == 1) {
+	// error
 }
 ```
 
@@ -936,65 +985,61 @@ if Size(dict) != len(dict) {
 
 <a name="sort" />
 
-### Sort(source, selector)
+### Sort(source, selector, result)
 
 __Arguments__
 
 * `source` - array or map
 * `selector` - func(element, key or index) anyType
-
-__Return__
-
-* interface{} - an array of `source` that sorted
-
-__Examples__
-
-```go
-arr := []int{ 1, 2, 3, 5 }
-v := Sort([]int{ 5, 3, 2, 1 }, func (n, _ int) int {
-	return n
-})
-res, ok := v.([]int)
-if !(ok && len(res) == len(arr)) {
-	// wrong
-}
-
-for i, n := range arr {
-	if res[i] != n {
-		// wrong
-	}
-}
-```
-
-<a name="sortBy" />
-
-### SortBy(source, property)
-
-__Arguments__
-
-* `source` - array or map
-* `property` - string
-
-__Return__
-
-* interface{}
+* `result` - an array of `source` that sorted
 
 __Examples__
 
 ```go
 arr := []TestModel{
-	TestModel{ 3, "three" },
-	TestModel{ 1, "one" },
-	TestModel{ 2, "two" },
+	TestModel{ID: 2, Name: "two"},
+	TestModel{ID: 1, Name: "one"},
+	TestModel{ID: 3, Name: "three"},
 }
-v := SortBy(arr, "id")
-res, ok := v.([]TestModel)
-if !(ok && len(res) == len(arr)) {
-	// wrong
+res := make([]TestModel, 0)
+Sort(arr, func(n TestModel, _ int) int {
+	return n.ID
+}, &res)
+if len(res) != len(arr) {
+	// error
 }
 
-if !(res[0].Id < res[1].Id && res[1].Id < res[2].Id) {
-	// wrong
+if !(res[0].ID == 1 && res[1].ID == 2 && res[2].ID == 3) {
+	// error
+}
+```
+
+<a name="sortBy" />
+
+### SortBy(source, property, result)
+
+__Arguments__
+
+* `source` - array or map
+* `property` - string
+* `result` - an array of `source` that sorted
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{ID: 2, Name: "two"},
+	TestModel{ID: 1, Name: "one"},
+	TestModel{ID: 3, Name: "three"},
+}
+res := make([]TestModel, 0)
+SortBy(arr, "id", &res)
+if len(res) != len(arr) {
+	// error
+}
+
+if !(res[0].ID < res[1].ID && res[1].ID < res[2].ID) {
+	// error
 }
 ```
 

@@ -1,7 +1,6 @@
 package underscore
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -9,9 +8,7 @@ import (
 func First(source, matcher interface{}) {
 	rv := reflect.ValueOf(matcher)
 	if rv.Kind() != reflect.Ptr {
-		panic(
-			fmt.Sprintf("receive type must be a pointer: `First(_, macther interface{})`"),
-		)
+		panic("receive type must be a pointer")
 	}
 
 	length, getKeyValue := parseSource(source)

@@ -1,7 +1,6 @@
 package underscore
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -9,9 +8,7 @@ import (
 func Find(source, predicate, matcher interface{}) {
 	rv := reflect.ValueOf(matcher)
 	if rv.Kind() != reflect.Ptr {
-		panic(
-			fmt.Sprintf("receive type must be a pointer: `Find(_, _, macther interface{})`"),
-		)
+		panic("receive type must be a pointer")
 	}
 
 	var ok bool

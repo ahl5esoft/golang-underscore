@@ -1,6 +1,8 @@
 package underscore
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type sortQuery struct {
 	KeysRV   reflect.Value
@@ -48,4 +50,20 @@ func (m sortQuery) Less(i, j int) bool {
 	default:
 		return false
 	}
+}
+
+func (m *sortQuery) Sort(source, selector interface{}) {
+	each(source, selector, func(sortRV, valueRV, _ reflect.Value) bool {
+		if m.Len() == 0 {
+			keysRT := reflect.SliceOf(sortRV.Type())
+			m.KeysRV = reflect.MakeSlice(keysRT, 0, 0)
+
+			valuesRT := reflect.SliceOf(valueRV.Type())
+			m.ValuesRV = reflect.MakeSlice(valuesRT, 0, 0)
+		}
+
+		m.KeysRV = reflect.Append(m.KeysRV, sortRV)
+		m.ValuesRV = reflect.Append(m.ValuesRV, valueRV)
+		return false
+	})
 }

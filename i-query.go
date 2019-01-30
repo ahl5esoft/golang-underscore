@@ -28,6 +28,8 @@ type IQuery interface {
 	Reduce(interface{}, interface{}) IQuery
 	Reject(interface{}) IQuery
 	RejectBy(map[string]interface{}) IQuery
+	Reverse(interface{}) IQuery
+	ReverseBy(string) IQuery
 	Size() int
 	Sort(interface{}) IQuery
 	SortBy(string) IQuery
