@@ -40,7 +40,8 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`IsArray`](#isArray)
 * [`IsMatch`](#isMatch)
 * [`Keys`](#keys)
-* [`Map`](#map)
+* [`Last`](#last)
+* [`Map`](#map), [`MapBy`](#mapBy)
 * [`Md5`](#md5)
 * [`Object`](#object)
 * [`Pluck`](#pluck)
@@ -54,7 +55,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Take`](#take)
 * [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
 * [`UUID`](#uuid)
-* [`Value`](#value), [`ValueOrDefault`](#valueOrDefault)
+* [`Value`](#value)
 * [`Values`](#values)
 * [`Where`](#where), [`WhereBy`](#whereBy)
 
@@ -441,55 +442,49 @@ if len(dic) != 2 {
 
 <a name="index" />
 
-### Index(source, indexSelector)
+### Index(source, indexSelector, result)
 
 __Arguments__
 
 * `source` - array or map
 * `indexSelector` - func(element or value, index or key) anyType
-
-__Return__
-
-* interface{} - map[anyType](element or value)
+* `result` - map[anyType](element or value)
 
 __Examples__
 
 ```go
-v, _ := Index([]string{ "a", "b" }, func (item string, _ int) string {
-	return item
-})
-res, ok := v.(map[string]string)
-if !(ok && res["a"] == "a") {
-	// wrong
+res := make(map[string]string)
+Index([]string{"a", "b"}, func(r string, _ int) string {
+	return r
+}, &res)
+if res["a"] != "a" {
+	// error
 }
 ```
 
 <a name="indexBy" />
 
-### IndexBy(source, property)
+### IndexBy(source, property, result)
 
 __Arguments__
 
 * `source` - array or map
 * `property` - string
-
-__Return__
-
-* interface{} - map[propertyType](element or value)
+* `result` - map[propertyType](element or value)
 
 __Examples__
 
 ```go
 arr := []TestModel{
-	TestModel{ 1, "a" },
-	TestModel{ 2, "a" },
-	TestModel{ 3, "b" },
-	TestModel{ 4, "b" },
+	TestModel{ID: 1, Name: "a"},
+	TestModel{ID: 2, Name: "a"},
+	TestModel{ID: 3, Name: "b"},
+	TestModel{ID: 4, Name: "b"},
 }
-res := IndexBy(arr, "Name")
-dict, ok := res.(map[string]TestModel)
-if !(ok && len(dict) == 2) {
-	// wrong
+res := make(map[string]TestModel)
+IndexBy(arr, "Name", &res)
+if len(res) != 2 {
+	// error
 }
 ```
 
@@ -563,62 +558,111 @@ if !ok {
 
 <a name="keys" />
 
-### Keys()
+### Keys(keys)
 
 __Arguments__
 
 * `source` - map
-
-__Return__
-
-* interface{} - []keyType
+* `keys` - []keyType
 
 __Examples__
 
 ```go
-arr := []string{ "aa" }
-v := Keys(arr)
-if v != nil {
-	// wrong
-}
-
-dict := map[int]string{	
+dict := map[int]string{
 	1: "a",
 	2: "b",
 	3: "c",
 	4: "d",
 }
-v = Keys(dict)
-res, ok := v.([]int)
-if !(ok && len(res) == len(dict)) {
+res := make([]int, 0)
+Keys(dict, &res)
+if len(res) != len(dict) {
+	// wrong
+}
+```
+
+<a name="last" />
+
+### Last(source, last)
+
+__Arguments__
+
+* `source` - array or map
+* `last` - last element of `source`
+
+__Examples__
+
+```go
+arr := []int{1, 2, 3}
+var n int
+Last(arr, &n)
+if n != 3 {
+	// wrong
+}
+
+dict := map[string]string{
+	"a": "aa",
+	"b": "bb",
+}
+var str string
+Last(dict, &str)
+if !(str == "aa" || str == "bb") {
 	// wrong
 }
 ```
 
 <a name="map" />
 
-### Map(source, selector)
+### Map(source, selector, result)
 
 __Arguments__
 
 * `source` - array or map
 * `selector` - func(element, index or key) anyType
-
-__Return__
-
-* interface{} - an array of anyType
+* `result` - an array of anyType
 
 __Examples__
 
 ```go
-arr := []string{ "11", "12", "13" }
-v := Map(arr, func (s string, _ int) int {
+arr := []string{"11", "12", "13"}
+res := make([]int, 0)
+Map(arr, func(s string, _ int) int {
 	n, _ := strconv.Atoi(s)
 	return n
-})
-res, ok := v.([]int)
-if !(ok && len(res) == len(arr)) {
+}, &res)
+if len(res) != len(arr) {
 	// wrong
+}
+```
+
+<a name="mapBy" />
+
+### MapBy(source, property, result)
+
+__Arguments__
+
+* `source` - array
+* `property` - string
+* `result` - an array of property type
+
+__Examples__
+
+```go
+arr := []TestModel{
+	TestModel{ID: 1, Name: "one"},
+	TestModel{ID: 2, Name: "two"},
+	TestModel{ID: 3, Name: "three"},
+}
+res := make([]string, 0)
+MapBy(arr, "name", &res)
+if len(res) != len(arr) {
+	// wrong
+}
+
+for i := 0; i < 3; i++ {
+	if res[i] != arr[i].Name {
+		// wrong
+	}
 }
 ```
 
@@ -672,40 +716,6 @@ if v1, ok := dic["a"]; !(ok && v1 == 1) {
 
 if v1, ok := dic["b"]; !(ok && v1 == 2) {
 	// wrong
-}
-```
-
-<a name="pluck" />
-
-### Pluck(source, property)
-
-__Arguments__
-
-* `source` - array
-* `property` - string
-
-__Return__
-
-* interface{} - an array of property type
-
-__Examples__
-
-```go
-arr := []TestModel{
-	TestModel{ 1, "one" },
-	TestModel{ 2, "two" },
-	TestModel{ 3, "three" },
-}
-v := Pluck(arr, "name")
-res, ok := v.([]string)
-if !(ok && len(res) == len(arr)) {
-	// wrong
-}
-
-for i := 0; i < 3; i++ {
-	if res[i] != arr[i].Name {
-		// wrong
-	}
 }
 ```
 
@@ -1163,59 +1173,27 @@ if len(res) == 2 {
 }
 ```
 
-<a name="valueOrDefault" />
-
-### ValueOrDefault(defaultValue interface{})
-
-__Return__
-
-* interface{} - Chain final result or default value(if final result is nil)
-
-__Examples__
-
-```go
-res, ok := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
-	if n%2 == 0 {
-		return "even"
-	}
-
-	return "old"
-}).ValueOrDefault(make(map[string][]int)).(map[string][]int)
-if !(ok && len(res) == 2) {
-	// wrong
-}
-
-res, ok = Chain([]int{}).GroupBy("unknow").ValueOrDefault(make(map[string][]int)).(map[string][]int)
-if !(ok && len(res) == 0) {
-	// wrong
-}
-```
-
 <a name="values" />
 
-### Values(source)
+### Values(source, values)
 
 __Arguments__
 
 * `source` - map
-
-__Return__
-
-* interface{} - an array of `source`'s values
-* error
+* `values` - an array of `source`'s values
 
 __Examples__
 
 ```go
-dict := map[int]string{	
+dict := map[int]string{
 	1: "a",
 	2: "b",
 	3: "c",
 	4: "d",
 }
-v, _ := Values(dict)
-res, ok := v.([]string)
-if !(ok && len(res) == len(dict)) {
+res := make([]string, 0)
+Values(dict, &res)
+if len(res) != len(dict) {
 	// wrong
 }
 ```

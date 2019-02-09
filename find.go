@@ -5,8 +5,8 @@ import (
 )
 
 // Find is 根据断言获取元素
-func Find(source, predicate, matcher interface{}) {
-	rv := reflect.ValueOf(matcher)
+func Find(source, predicate, match interface{}) {
+	rv := reflect.ValueOf(match)
 	if rv.Kind() != reflect.Ptr {
 		panic("receive type must be a pointer")
 	}

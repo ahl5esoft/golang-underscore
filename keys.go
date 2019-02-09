@@ -5,18 +5,18 @@ import (
 )
 
 // Keys is 获取map的所有key
-func Keys(source interface{}) interface{} {
+func Keys(source, keys interface{}) {
 	sourceRV := reflect.ValueOf(source)
 	if sourceRV.Kind() != reflect.Map {
-		return nil
+		return
 	}
 
-	return Map(source, func(_, key interface{}) Facade {
+	Map(source, func(_, key interface{}) Facade {
 		return Facade{reflect.ValueOf(key)}
-	})
+	}, keys)
 }
 
 func (m *query) Keys() IQuery {
-	m.Source = Keys(m.Source)
+	Keys(m.Source, &m.Source)
 	return m
 }

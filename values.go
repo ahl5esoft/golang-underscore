@@ -5,18 +5,18 @@ import (
 )
 
 // Values is 字典的所有value
-func Values(source interface{}) interface{} {
+func Values(source, values interface{}) {
 	sourceRV := reflect.ValueOf(source)
 	if sourceRV.Kind() != reflect.Map {
-		return nil
+		return
 	}
 
-	return Map(source, func(value, _ interface{}) Facade {
+	Map(source, func(value, _ interface{}) Facade {
 		return Facade{reflect.ValueOf(value)}
-	})
+	}, values)
 }
 
 func (m *query) Values() IQuery {
-	m.Source = Values(m.Source)
+	Values(m.Source, &m.Source)
 	return m
 }

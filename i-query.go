@@ -22,8 +22,8 @@ type IQuery interface {
 	Keys() IQuery
 	Last() IQuery
 	Map(interface{}) IQuery
+	MapBy(string) IQuery
 	Object() IQuery
-	Pluck(string) IQuery
 	Range(int, int, int) IQuery
 	Reduce(interface{}, interface{}) IQuery
 	Reject(interface{}) IQuery
@@ -37,7 +37,6 @@ type IQuery interface {
 	Uniq(interface{}) IQuery
 	UniqBy(string) IQuery
 	Value(v interface{})
-	ValueOrDefault(interface{}) interface{}
 	Values() IQuery
 	Where(interface{}) IQuery
 	WhereBy(map[string]interface{}) IQuery

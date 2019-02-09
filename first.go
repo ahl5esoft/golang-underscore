@@ -5,8 +5,8 @@ import (
 )
 
 // First is 获取第一个元素
-func First(source, matcher interface{}) {
-	rv := reflect.ValueOf(matcher)
+func First(source, match interface{}) {
+	rv := reflect.ValueOf(match)
 	if rv.Kind() != reflect.Ptr {
 		panic("receive type must be a pointer")
 	}

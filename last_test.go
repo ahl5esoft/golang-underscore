@@ -6,9 +6,10 @@ import (
 
 func Test_Last_Array(t *testing.T) {
 	arr := []int{1, 2, 3}
-	n, ok := Last(arr).(int)
-	if !(ok && n == 3) {
-		t.Error("wrong")
+	var n int
+	Last(arr, &n)
+	if n != 3 {
+		t.Error(n)
 	}
 }
 
@@ -17,9 +18,10 @@ func Test_Last_Map(t *testing.T) {
 		"a": "aa",
 		"b": "bb",
 	}
-	str, ok := Last(dict).(string)
-	if !(ok && (str == "aa" || str == "bb")) {
-		t.Error("wrong")
+	var str string
+	Last(dict, &str)
+	if !(str == "aa" || str == "bb") {
+		t.Error(str)
 	}
 }
 
