@@ -9,58 +9,56 @@ func Test_Object(t *testing.T) {
 		[]interface{}{"a", 1},
 		[]interface{}{"b", 2},
 	}
-	dic, ok := Object(arr).(map[string]int)
-	if !(ok && len(dic) == 2) {
-		t.Error("wrong", ok, dic, len(dic))
-		return
+	dic := make(map[string]int)
+	Object(arr, &dic)
+	if len(dic) != 2 {
+		t.Fatal(dic)
 	}
 
-	if v1, ok := dic["a"]; !(ok && v1 == 1) {
-		t.Error("key 1")
-		return
+	if v, ok := dic["a"]; !(ok && v == 1) {
+		t.Fatal("key 1")
 	}
 
-	if v1, ok := dic["b"]; !(ok && v1 == 2) {
+	if v, ok := dic["b"]; !(ok && v == 2) {
 		t.Error("key 2")
-		return
 	}
 }
 
-const COUNT = 10000
-
 func Test_objectAsParallel(t *testing.T) {
-	arr := [COUNT][]int{}
-	for i := 0; i < COUNT; i++ {
+	arr := [500][]int{}
+	for i := 0; i < 500; i++ {
 		arr[i] = []int{i, i}
 	}
-	finalArr, ok := objectAsParallel(arr).(map[int]int)
-	if !(ok && len(finalArr) == COUNT) {
-		t.Error("err", ok, len(finalArr))
+
+	dic := make(map[int]int)
+	objectAsParallel(arr, &dic)
+	if len(dic) != 500 {
+		t.Error("err")
 	}
 }
 
 func Test_Chain_AsParallel_Object(t *testing.T) {
-	arr := [COUNT][]int{}
-	for i := 0; i < COUNT; i++ {
+	arr := [500][]int{}
+	for i := 0; i < 500; i++ {
 		arr[i] = []int{i, i}
 	}
 
 	res := make(map[int]int)
 	Chain(arr).AsParallel().Object().Value(&res)
-	if len(res) != COUNT {
+	if len(res) != 500 {
 		t.Error(len(res))
 	}
 }
 
 func Test_Chain_Object(t *testing.T) {
-	arr := [COUNT][]int{}
-	for i := 0; i < COUNT; i++ {
+	arr := [500][]int{}
+	for i := 0; i < 500; i++ {
 		arr[i] = []int{i, i}
 	}
 
 	res := make(map[int]int)
 	Chain(arr).AsParallel().Object().Value(&res)
-	if len(res) != COUNT {
+	if len(res) != 500 {
 		t.Error(len(res))
 	}
 }

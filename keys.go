@@ -11,8 +11,8 @@ func Keys(source, keys interface{}) {
 		return
 	}
 
-	Map(source, func(_, key interface{}) Facade {
-		return Facade{reflect.ValueOf(key)}
+	Map(source, func(_, key interface{}) facade {
+		return facade{reflect.ValueOf(key)}
 	}, keys)
 }
 

@@ -6,31 +6,31 @@ import (
 
 // Map 映射
 func Map(source, selector, result interface{}) {
-	rv := reflect.ValueOf(result)
-	if rv.Kind() != reflect.Ptr {
+	resultRV := reflect.ValueOf(result)
+	if resultRV.Kind() != reflect.Ptr {
 		panic("receive type must be a pointer")
 	}
 
-	var arrRV reflect.Value
+	var tempRV reflect.Value
 	each(source, selector, func(resRV, valueRV, _ reflect.Value) bool {
-		if !arrRV.IsValid() {
-			arrRT := reflect.SliceOf(resRV.Type())
-			arrRV = reflect.MakeSlice(arrRT, 0, 0)
+		if !tempRV.IsValid() {
+			tempRT := reflect.SliceOf(resRV.Type())
+			tempRV = reflect.MakeSlice(tempRT, 0, 0)
 		}
 
-		arrRV = reflect.Append(arrRV, resRV)
+		tempRV = reflect.Append(tempRV, resRV)
 		return false
 	})
-	if arrRV.IsValid() {
-		rv.Elem().Set(arrRV)
+	if tempRV.IsValid() {
+		resultRV.Elem().Set(tempRV)
 	}
 }
 
 // MapBy is 从source中取出所有property
 func MapBy(source interface{}, property string, result interface{}) {
 	getPropertyRV := PropertyRV(property)
-	Map(source, func(value, _ interface{}) Facade {
-		return Facade{
+	Map(source, func(value, _ interface{}) facade {
+		return facade{
 			getPropertyRV(value),
 		}
 	}, result)

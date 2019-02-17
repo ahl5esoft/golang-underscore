@@ -5,9 +5,9 @@ import (
 )
 
 // First is 获取第一个元素
-func First(source, match interface{}) {
-	rv := reflect.ValueOf(match)
-	if rv.Kind() != reflect.Ptr {
+func First(source, first interface{}) {
+	firstRV := reflect.ValueOf(first)
+	if firstRV.Kind() != reflect.Ptr {
 		panic("receive type must be a pointer")
 	}
 
@@ -17,7 +17,7 @@ func First(source, match interface{}) {
 	}
 
 	valueRV, _ := getKeyValue(0)
-	rv.Elem().Set(valueRV)
+	firstRV.Elem().Set(valueRV)
 }
 
 func (m *query) First() IQuery {

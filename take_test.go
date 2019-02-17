@@ -6,14 +6,9 @@ import (
 
 func TestTake(t *testing.T) {
 	arr := []int{1, 2, 3}
-	v := Take(arr, 1)
-	res, ok := v.([]int)
-	if !ok {
-		t.Error("wrong")
-		return
-	}
-
-	if res[0] != 1 {
+	res := make([]int, 0)
+	Take(arr, 1, &res)
+	if len(res) != 1 || res[0] != 1 {
 		t.Error("wrong")
 	}
 }

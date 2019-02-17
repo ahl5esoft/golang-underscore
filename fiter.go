@@ -4,22 +4,25 @@ import (
 	"reflect"
 )
 
-func filter(source, predicate interface{}, compareValue bool) interface{} {
-	var arrRV reflect.Value
-	each(source, predicate, func(okRV, valueRV, _ reflect.Value) bool {
-		if okRV.Bool() == compareValue {
-			if !arrRV.IsValid() {
-				arrRT := reflect.SliceOf(valueRV.Type())
-				arrRV = reflect.MakeSlice(arrRT, 0, 0)
+func filter(source, predicate interface{}, compareValue bool, result interface{}) {
+	resultRV := reflect.ValueOf(result)
+	if resultRV.Kind() != reflect.Ptr {
+		panic("receive type must be a pointer")
+	}
+
+	var tempRV reflect.Value
+	each(source, predicate, func(resRV, valueRV, _ reflect.Value) bool {
+		if resRV.Bool() == compareValue {
+			if !tempRV.IsValid() {
+				tempRT := reflect.SliceOf(valueRV.Type())
+				tempRV = reflect.MakeSlice(tempRT, 0, 0)
 			}
 
-			arrRV = reflect.Append(arrRV, valueRV)
+			tempRV = reflect.Append(tempRV, valueRV)
 		}
 		return false
 	})
-	if arrRV.IsValid() {
-		return arrRV.Interface()
+	if tempRV.IsValid() {
+		resultRV.Elem().Set(tempRV)
 	}
-
-	return nil
 }

@@ -1,21 +1,8 @@
 package underscore
 
-import (
-	"reflect"
-)
-
 // Reject is 排除
 func Reject(source, predicate, result interface{}) {
-	rv := reflect.ValueOf(result)
-	if rv.Kind() != reflect.Ptr {
-		panic("receive type must be a pointer")
-	}
-
-	rv.Elem().Set(
-		reflect.ValueOf(
-			filter(source, predicate, false),
-		),
-	)
+	filter(source, predicate, false, result)
 }
 
 // RejectBy is 根据属性排除

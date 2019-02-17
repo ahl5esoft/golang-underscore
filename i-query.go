@@ -24,7 +24,6 @@ type IQuery interface {
 	Map(interface{}) IQuery
 	MapBy(string) IQuery
 	Object() IQuery
-	Range(int, int, int) IQuery
 	Reduce(interface{}, interface{}) IQuery
 	Reject(interface{}) IQuery
 	RejectBy(map[string]interface{}) IQuery

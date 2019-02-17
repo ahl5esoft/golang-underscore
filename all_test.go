@@ -4,6 +4,19 @@ import (
 	"testing"
 )
 
+// TestModel is 测试模型
+type TestModel struct {
+	TestNestedModel
+
+	ID   int
+	Name string
+}
+
+// TestNestedModel is 嵌套模型
+type TestNestedModel struct {
+	Age int
+}
+
 func TestAll(t *testing.T) {
 	arr := []TestModel{
 		TestModel{ID: 1, Name: "one"},

@@ -5,10 +5,15 @@ import (
 )
 
 // Uniq is 去重
-func Uniq(source, selector interface{}) interface{} {
+func Uniq(source, selector, result interface{}) {
+	resultRV := reflect.ValueOf(result)
+	if resultRV.Kind() != reflect.Ptr {
+		panic("receive type must be a pointer")
+	}
+
 	if selector == nil {
-		selector = func(value, _ interface{}) Facade {
-			return Facade{reflect.ValueOf(value)}
+		selector = func(value, _ interface{}) facade {
+			return facade{reflect.ValueOf(value)}
 		}
 	}
 
@@ -30,29 +35,28 @@ func Uniq(source, selector interface{}) interface{} {
 		}
 		return false
 	})
-	if mapRV.IsValid() {
-		return arrRV.Interface()
-	}
 
-	return nil
+	if mapRV.IsValid() {
+		resultRV.Elem().Set(arrRV)
+	}
 }
 
 // UniqBy is 根据某个属性去重
-func UniqBy(source interface{}, property string) interface{} {
+func UniqBy(source interface{}, property string, result interface{}) {
 	getPropertyRV := PropertyRV(property)
-	return Uniq(source, func(value, _ interface{}) Facade {
-		return Facade{
+	Uniq(source, func(value, _ interface{}) facade {
+		return facade{
 			getPropertyRV(value),
 		}
-	})
+	}, result)
 }
 
 func (m *query) Uniq(selector interface{}) IQuery {
-	m.Source = Uniq(m.Source, selector)
+	Uniq(m.Source, selector, &m.Source)
 	return m
 }
 
 func (m *query) UniqBy(property string) IQuery {
-	m.Source = UniqBy(m.Source, property)
+	UniqBy(m.Source, property, &m.Source)
 	return m
 }

@@ -8,7 +8,7 @@ func TestPropertyRV(t *testing.T) {
 	item := TestModel{ID: 1, Name: "one"}
 
 	rv := PropertyRV("$$")(item)
-	if rv != NullRv {
+	if rv != nilRV {
 		t.Fatal("wrong")
 	}
 
@@ -23,7 +23,7 @@ func TestProperty(t *testing.T) {
 	item := TestModel{ID: 1, Name: "one"}
 
 	rv := PropertyRV("$$")(item)
-	if rv != NullRv {
+	if rv != nilRV {
 		t.Fatal("wrong")
 	}
 

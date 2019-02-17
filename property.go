@@ -5,8 +5,18 @@ import (
 	"strings"
 )
 
+var nilRV = reflect.ValueOf(nil)
+
 // GetProeprtyRVFunc is get property reflect.Value func
 type GetProeprtyRVFunc func(interface{}) reflect.Value
+
+// Property is 获取属性函数
+func Property(name string) func(interface{}) interface{} {
+	fn := PropertyRV(name)
+	return func(item interface{}) interface{} {
+		return fn(item).Interface()
+	}
+}
 
 // PropertyRV is 获取reflect.Value
 func PropertyRV(name string) GetProeprtyRVFunc {
@@ -20,7 +30,7 @@ func PropertyRV(name string) GetProeprtyRVFunc {
 				rv := getter(
 					itemRV.Field(i),
 				)
-				if rv != NullRv {
+				if rv != nilRV {
 					return rv
 				}
 			}
@@ -30,13 +40,13 @@ func PropertyRV(name string) GetProeprtyRVFunc {
 			}
 		}
 
-		return NullRv
+		return nilRV
 	}
 	return getter
 }
 
 func getRV(v interface{}) reflect.Value {
-	if reflect.TypeOf(v) == NullRvOfRt {
+	if reflect.TypeOf(v) == reflect.TypeOf(nilRV) {
 		return v.(reflect.Value)
 	}
 
@@ -45,12 +55,4 @@ func getRV(v interface{}) reflect.Value {
 		rv = rv.Elem()
 	}
 	return rv
-}
-
-// Property is 获取属性函数
-func Property(name string) func(interface{}) interface{} {
-	fn := PropertyRV(name)
-	return func(item interface{}) interface{} {
-		return fn(item).Interface()
-	}
 }

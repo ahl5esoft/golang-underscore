@@ -6,8 +6,8 @@ import (
 
 // Group is 分组
 func Group(source, keySelector, result interface{}) {
-	rv := reflect.ValueOf(result)
-	if rv.Kind() != reflect.Ptr {
+	resultRV := reflect.ValueOf(result)
+	if resultRV.Kind() != reflect.Ptr {
 		panic("receive type must be a pointer")
 	}
 
@@ -29,15 +29,15 @@ func Group(source, keySelector, result interface{}) {
 		return false
 	})
 	if groupRV.IsValid() {
-		rv.Elem().Set(groupRV)
+		resultRV.Elem().Set(groupRV)
 	}
 }
 
 // GroupBy is 根据某个属性分组
 func GroupBy(source interface{}, property string, result interface{}) {
 	getPropertyRV := PropertyRV(property)
-	Group(source, func(value, _ interface{}) Facade {
-		return Facade{
+	Group(source, func(value, _ interface{}) facade {
+		return facade{
 			getPropertyRV(value),
 		}
 	}, result)

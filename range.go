@@ -1,7 +1,13 @@
 package underscore
 
 // Range is 生成区间数据
-func Range(start, stop, step int) []int {
+func Range(start, stop, step int) IQuery {
+	return &query{
+		Source: createRangeArray(start, stop, step),
+	}
+}
+
+func createRangeArray(start, stop, step int) []int {
 	arr := make([]int, 0)
 	if step == 0 {
 		return arr
@@ -23,9 +29,4 @@ func Range(start, stop, step int) []int {
 		arr = append(arr, start)
 	}
 	return arr
-}
-
-func (m *query) Range(start, stop, step int) IQuery {
-	m.Source = Range(start, stop, step)
-	return m
 }

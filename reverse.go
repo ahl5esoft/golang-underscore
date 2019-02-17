@@ -25,8 +25,8 @@ func Reverse(source, selector, result interface{}) {
 // ReverseBy is 根据属性倒序
 func ReverseBy(source interface{}, property string, result interface{}) {
 	getPropertyRV := PropertyRV(property)
-	Reverse(source, func(value, _ interface{}) Facade {
-		return Facade{
+	Reverse(source, func(value, _ interface{}) facade {
+		return facade{
 			getPropertyRV(value),
 		}
 	}, result)

@@ -44,7 +44,6 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Map`](#map), [`MapBy`](#mapBy)
 * [`Md5`](#md5)
 * [`Object`](#object)
-* [`Pluck`](#pluck)
 * [`Property`](#property), [`PropertyRV`](#propertyRV)
 * [`Range`](#range)
 * [`Reduce`](#reduce)
@@ -208,7 +207,7 @@ __Arguments__
 
 __Return__
 
-* interface{} - a wrapped object, wrapped objects until value is called
+* IQuery - a wrapped object, wrapped objects until value is called
 
 __Examples__
 
@@ -688,15 +687,12 @@ if Md5("123456") != "e10adc3949ba59abbe56e057f20f883e" {
 
 <a name="object" />
 
-### Object(arr)
+### Object(arr, result)
 
 __Arguments__
 
 * `arr` - array
-
-__Return__
-
-* map, error
+* `result` - map
 
 __Examples__
 
@@ -705,16 +701,17 @@ arr := []interface{}{
 	[]interface{}{"a", 1},
 	[]interface{}{"b", 2},
 }
-dic, ok := Object(arr).(map[string]int)
-if !(ok && len(dic) == 2) {
+dic := make(map[string]int)
+Object(arr, &dic)
+if len(dic) != 2 {
 	// wrong
 }
 
-if v1, ok := dic["a"]; !(ok && v1 == 1) {
+if v, ok := dic["a"]; !(ok && v == 1) {
 	// wrong
 }
 
-if v1, ok := dic["b"]; !(ok && v1 == 2) {
+if v, ok := dic["b"]; !(ok && v == 2) {
 	// wrong
 }
 ```
@@ -791,32 +788,33 @@ __Arguments__
 
 __Return__
 
-* []int
+* IQuery - a wrapped object, wrapped objects until value is called
 
 __Examples__
 
 ```go
-arr := Range(0, 0, 1)
+arr := make([]int, 0)
+Range(0, 0, 1).Value(&arr)
 if len(arr) != 0 {
 	// wrong
 }
 
-arr = Range(0, 10, 0)
+Range(0, 10, 0).Value(&arr)
 if len(arr) != 0 {
 	// wrong
 }
 
-arr = Range(10, 0, 1)
+Range(10, 0, 1).Value(&arr)
 if len(arr) != 0 {
 	// wrong
 }
 
-arr = Range(0, 2, 1)
+Range(0, 2, 1).Value(&arr)
 if !(len(arr) == 2 && arr[0] == 0 && arr[1] == 1) {
 	// wrong
 }
 
-arr = Range(0, 3, 2)
+Range(0, 3, 2).Value(&arr)
 if !(len(arr) == 2 && arr[0] == 0 && arr[1] == 2) {
 	// wrong
 }
@@ -1055,28 +1053,21 @@ if !(res[0].ID < res[1].ID && res[1].ID < res[2].ID) {
 
 <a name="take" />
 
-### Take(source, count)
+### Take(source, count, result)
 
 __Arguments__
 
 * `source` - array or map
 * `count` - int
-
-__Return__
-
-* interface{}
+* `result` - array
 
 __Examples__
 
 ```go
-arr := []int{ 1, 2, 3 }
-v := Take(arr, 1)
-res, ok := v.([]int)
-if !ok {
-	// wrong
-}
-
-if res[0] != 1 {
+arr := []int{1, 2, 3}
+res := make([]int, 0)
+Take(arr, 1, &res)
+if len(res) != 1 || res[0] != 1 {
 	// wrong
 }
 ```
@@ -1200,66 +1191,56 @@ if len(res) != len(dict) {
 
 <a name="where" />
 
-### Where(source, predicate)
+### Where(source, predicate, result)
 
 __Arguments__
 
 * `source` - array or map
 * `predicate` - func(element or value, index or key) bool
-
-__Return__
-
-* interface{} - an array of all the values that pass a truth test `predicate`
+* `result` - an array of all the values that pass a truth test `predicate`
 
 __Examples__
 
 ```go
 arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{2, "two"},
-	TestModel{3, "three"},
-	TestModel{4, "three"},
+	TestModel{ID: 1, Name: "one"},
+	TestModel{ID: 2, Name: "two"},
+	TestModel{ID: 3, Name: "three"},
+	TestModel{ID: 4, Name: "three"},
 }
-v := Where(arr, func(r TestModel, i int) bool {
-	return r.Id%2 == 0
-})
-res, ok := v.([]TestModel)
-if !(ok && len(res) == 2) {
-	// wrong
-}
-
-if !(res[0].Id == 2 && res[1].Id == 4) {
+res := make([]TestModel, 0)
+Where(arr, func(r TestModel, i int) bool {
+	return r.ID%2 == 0
+}, &res)
+if !(len(res) == 2 && res[0].ID == 2 && res[1].ID == 4) {
 	// wrong
 }
 ```
 
 <a name="whereBy" />
 
-### WhereBy(source, properties)
+### WhereBy(source, properties, result)
 
 __Arguments__
 
 * `source` - array or map
 * `properties` - map[string]interface{}
-
-__Return__
-
-* interface{} - an array of all the values that pass a truth test `properties`
+* `result` - an array of all the values that pass a truth test `properties`
 
 __Examples__
 
 ```go
 arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{2, "one"},
-	TestModel{3, "three"},
-	TestModel{4, "three"},
+	TestModel{ID: 1, Name: "one"},
+	TestModel{ID: 2, Name: "one"},
+	TestModel{ID: 3, Name: "three"},
+	TestModel{ID: 4, Name: "three"},
 }
-v := WhereBy(arr, map[string]interface{}{
+res := make([]TestModel, 0)
+WhereBy(arr, map[string]interface{}{
 	"Name": "one",
-})
-res, ok := v.([]TestModel)
-if !(ok && len(res) == 2 && res[0] == arr[0] && res[1] == arr[1]) {
+}, &res)
+if !(len(res) == 2 && res[0] == arr[0] && res[1] == arr[1]) {
 	// wrong
 }
 ```

@@ -6,7 +6,7 @@ func IsMatch(item interface{}, properties map[string]interface{}) bool {
 		return false
 	}
 
-	return All(properties, func(pv interface{}, pn string) bool {
-		return Property(pn)(item) == pv
+	return All(properties, func(v interface{}, k string) bool {
+		return Property(k)(item) == v
 	})
 }

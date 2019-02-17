@@ -5,17 +5,23 @@ import (
 	"sync"
 )
 
+var facadeRT = reflect.TypeOf(facade{})
+
 // Each will iterate over a list of elements
-// @source		map or array
-// @iterator	func(value or item, key or index) bool
 func Each(source, iterator interface{}) {
 	each(source, iterator, nil)
 }
 
-// each will iterate over a list of elements
-// @source		map or array
-// @iterator	func(value or item, key or index) bool
-// @predicate	stop traversing if pass the `predicate` truth test
+func (m *query) Each(iterator interface{}) IQuery {
+	if m.IsParallel {
+		eachAsParallel(m.Source, iterator)
+	} else {
+		each(m.Source, iterator, nil)
+	}
+
+	return m
+}
+
 func each(source interface{}, iterator interface{}, predicate func(reflect.Value, reflect.Value, reflect.Value) bool) {
 	length, getKeyValue := parseSource(source)
 	if length == 0 {
@@ -39,21 +45,17 @@ func each(source interface{}, iterator interface{}, predicate func(reflect.Value
 			[]reflect.Value{valueRV, keyRV},
 		)
 		if len(returnRVs) > 0 {
-			resRV := returnRVs[0]
-			if resRV.Type() == FacadeRt {
-				resRV = resRV.Interface().(Facade).Real
+			if returnRVs[0].Type() == facadeRT {
+				returnRVs[0] = returnRVs[0].Interface().(facade).Real
 			}
 
-			if predicate(resRV, valueRV, keyRV) {
+			if predicate(returnRVs[0], valueRV, keyRV) {
 				break
 			}
 		}
 	}
 }
 
-// eachAsParallel will parallel iterate over a list of elements
-// @source		map or array
-// @iterator	func(value or item, key or index) bool
 func eachAsParallel(source interface{}, iterator interface{}) {
 	length, getKeyValue := parseSource(source)
 	if length == 0 {
@@ -94,14 +96,4 @@ func parseSource(source interface{}) (int, func(i int) (reflect.Value, reflect.V
 		}
 	}
 	return 0, nil
-}
-
-func (m *query) Each(iterator interface{}) IQuery {
-	if m.IsParallel {
-		eachAsParallel(m.Source, iterator)
-	} else {
-		each(m.Source, iterator, nil)
-	}
-
-	return m
 }

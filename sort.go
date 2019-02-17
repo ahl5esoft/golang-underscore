@@ -25,8 +25,8 @@ func Sort(source, selector, result interface{}) {
 // SortBy is 根据属性排序
 func SortBy(source interface{}, property string, result interface{}) {
 	getPropertyRV := PropertyRV(property)
-	Sort(source, func(value, _ interface{}) Facade {
-		return Facade{
+	Sort(source, func(value, _ interface{}) facade {
+		return facade{
 			getPropertyRV(value),
 		}
 	}, result)

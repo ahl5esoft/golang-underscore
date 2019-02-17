@@ -5,32 +5,32 @@ import (
 )
 
 // Index is 转化为indexSelector筛选出的值为key的map
-func Index(source, indexSelector, res interface{}) {
-	resRV := reflect.ValueOf(res)
-	if resRV.Kind() != reflect.Ptr {
+func Index(source, indexSelector, result interface{}) {
+	resultRV := reflect.ValueOf(result)
+	if resultRV.Kind() != reflect.Ptr {
 		panic("receive type must be a pointer")
 	}
 
-	var dictRV reflect.Value
+	var tempRV reflect.Value
 	each(source, indexSelector, func(indexRV, valueRV, _ reflect.Value) bool {
-		if !dictRV.IsValid() {
-			dictRT := reflect.MapOf(indexRV.Type(), valueRV.Type())
-			dictRV = reflect.MakeMap(dictRT)
+		if !tempRV.IsValid() {
+			tempRT := reflect.MapOf(indexRV.Type(), valueRV.Type())
+			tempRV = reflect.MakeMap(tempRT)
 		}
 
-		dictRV.SetMapIndex(indexRV, valueRV)
+		tempRV.SetMapIndex(indexRV, valueRV)
 		return false
 	})
-	if dictRV.IsValid() {
-		resRV.Elem().Set(dictRV)
+	if tempRV.IsValid() {
+		resultRV.Elem().Set(tempRV)
 	}
 }
 
 // IndexBy is 转化为property值的map
 func IndexBy(source interface{}, property string, res interface{}) {
 	getPropertyRV := PropertyRV(property)
-	Index(source, func(value, _ interface{}) Facade {
-		return Facade{
+	Index(source, func(value, _ interface{}) facade {
+		return facade{
 			getPropertyRV(value),
 		}
 	}, res)
