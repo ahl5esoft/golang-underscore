@@ -10,10 +10,9 @@ func TestFind(t *testing.T) {
 		TestModel{ID: 2, Name: "two"},
 		TestModel{ID: 3, Name: "three"},
 	}
-	var item TestModel
-	Find(arr, func(r TestModel, _ int) bool {
+	item := Find(arr, func(r TestModel, _ int) bool {
 		return r.ID == 1
-	}, &item)
+	})
 	if item != arr[0] {
 		t.Error("wrong")
 	}
@@ -25,10 +24,9 @@ func TestFindBy(t *testing.T) {
 		TestModel{ID: 2, Name: "two"},
 		TestModel{ID: 3, Name: "three"},
 	}
-	var item TestModel
-	FindBy(arr, map[string]interface{}{
+	item := FindBy(arr, map[string]interface{}{
 		"id": 2,
-	}, &item)
+	})
 	if item != arr[1] {
 		t.Error("wrong")
 	}

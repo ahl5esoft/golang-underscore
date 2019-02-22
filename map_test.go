@@ -7,11 +7,10 @@ import (
 
 func Test_Map(t *testing.T) {
 	arr := []string{"11", "12", "13"}
-	res := make([]int, 0)
-	Map(arr, func(s string, _ int) int {
+	res := Map(arr, func(s string, _ int) int {
 		n, _ := strconv.Atoi(s)
 		return n
-	}, &res)
+	}).([]int)
 	if len(res) != len(arr) {
 		t.Error(res)
 	}
@@ -23,8 +22,7 @@ func Test_MapBy(t *testing.T) {
 		TestModel{ID: 2, Name: "two"},
 		TestModel{ID: 3, Name: "three"},
 	}
-	res := make([]string, 0)
-	MapBy(arr, "name", &res)
+	res := MapBy(arr, "name").([]string)
 	if len(res) != len(arr) {
 		t.Fatal(res)
 	}

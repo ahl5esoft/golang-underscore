@@ -11,10 +11,9 @@ func TestWhere(t *testing.T) {
 		TestModel{ID: 3, Name: "three"},
 		TestModel{ID: 4, Name: "three"},
 	}
-	res := make([]TestModel, 0)
-	Where(arr, func(r TestModel, i int) bool {
+	res := Where(arr, func(r TestModel, i int) bool {
 		return r.ID%2 == 0
-	}, &res)
+	}).([]TestModel)
 	if !(len(res) == 2 && res[0].ID == 2 && res[1].ID == 4) {
 		t.Error(res)
 	}
@@ -27,10 +26,9 @@ func TestWhereBy(t *testing.T) {
 		TestModel{ID: 3, Name: "three"},
 		TestModel{ID: 4, Name: "three"},
 	}
-	res := make([]TestModel, 0)
-	WhereBy(arr, map[string]interface{}{
+	res := WhereBy(arr, map[string]interface{}{
 		"Name": "one",
-	}, &res)
+	}).([]TestModel)
 	if !(len(res) == 2 && res[0] == arr[0] && res[1] == arr[1]) {
 		t.Error(res)
 	}

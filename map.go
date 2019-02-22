@@ -5,12 +5,7 @@ import (
 )
 
 // Map 映射
-func Map(source, selector, result interface{}) {
-	resultRV := reflect.ValueOf(result)
-	if resultRV.Kind() != reflect.Ptr {
-		panic("receive type must be a pointer")
-	}
-
+func Map(source, selector interface{}) interface{} {
 	var tempRV reflect.Value
 	each(source, selector, func(resRV, valueRV, _ reflect.Value) bool {
 		if !tempRV.IsValid() {
@@ -22,26 +17,28 @@ func Map(source, selector, result interface{}) {
 		return false
 	})
 	if tempRV.IsValid() {
-		resultRV.Elem().Set(tempRV)
+		return tempRV.Interface()
 	}
+
+	return nil
 }
 
 // MapBy is 从source中取出所有property
-func MapBy(source interface{}, property string, result interface{}) {
+func MapBy(source interface{}, property string) interface{} {
 	getPropertyRV := PropertyRV(property)
-	Map(source, func(value, _ interface{}) facade {
+	return Map(source, func(value, _ interface{}) facade {
 		return facade{
 			getPropertyRV(value),
 		}
-	}, result)
+	})
 }
 
 func (m *query) Map(selector interface{}) IQuery {
-	Map(m.Source, selector, &m.Source)
+	m.Source = Map(m.Source, selector)
 	return m
 }
 
 func (m *query) MapBy(property string) IQuery {
-	MapBy(m.Source, property, &m.Source)
+	m.Source = MapBy(m.Source, property)
 	return m
 }

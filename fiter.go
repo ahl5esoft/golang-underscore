@@ -4,12 +4,7 @@ import (
 	"reflect"
 )
 
-func filter(source, predicate interface{}, compareValue bool, result interface{}) {
-	resultRV := reflect.ValueOf(result)
-	if resultRV.Kind() != reflect.Ptr {
-		panic("receive type must be a pointer")
-	}
-
+func filter(source, predicate interface{}, compareValue bool) interface{} {
 	var tempRV reflect.Value
 	each(source, predicate, func(resRV, valueRV, _ reflect.Value) bool {
 		if resRV.Bool() == compareValue {
@@ -23,6 +18,8 @@ func filter(source, predicate interface{}, compareValue bool, result interface{}
 		return false
 	})
 	if tempRV.IsValid() {
-		resultRV.Elem().Set(tempRV)
+		return tempRV.Interface()
 	}
+
+	return nil
 }

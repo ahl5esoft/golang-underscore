@@ -7,8 +7,8 @@ import (
 
 // Reverse is 倒序
 func Reverse(source, selector, result interface{}) {
-	rv := reflect.ValueOf(result)
-	if rv.Kind() != reflect.Ptr {
+	resultRV := reflect.ValueOf(result)
+	if resultRV.Kind() != reflect.Ptr {
 		panic("receive type must be a pointer")
 	}
 
@@ -19,7 +19,7 @@ func Reverse(source, selector, result interface{}) {
 	}
 
 	sort.Sort(sort.Reverse(qs))
-	rv.Elem().Set(qs.ValuesRV)
+	resultRV.Elem().Set(qs.ValuesRV)
 }
 
 // ReverseBy is 根据属性倒序

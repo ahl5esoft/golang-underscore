@@ -6,9 +6,8 @@ import (
 
 func Test_Values_Array(t *testing.T) {
 	arr := []int{1, 2, 3}
-	res := make([]string, 0)
-	Values(arr, &res)
-	if len(res) != 0 {
+	res := Values(arr)
+	if res != nil {
 		t.Error(res)
 	}
 }
@@ -20,8 +19,7 @@ func Test_Values_Hash(t *testing.T) {
 		3: "c",
 		4: "d",
 	}
-	res := make([]string, 0)
-	Values(dict, &res)
+	res := Values(dict).([]string)
 	if len(res) != len(dict) {
 		t.Error(res)
 	}
@@ -31,7 +29,7 @@ func Test_Chain_Values_Array(t *testing.T) {
 	arr := []string{"a", "b"}
 	res := make([]string, 0)
 	Chain(arr).Values().Value(&res)
-	if len(res) != len(arr) {
+	if len(res) != 0 {
 		t.Error(res)
 	}
 }

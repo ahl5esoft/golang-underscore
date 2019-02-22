@@ -5,11 +5,10 @@ import (
 )
 
 func Test_Index(t *testing.T) {
-	res := make(map[string]string)
-	Index([]string{"a", "b"}, func(r string, _ int) string {
+	res := Index([]string{"a", "b"}, func(r string, _ int) string {
 		return r
-	}, &res)
-	if res["a"] != "a" {
+	}).(map[string]string)
+	if !(res["a"] == "a" && res["b"] == "b") {
 		t.Error(res)
 	}
 }
@@ -21,8 +20,7 @@ func Test_IndexBy(t *testing.T) {
 		TestModel{ID: 3, Name: "b"},
 		TestModel{ID: 4, Name: "b"},
 	}
-	res := make(map[string]TestModel)
-	IndexBy(arr, "Name", &res)
+	res := IndexBy(arr, "Name").(map[string]TestModel)
 	if len(res) != 2 {
 		t.Error(res)
 	}

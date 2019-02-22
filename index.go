@@ -5,12 +5,7 @@ import (
 )
 
 // Index is 转化为indexSelector筛选出的值为key的map
-func Index(source, indexSelector, result interface{}) {
-	resultRV := reflect.ValueOf(result)
-	if resultRV.Kind() != reflect.Ptr {
-		panic("receive type must be a pointer")
-	}
-
+func Index(source, indexSelector interface{}) interface{} {
 	var tempRV reflect.Value
 	each(source, indexSelector, func(indexRV, valueRV, _ reflect.Value) bool {
 		if !tempRV.IsValid() {
@@ -22,26 +17,27 @@ func Index(source, indexSelector, result interface{}) {
 		return false
 	})
 	if tempRV.IsValid() {
-		resultRV.Elem().Set(tempRV)
+		return tempRV.Interface()
 	}
+	return nil
 }
 
 // IndexBy is 转化为property值的map
-func IndexBy(source interface{}, property string, res interface{}) {
+func IndexBy(source interface{}, property string) interface{} {
 	getPropertyRV := PropertyRV(property)
-	Index(source, func(value, _ interface{}) facade {
+	return Index(source, func(value, _ interface{}) facade {
 		return facade{
 			getPropertyRV(value),
 		}
-	}, res)
+	})
 }
 
 func (m *query) Index(indexSelector interface{}) IQuery {
-	Index(m.Source, indexSelector, &m.Source)
+	m.Source = Index(m.Source, indexSelector)
 	return m
 }
 
 func (m *query) IndexBy(property string) IQuery {
-	IndexBy(m.Source, property, &m.Source)
+	m.Source = IndexBy(m.Source, property)
 	return m
 }

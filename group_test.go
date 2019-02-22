@@ -5,13 +5,12 @@ import (
 )
 
 func Test_Group(t *testing.T) {
-	dic := make(map[string][]int)
-	Group([]int{1, 2, 3, 4, 5}, func(n, _ int) string {
+	dic := Group([]int{1, 2, 3, 4, 5}, func(n, _ int) string {
 		if n%2 == 0 {
 			return "even"
 		}
 		return "odd"
-	}, &dic)
+	}).(map[string][]int)
 	if len(dic["even"]) != 2 {
 		t.Error("wrong")
 	}
@@ -24,8 +23,7 @@ func Test_GroupBy(t *testing.T) {
 		TestModel{ID: 3, Name: "b"},
 		TestModel{ID: 4, Name: "b"},
 	}
-	dic := make(map[string][]TestModel)
-	GroupBy(arr, "name", &dic)
+	dic := GroupBy(arr, "name").(map[string][]TestModel)
 	if len(dic) != 2 {
 		t.Error("wrong")
 	}

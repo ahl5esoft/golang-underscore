@@ -6,10 +6,9 @@ import (
 
 func TestReject(t *testing.T) {
 	arr := []int{1, 2, 3, 4}
-	res := make([]int, 0)
-	Reject(arr, func(n, i int) bool {
+	res := Reject(arr, func(n, i int) bool {
 		return n%2 == 0
-	}, &res)
+	}).([]int)
 	if len(res) != 2 {
 		t.Fatal("wrong length")
 	}
@@ -25,10 +24,9 @@ func TestRejectBy(t *testing.T) {
 		TestModel{ID: 2, Name: "two"},
 		TestModel{ID: 3, Name: "three"},
 	}
-	res := make([]TestModel, 0)
-	RejectBy(arr, map[string]interface{}{
+	res := RejectBy(arr, map[string]interface{}{
 		"Id": 1,
-	}, &res)
+	}).([]TestModel)
 	if len(res) != 2 {
 		t.Error("wrong result")
 	}

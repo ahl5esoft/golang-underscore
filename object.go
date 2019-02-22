@@ -6,12 +6,7 @@ import (
 )
 
 // Object 将二维数组转化为字典
-func Object(source, result interface{}) {
-	resultRV := reflect.ValueOf(result)
-	if resultRV.Kind() != reflect.Ptr {
-		panic("receive type must be a pointer")
-	}
-
+func Object(source interface{}) interface{} {
 	var tempRV reflect.Value
 	each(source, func(item, _ interface{}) {
 		rv := reflect.ValueOf(item)
@@ -30,30 +25,25 @@ func Object(source, result interface{}) {
 	}, nil)
 
 	if tempRV.IsValid() {
-		resultRV.Elem().Set(tempRV)
+		return tempRV.Interface()
 	}
+	return nil
 }
 
 func (m *query) Object() IQuery {
 	if m.IsParallel {
-		objectAsParallel(m.Source, &m.Source)
+		m.Source = objectAsParallel(m.Source)
 	} else {
-		Object(m.Source, &m.Source)
+		m.Source = Object(m.Source)
 	}
 
 	return m
 }
 
-func objectAsParallel(source, result interface{}) {
-	resultRV := reflect.ValueOf(result)
-	if resultRV.Kind() != reflect.Ptr {
-		panic("receive type must be a pointer")
-	}
-
-	var first interface{}
-	First(source, &first)
+func objectAsParallel(source interface{}) interface{} {
+	first := First(source)
 	if first == nil || Size(first) != 2 {
-		return
+		return nil
 	}
 
 	firstRv := reflect.ValueOf(first)
@@ -77,5 +67,5 @@ func objectAsParallel(source, result interface{}) {
 		)
 	})
 
-	resultRV.Elem().Set(tempRV)
+	return tempRV.Interface()
 }

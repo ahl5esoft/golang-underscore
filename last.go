@@ -1,24 +1,17 @@
 package underscore
 
-import "reflect"
-
 // Last is 最后元素
-func Last(source, last interface{}) {
-	lastRV := reflect.ValueOf(last)
-	if lastRV.Kind() != reflect.Ptr {
-		panic("receive type must be a pointer")
-	}
-
+func Last(source interface{}) interface{} {
 	length, getKeyValue := parseSource(source)
 	if length == 0 {
-		return
+		return nil
 	}
 
 	valueRV, _ := getKeyValue(length - 1)
-	lastRV.Elem().Set(valueRV)
+	return valueRV.Interface()
 }
 
 func (m *query) Last() IQuery {
-	Last(m.Source, &m.Source)
+	m.Source = Last(m.Source)
 	return m
 }

@@ -5,12 +5,7 @@ import (
 )
 
 // Group is 分组
-func Group(source, keySelector, result interface{}) {
-	resultRV := reflect.ValueOf(result)
-	if resultRV.Kind() != reflect.Ptr {
-		panic("receive type must be a pointer")
-	}
-
+func Group(source, keySelector interface{}) interface{} {
 	var groupRV reflect.Value
 	each(source, keySelector, func(groupKeyRV, valueRV, _ reflect.Value) bool {
 		groupValueRT := reflect.SliceOf(valueRV.Type())
@@ -29,26 +24,27 @@ func Group(source, keySelector, result interface{}) {
 		return false
 	})
 	if groupRV.IsValid() {
-		resultRV.Elem().Set(groupRV)
+		return groupRV.Interface()
 	}
+	return nil
 }
 
 // GroupBy is 根据某个属性分组
-func GroupBy(source interface{}, property string, result interface{}) {
+func GroupBy(source interface{}, property string) interface{} {
 	getPropertyRV := PropertyRV(property)
-	Group(source, func(value, _ interface{}) facade {
+	return Group(source, func(value, _ interface{}) facade {
 		return facade{
 			getPropertyRV(value),
 		}
-	}, result)
+	})
 }
 
 func (m *query) Group(keySelector interface{}) IQuery {
-	Group(m.Source, keySelector, &m.Source)
+	m.Source = Group(m.Source, keySelector)
 	return m
 }
 
 func (m *query) GroupBy(property string) IQuery {
-	GroupBy(m.Source, property, &m.Source)
+	m.Source = GroupBy(m.Source, property)
 	return m
 }

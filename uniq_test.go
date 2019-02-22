@@ -5,8 +5,7 @@ import (
 )
 
 func TestUniq(t *testing.T) {
-	res := make([]int, 0)
-	Uniq([]int{1, 2, 1, 2, 1, 3}, nil, &res)
+	res := Uniq([]int{1, 2, 1, 2, 1, 3}, nil).([]int)
 	if len(res) != 3 {
 		t.Error("wrong")
 	}
@@ -18,8 +17,7 @@ func TestUniqBy(t *testing.T) {
 		TestModel{ID: 2, Name: "a"},
 		TestModel{ID: 3, Name: "a"},
 	}
-	res := make([]TestModel, 0)
-	UniqBy(arr, "Name", &res)
+	res := UniqBy(arr, "Name").([]TestModel)
 	if len(res) != 1 {
 		t.Error("wrong")
 	}

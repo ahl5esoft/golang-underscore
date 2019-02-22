@@ -9,8 +9,7 @@ func Test_Object(t *testing.T) {
 		[]interface{}{"a", 1},
 		[]interface{}{"b", 2},
 	}
-	dic := make(map[string]int)
-	Object(arr, &dic)
+	dic := Object(arr).(map[string]int)
 	if len(dic) != 2 {
 		t.Fatal(dic)
 	}
@@ -30,8 +29,7 @@ func Test_objectAsParallel(t *testing.T) {
 		arr[i] = []int{i, i}
 	}
 
-	dic := make(map[int]int)
-	objectAsParallel(arr, &dic)
+	dic := objectAsParallel(arr).(map[int]int)
 	if len(dic) != 500 {
 		t.Error("err")
 	}

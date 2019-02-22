@@ -6,14 +6,13 @@ import (
 
 func TestFirst(t *testing.T) {
 	arr := []int{1, 2, 3}
-	var n int
-	First(arr, &n)
+	n := First(arr)
 	if n != 1 {
 		t.Fatal("wrong")
 	}
 
-	First(nil, &n)
-	if n != 1 {
+	n = First(nil)
+	if n != nil {
 		t.Error("wrong")
 	}
 }
