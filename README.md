@@ -15,16 +15,18 @@
 like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 
 ## Installation
-
     $ go get github.com/ahl5esoft/golang-underscore
 
 ## Update
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-	* FindLastIndex
-	* Sample
-	* more...
+* FindLastIndex
+* Sample
+* more...
+
+## Suggest
+	always using `chain`
 
 ## Documentation
 
