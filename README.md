@@ -9,9 +9,7 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go
-==========================================
-
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore)
 like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 
 ## Installation

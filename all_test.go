@@ -1,8 +1,6 @@
 package underscore
 
-import (
-	"testing"
-)
+import "testing"
 
 // TestModel is 测试模型
 type TestModel struct {
