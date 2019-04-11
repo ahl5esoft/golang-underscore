@@ -6,10 +6,10 @@ import (
 
 func TestWhere(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
-		TestModel{ID: 4, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
+		{ID: 4, Name: "three"},
 	}
 	res := Where(arr, func(r TestModel, i int) bool {
 		return r.ID%2 == 0
@@ -21,10 +21,10 @@ func TestWhere(t *testing.T) {
 
 func TestWhereBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "one"},
-		TestModel{ID: 3, Name: "three"},
-		TestModel{ID: 4, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "one"},
+		{ID: 3, Name: "three"},
+		{ID: 4, Name: "three"},
 	}
 	res := WhereBy(arr, map[string]interface{}{
 		"Name": "one",
@@ -36,10 +36,10 @@ func TestWhereBy(t *testing.T) {
 
 func TestChain_Where(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "one"},
-		TestModel{ID: 3, Name: "three"},
-		TestModel{ID: 4, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "one"},
+		{ID: 3, Name: "three"},
+		{ID: 4, Name: "three"},
 	}
 	res := make([]TestModel, 0)
 	Chain(arr).Where(func(r TestModel, i int) bool {
@@ -52,10 +52,10 @@ func TestChain_Where(t *testing.T) {
 
 func TestChain_WhereBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "one"},
-		TestModel{ID: 3, Name: "three"},
-		TestModel{ID: 4, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "one"},
+		{ID: 3, Name: "three"},
+		{ID: 4, Name: "three"},
 	}
 	res := make([]TestModel, 0)
 	Chain(arr).WhereBy(map[string]interface{}{

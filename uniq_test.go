@@ -13,9 +13,9 @@ func TestUniq(t *testing.T) {
 
 func TestUniqBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "a"},
-		TestModel{ID: 2, Name: "a"},
-		TestModel{ID: 3, Name: "a"},
+		{ID: 1, Name: "a"},
+		{ID: 2, Name: "a"},
+		{ID: 3, Name: "a"},
 	}
 	res := UniqBy(arr, "Name").([]TestModel)
 	if len(res) != 1 {
@@ -35,9 +35,9 @@ func TestChain_Uniq(t *testing.T) {
 
 func TestChain_UniqBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "a"},
-		TestModel{ID: 2, Name: "a"},
-		TestModel{ID: 3, Name: "a"},
+		{ID: 1, Name: "a"},
+		{ID: 2, Name: "a"},
+		{ID: 3, Name: "a"},
 	}
 	res := make([]TestModel, 0)
 	Chain(arr).UniqBy("Name").Value(&res)

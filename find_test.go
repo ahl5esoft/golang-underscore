@@ -6,9 +6,9 @@ import (
 
 func TestFind(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	item := Find(arr, func(r TestModel, _ int) bool {
 		return r.ID == 1
@@ -20,9 +20,9 @@ func TestFind(t *testing.T) {
 
 func TestFindBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	item := FindBy(arr, map[string]interface{}{
 		"id": 2,
@@ -34,9 +34,9 @@ func TestFindBy(t *testing.T) {
 
 func TestChain_Find(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	res := TestModel{}
 	Chain(arr).Find(func(r TestModel, _ int) bool {
@@ -49,9 +49,9 @@ func TestChain_Find(t *testing.T) {
 
 func TestChain_FindBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	res := TestModel{}
 	Chain(arr).FindBy(map[string]interface{}{

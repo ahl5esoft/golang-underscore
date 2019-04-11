@@ -7,9 +7,9 @@ import (
 
 func TestEach(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 1, Name: "two"},
-		TestModel{ID: 1, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 1, Name: "two"},
+		{ID: 1, Name: "three"},
 	}
 	Each(arr, func(r TestModel, i int) {
 		if !(r.ID == arr[i].ID && r.Name == arr[i].Name) {
@@ -20,9 +20,9 @@ func TestEach(t *testing.T) {
 
 func TestChain_Each(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 1, Name: "two"},
-		TestModel{ID: 1, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 1, Name: "two"},
+		{ID: 1, Name: "three"},
 	}
 	Chain(arr).Each(func(r TestModel, i int) {
 		if !(r.ID == arr[i].ID && r.Name == arr[i].Name) {

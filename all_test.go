@@ -17,9 +17,9 @@ type TestNestedModel struct {
 
 func TestAll(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 1, Name: "two"},
-		TestModel{ID: 1, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 1, Name: "two"},
+		{ID: 1, Name: "three"},
 	}
 	ok := All(arr, func(r TestModel, _ int) bool {
 		return r.ID == 1
@@ -31,9 +31,9 @@ func TestAll(t *testing.T) {
 
 func TestAllBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 1, Name: "two"},
-		TestModel{ID: 1, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 1, Name: "two"},
+		{ID: 1, Name: "three"},
 	}
 	ok := AllBy(arr, nil)
 	if ok {
@@ -59,9 +59,9 @@ func TestAllBy(t *testing.T) {
 
 func TestChain_All_False(t *testing.T) {
 	ok := Chain([]TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 1, Name: "two"},
-		TestModel{ID: 1, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 1, Name: "two"},
+		{ID: 1, Name: "three"},
 	}).All(func(r TestModel, _ int) bool {
 		return r.ID != 1
 	})
@@ -72,9 +72,9 @@ func TestChain_All_False(t *testing.T) {
 
 func TestChain_All_True(t *testing.T) {
 	ok := Chain([]TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 1, Name: "two"},
-		TestModel{ID: 1, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 1, Name: "two"},
+		{ID: 1, Name: "three"},
 	}).All(func(r TestModel, _ int) bool {
 		return r.ID == 1
 	})
@@ -85,9 +85,9 @@ func TestChain_All_True(t *testing.T) {
 
 func TestChain_AllBy_False(t *testing.T) {
 	ok := Chain([]TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}).AllBy(map[string]interface{}{
 		"Name": "a",
 	})
@@ -98,9 +98,9 @@ func TestChain_AllBy_False(t *testing.T) {
 
 func TestChain_AllBy_True(t *testing.T) {
 	ok := Chain([]TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "one"},
-		TestModel{ID: 3, Name: "one"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "one"},
+		{ID: 3, Name: "one"},
 	}).AllBy(map[string]interface{}{
 		"Name": "one",
 	})

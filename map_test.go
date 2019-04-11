@@ -18,9 +18,9 @@ func Test_Map(t *testing.T) {
 
 func Test_MapBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	res := MapBy(arr, "name").([]string)
 	if len(res) != len(arr) {
@@ -47,9 +47,9 @@ func Test_Chain_Map(t *testing.T) {
 
 func Test_Chain_MapBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	res := make([]string, 0)
 	Chain(arr).MapBy("Name").Value(&res)

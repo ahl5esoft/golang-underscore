@@ -6,9 +6,9 @@ import (
 
 func TestFindLastIndex(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	i := FindLastIndex(arr)
 	if i != 2 {
@@ -38,9 +38,9 @@ func TestFindLastIndex_NotArray(t *testing.T) {
 
 func TestChain_FindLastIndex(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	var index int
 	Chain(arr).FindLastIndex().Value(&index)

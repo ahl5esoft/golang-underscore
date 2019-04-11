@@ -6,9 +6,9 @@ import (
 
 func TestAny(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	ok := Any(arr, func(r TestModel, _ int) bool {
 		return r.ID == 0
@@ -20,9 +20,9 @@ func TestAny(t *testing.T) {
 
 func TestAnyBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	ok := AnyBy(arr, map[string]interface{}{
 		"Id": 0,
@@ -43,9 +43,9 @@ func TestAnyBy(t *testing.T) {
 
 func TestChain_Any_False(t *testing.T) {
 	ok := Chain([]TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}).Any(func(r TestModel, _ int) bool {
 		return r.ID == 0
 	})
@@ -56,9 +56,9 @@ func TestChain_Any_False(t *testing.T) {
 
 func TestChain_Any_True(t *testing.T) {
 	ok := Chain([]TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}).Any(func(r TestModel, _ int) bool {
 		return r.ID == 1
 	})
@@ -69,9 +69,9 @@ func TestChain_Any_True(t *testing.T) {
 
 func TestChain_AnyBy_False(t *testing.T) {
 	ok := Chain([]TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}).AnyBy(map[string]interface{}{
 		"id": 0,
 	})
@@ -82,9 +82,9 @@ func TestChain_AnyBy_False(t *testing.T) {
 
 func TestChain_AnyBy_True(t *testing.T) {
 	ok := Chain([]TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}).AnyBy(map[string]interface{}{
 		"name": "two",
 	})

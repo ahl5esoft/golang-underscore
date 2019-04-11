@@ -20,9 +20,9 @@ func TestReject(t *testing.T) {
 
 func TestRejectBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	res := RejectBy(arr, map[string]interface{}{
 		"Id": 1,
@@ -45,9 +45,9 @@ func Test_Chain_Reject(t *testing.T) {
 
 func Test_Chain_RejectBy(t *testing.T) {
 	arr := []TestModel{
-		TestModel{ID: 1, Name: "one"},
-		TestModel{ID: 2, Name: "two"},
-		TestModel{ID: 3, Name: "three"},
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
 	}
 	res := make([]TestModel, 0)
 	Chain(arr).RejectBy(map[string]interface{}{
