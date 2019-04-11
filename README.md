@@ -21,8 +21,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-* FindLastIndex
-* Sample
+* MapMany
 * more...
 
 ## Suggest
