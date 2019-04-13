@@ -900,7 +900,7 @@ __Arguments__
 
 __Return__
 
-* []int
+* IQuery - a wrapped object, wrapped objects until value is called
 
 __Examples__
 
