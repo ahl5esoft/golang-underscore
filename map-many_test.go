@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-type mapManytestModel struct {
+type mapManyTestModel struct {
 	Str   string
 	Slice []string
 	Array [2]int
@@ -43,10 +43,10 @@ func Test_MapManyBy_PropertyNotSliceOrArray(t *testing.T) {
 		}
 	}()
 
-	src := []mapManytestModel{
-		{"", nil, [2]int{}},
-		{"", nil, [2]int{}},
-		{"", nil, [2]int{}},
+	src := []mapManyTestModel{
+		{},
+		{},
+		{},
 	}
 	MapManyBy(src, "Str")
 }
@@ -58,10 +58,10 @@ func Test_Chain_MapManyBy_PropertyNotSliceOrArray(t *testing.T) {
 		}
 	}()
 
-	src := []mapManytestModel{
-		{"", nil, [2]int{}},
-		{"", nil, [2]int{}},
-		{"", nil, [2]int{}},
+	src := []mapManyTestModel{
+		{},
+		{},
+		{},
 	}
 	Chain(src).MapManyBy("Str")
 }
@@ -96,9 +96,9 @@ func Test_Chain_MapMany_Slice(t *testing.T) {
 }
 
 func Test_MapManyBy_Slice(t *testing.T) {
-	src := []mapManytestModel{
-		{"", []string{"a", "b"}, [2]int{}},
-		{"", []string{"c", "d"}, [2]int{}},
+	src := []mapManyTestModel{
+		{Slice: []string{"a", "b"}},
+		{Slice: []string{"c", "d"}},
 	}
 	res := MapManyBy(src, "Slice").([]string)
 	if !(len(res) == 4 && res[0] == "a" && res[1] == "b" && res[2] == "c" && res[3] == "d") {
@@ -107,9 +107,9 @@ func Test_MapManyBy_Slice(t *testing.T) {
 }
 
 func Test_Chain_MapManyBy_Slice(t *testing.T) {
-	src := []mapManytestModel{
-		{"", []string{"a", "b"}, [2]int{}},
-		{"", []string{"c", "d"}, [2]int{}},
+	src := []mapManyTestModel{
+		{Slice: []string{"a", "b"}},
+		{Slice: []string{"c", "d"}},
 	}
 	var res []string
 	Chain(src).MapManyBy("Slice").Value(&res)
@@ -148,9 +148,9 @@ func Test_Chain_MapMany_Array(t *testing.T) {
 }
 
 func Test_MapManyBy_Array(t *testing.T) {
-	src := []mapManytestModel{
-		{"", nil, [2]int{1, 2}},
-		{"", nil, [2]int{3, 4}},
+	src := []mapManyTestModel{
+		{Array: [2]int{1, 2}},
+		{Array: [2]int{3, 4}},
 	}
 	res := MapManyBy(src, "Array").([]int)
 	if !(len(res) == 4 && res[0] == 1 && res[1] == 2 && res[2] == 3 && res[3] == 4) {
@@ -159,9 +159,9 @@ func Test_MapManyBy_Array(t *testing.T) {
 }
 
 func Test_Chain_MapManyBy_Array(t *testing.T) {
-	src := []mapManytestModel{
-		{"", nil, [2]int{1, 2}},
-		{"", nil, [2]int{3, 4}},
+	src := []mapManyTestModel{
+		{Array: [2]int{1, 2}},
+		{Array: [2]int{3, 4}},
 	}
 	var res []int
 	Chain(src).MapManyBy("Array").Value(&res)

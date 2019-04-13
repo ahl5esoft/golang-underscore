@@ -19,7 +19,6 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-* MapMany
 * more...
 
 ## Suggest
@@ -776,9 +775,9 @@ __Return__
 __Examples__
 
 ```go
-src := []mapManytestModel{
-	{"", []string{"a", "b"}, [2]int{1, 2}},
-	{"", []string{"c", "d"}, [2]int{3, 4}},
+src := []mapManyTestModel{
+	{Slice: []string{"a", "b"}},
+	{Slice: []string{"c", "d"}},
 }
 Chain(src).MapManyBy("Str") // will panic because `Str` property value is not array or slice
 // or
