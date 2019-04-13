@@ -4,9 +4,9 @@ import "testing"
 
 func Test_Reverse(t *testing.T) {
 	arr := []testModel{
-		testModel{ID: 2, Name: "two"},
-		testModel{ID: 1, Name: "one"},
-		testModel{ID: 3, Name: "three"},
+		{ID: 2, Name: "two"},
+		{ID: 1, Name: "one"},
+		{ID: 3, Name: "three"},
 	}
 	res := Reverse(arr, func(n testModel, _ int) int {
 		return n.ID
@@ -22,9 +22,9 @@ func Test_Reverse(t *testing.T) {
 
 func Test_ReverseBy(t *testing.T) {
 	arr := []testModel{
-		testModel{ID: 2, Name: "two"},
-		testModel{ID: 1, Name: "one"},
-		testModel{ID: 3, Name: "three"},
+		{ID: 2, Name: "two"},
+		{ID: 1, Name: "one"},
+		{ID: 3, Name: "three"},
 	}
 	res := ReverseBy(arr, "id").([]testModel)
 	if len(res) != len(arr) {
@@ -38,9 +38,9 @@ func Test_ReverseBy(t *testing.T) {
 
 func Test_Chain_Reverse(t *testing.T) {
 	arr := []testModel{
-		testModel{ID: 2, Name: "two"},
-		testModel{ID: 1, Name: "one"},
-		testModel{ID: 3, Name: "three"},
+		{ID: 2, Name: "two"},
+		{ID: 1, Name: "one"},
+		{ID: 3, Name: "three"},
 	}
 	var res []testModel
 	Chain(arr).Reverse(func(n testModel, _ int) int {
@@ -57,9 +57,9 @@ func Test_Chain_Reverse(t *testing.T) {
 
 func Test_Chain_ReverseBy(t *testing.T) {
 	arr := []testModel{
-		testModel{ID: 2, Name: "two"},
-		testModel{ID: 1, Name: "one"},
-		testModel{ID: 3, Name: "three"},
+		{ID: 2, Name: "two"},
+		{ID: 1, Name: "one"},
+		{ID: 3, Name: "three"},
 	}
 	var res []testModel
 	Chain(arr).ReverseBy("id").Value(&res)
