@@ -23,6 +23,8 @@ type IQuery interface {
 	Last() IQuery
 	Map(interface{}) IQuery
 	MapBy(string) IQuery
+	MapMany(interface{}) IQuery
+	MapManyBy(string) IQuery
 	Object() IQuery
 	Reduce(interface{}, interface{}) IQuery
 	Reject(interface{}) IQuery
