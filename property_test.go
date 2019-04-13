@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestPropertyRV(t *testing.T) {
-	item := TestModel{ID: 1, Name: "one"}
+func Test_PropertyRV(t *testing.T) {
+	item := testModel{ID: 1, Name: "one"}
 
 	rv := PropertyRV("$$")(item)
 	if rv != nilRV {
@@ -19,8 +19,8 @@ func TestPropertyRV(t *testing.T) {
 	}
 }
 
-func TestProperty(t *testing.T) {
-	item := TestModel{ID: 1, Name: "one"}
+func Test_Property(t *testing.T) {
+	item := testModel{ID: 1, Name: "one"}
 
 	rv := PropertyRV("$$")(item)
 	if rv != nilRV {
@@ -34,8 +34,8 @@ func TestProperty(t *testing.T) {
 	}
 }
 
-func TestProperty_Ptr(t *testing.T) {
-	item := &TestModel{ID: 1, Name: "ptr"}
+func Test_Property_Ptr(t *testing.T) {
+	item := &testModel{ID: 1, Name: "ptr"}
 
 	nameGetter := Property("name")
 	name := nameGetter(item)
@@ -44,9 +44,9 @@ func TestProperty_Ptr(t *testing.T) {
 	}
 }
 
-func TestProperty_Nested(t *testing.T) {
-	item := TestModel{
-		TestNestedModel: TestNestedModel{
+func Test_Property_Nested(t *testing.T) {
+	item := testModel{
+		testNestedModel: testNestedModel{
 			Age: 11,
 		},
 	}

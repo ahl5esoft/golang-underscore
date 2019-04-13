@@ -2,26 +2,24 @@ package underscore
 
 import "testing"
 
-// TestModel is 测试模型
-type TestModel struct {
-	TestNestedModel
+type testModel struct {
+	testNestedModel
 
 	ID   int
 	Name string
 }
 
-// TestNestedModel is 嵌套模型
-type TestNestedModel struct {
+type testNestedModel struct {
 	Age int
 }
 
-func TestAll(t *testing.T) {
-	arr := []TestModel{
+func Test_All(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 1, Name: "two"},
 		{ID: 1, Name: "three"},
 	}
-	ok := All(arr, func(r TestModel, _ int) bool {
+	ok := All(arr, func(r testModel, _ int) bool {
 		return r.ID == 1
 	})
 	if !ok {
@@ -29,24 +27,22 @@ func TestAll(t *testing.T) {
 	}
 }
 
-func TestAllBy(t *testing.T) {
-	arr := []TestModel{
+func Test_AllBy(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 1, Name: "two"},
 		{ID: 1, Name: "three"},
 	}
 	ok := AllBy(arr, nil)
 	if ok {
-		t.Error("wrong")
-		return
+		t.Fatal("wrong")
 	}
 
 	ok = AllBy(arr, map[string]interface{}{
 		"name": "a",
 	})
 	if ok {
-		t.Error("wrong")
-		return
+		t.Fatal("wrong")
 	}
 
 	ok = AllBy(arr, map[string]interface{}{
@@ -57,12 +53,12 @@ func TestAllBy(t *testing.T) {
 	}
 }
 
-func TestChain_All_False(t *testing.T) {
-	ok := Chain([]TestModel{
+func Test_Chain_All_False(t *testing.T) {
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 1, Name: "two"},
 		{ID: 1, Name: "three"},
-	}).All(func(r TestModel, _ int) bool {
+	}).All(func(r testModel, _ int) bool {
 		return r.ID != 1
 	})
 	if ok {
@@ -70,12 +66,12 @@ func TestChain_All_False(t *testing.T) {
 	}
 }
 
-func TestChain_All_True(t *testing.T) {
-	ok := Chain([]TestModel{
+func Test_Chain_All_True(t *testing.T) {
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 1, Name: "two"},
 		{ID: 1, Name: "three"},
-	}).All(func(r TestModel, _ int) bool {
+	}).All(func(r testModel, _ int) bool {
 		return r.ID == 1
 	})
 	if !ok {
@@ -83,8 +79,8 @@ func TestChain_All_True(t *testing.T) {
 	}
 }
 
-func TestChain_AllBy_False(t *testing.T) {
-	ok := Chain([]TestModel{
+func Test_Chain_AllBy_False(t *testing.T) {
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
@@ -96,8 +92,8 @@ func TestChain_AllBy_False(t *testing.T) {
 	}
 }
 
-func TestChain_AllBy_True(t *testing.T) {
-	ok := Chain([]TestModel{
+func Test_Chain_AllBy_True(t *testing.T) {
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "one"},
 		{ID: 3, Name: "one"},

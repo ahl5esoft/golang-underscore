@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestReduce(t *testing.T) {
+func Test_Reduce(t *testing.T) {
 	v := Reduce([]int{1, 2}, func(memo []int, n, _ int) []int {
 		memo = append(memo, n)
 		memo = append(memo, n+10)
@@ -20,7 +20,7 @@ func TestReduce(t *testing.T) {
 	}
 }
 
-func TestChain_Reduce(t *testing.T) {
+func Test_Chain_Reduce(t *testing.T) {
 	res := make([]int, 0)
 	Chain([]int{1, 2}).Reduce(func(memo []int, n, _ int) []int {
 		memo = append(memo, n)

@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestIsMatch(t *testing.T) {
-	m := TestModel{ID: 1, Name: "one"}
+func Test_IsMatch(t *testing.T) {
+	m := testModel{ID: 1, Name: "one"}
 	ok := IsMatch(nil, nil)
 	if ok {
 		t.Error("wrong")

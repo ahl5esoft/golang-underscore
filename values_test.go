@@ -13,14 +13,14 @@ func Test_Values_Array(t *testing.T) {
 }
 
 func Test_Values_Hash(t *testing.T) {
-	dict := map[int]string{
+	src := map[int]string{
 		1: "a",
 		2: "b",
 		3: "c",
 		4: "d",
 	}
-	res := Values(dict).([]string)
-	if len(res) != len(dict) {
+	res := Values(src).([]string)
+	if len(res) != len(src) {
 		t.Error(res)
 	}
 }

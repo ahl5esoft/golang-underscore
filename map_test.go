@@ -17,7 +17,7 @@ func Test_Map(t *testing.T) {
 }
 
 func Test_MapBy(t *testing.T) {
-	arr := []TestModel{
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
@@ -46,7 +46,7 @@ func Test_Chain_Map(t *testing.T) {
 }
 
 func Test_Chain_MapBy(t *testing.T) {
-	arr := []TestModel{
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},

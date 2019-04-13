@@ -4,13 +4,13 @@ import (
 	"testing"
 )
 
-func TestAny(t *testing.T) {
-	arr := []TestModel{
+func Test_Any(t *testing.T) {
+	src := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
-	ok := Any(arr, func(r TestModel, _ int) bool {
+	ok := Any(src, func(r testModel, _ int) bool {
 		return r.ID == 0
 	})
 	if ok {
@@ -18,8 +18,8 @@ func TestAny(t *testing.T) {
 	}
 }
 
-func TestAnyBy(t *testing.T) {
-	arr := []TestModel{
+func Test_AnyBy(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
@@ -28,8 +28,7 @@ func TestAnyBy(t *testing.T) {
 		"Id": 0,
 	})
 	if ok {
-		t.Error("wrong")
-		return
+		t.Fatal("wrong")
 	}
 
 	ok = AnyBy(arr, map[string]interface{}{
@@ -41,12 +40,12 @@ func TestAnyBy(t *testing.T) {
 	}
 }
 
-func TestChain_Any_False(t *testing.T) {
-	ok := Chain([]TestModel{
+func Test_Chain_Any_False(t *testing.T) {
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
-	}).Any(func(r TestModel, _ int) bool {
+	}).Any(func(r testModel, _ int) bool {
 		return r.ID == 0
 	})
 	if ok {
@@ -54,12 +53,12 @@ func TestChain_Any_False(t *testing.T) {
 	}
 }
 
-func TestChain_Any_True(t *testing.T) {
-	ok := Chain([]TestModel{
+func Test_Chain_Any_True(t *testing.T) {
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
-	}).Any(func(r TestModel, _ int) bool {
+	}).Any(func(r testModel, _ int) bool {
 		return r.ID == 1
 	})
 	if !ok {
@@ -67,8 +66,8 @@ func TestChain_Any_True(t *testing.T) {
 	}
 }
 
-func TestChain_AnyBy_False(t *testing.T) {
-	ok := Chain([]TestModel{
+func Test_Chain_AnyBy_False(t *testing.T) {
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
@@ -80,8 +79,8 @@ func TestChain_AnyBy_False(t *testing.T) {
 	}
 }
 
-func TestChain_AnyBy_True(t *testing.T) {
-	ok := Chain([]TestModel{
+func Test_Chain_AnyBy_True(t *testing.T) {
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},

@@ -1,43 +1,37 @@
 package underscore
 
 import (
-	"reflect"
 	"sort"
 )
 
 // Reverse is 倒序
-func Reverse(source, selector, result interface{}) {
-	resultRV := reflect.ValueOf(result)
-	if resultRV.Kind() != reflect.Ptr {
-		panic("receive type must be a pointer")
-	}
-
+func Reverse(source, selector interface{}) interface{} {
 	qs := sortQuery{}
 	qs.Sort(source, selector)
 	if qs.Len() == 0 {
-		return
+		return nil
 	}
 
 	sort.Sort(sort.Reverse(qs))
-	resultRV.Elem().Set(qs.ValuesRV)
+	return qs.ValuesRV.Interface()
 }
 
 // ReverseBy is 根据属性倒序
-func ReverseBy(source interface{}, property string, result interface{}) {
+func ReverseBy(source interface{}, property string) interface{} {
 	getPropertyRV := PropertyRV(property)
-	Reverse(source, func(value, _ interface{}) facade {
+	return Reverse(source, func(value, _ interface{}) facade {
 		return facade{
 			getPropertyRV(value),
 		}
-	}, result)
+	})
 }
 
 func (m *query) Reverse(selector interface{}) IQuery {
-	Reverse(m.Source, selector, &m.Source)
+	m.Source = Reverse(m.Source, selector)
 	return m
 }
 
 func (m *query) ReverseBy(property string) IQuery {
-	ReverseBy(m.Source, property, &m.Source)
+	m.Source = ReverseBy(m.Source, property)
 	return m
 }

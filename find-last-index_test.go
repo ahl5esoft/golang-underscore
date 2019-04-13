@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestFindLastIndex(t *testing.T) {
-	arr := []TestModel{
+func Test_FindLastIndex(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
@@ -16,13 +16,13 @@ func TestFindLastIndex(t *testing.T) {
 	}
 }
 
-func TestFindLastIndex_EmptyArray(t *testing.T) {
+func Test_FindLastIndex_EmptyArray(t *testing.T) {
 	if FindLastIndex([]int{}) != -1 {
 		t.Error("err")
 	}
 }
 
-func TestFindLastIndex_NotArray(t *testing.T) {
+func Test_FindLastIndex_NotArray(t *testing.T) {
 	if FindLastIndex(nil) != -1 {
 		t.Fatal("err")
 	}
@@ -36,8 +36,8 @@ func TestFindLastIndex_NotArray(t *testing.T) {
 	}
 }
 
-func TestChain_FindLastIndex(t *testing.T) {
-	arr := []TestModel{
+func Test_Chain_FindLastIndex(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},

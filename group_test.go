@@ -17,19 +17,20 @@ func Test_Group(t *testing.T) {
 }
 
 func Test_GroupBy(t *testing.T) {
-	arr := []TestModel{
+	arr := []testModel{
 		{ID: 1, Name: "a"},
 		{ID: 2, Name: "a"},
 		{ID: 3, Name: "b"},
 		{ID: 4, Name: "b"},
 	}
-	dic := GroupBy(arr, "name").(map[string][]TestModel)
+	dic := GroupBy(arr, "name").(map[string][]testModel)
+	t.Error(dic)
 	if len(dic) != 2 {
 		t.Error("wrong")
 	}
 }
 
-func TestChain_Group(t *testing.T) {
+func Test_Chain_Group(t *testing.T) {
 	res := make(map[string][]int)
 	Chain([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
 		if n%2 == 0 {
@@ -42,9 +43,9 @@ func TestChain_Group(t *testing.T) {
 	}
 }
 
-func TestChain_GroupBy(t *testing.T) {
-	res := make(map[string][]TestModel)
-	Chain([]TestModel{
+func Test_Chain_GroupBy(t *testing.T) {
+	res := make(map[string][]testModel)
+	Chain([]testModel{
 		{ID: 1, Name: "a"},
 		{ID: 2, Name: "a"},
 		{ID: 3, Name: "b"},

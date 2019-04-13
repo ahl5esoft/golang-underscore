@@ -14,13 +14,13 @@ func Test_Index(t *testing.T) {
 }
 
 func Test_IndexBy(t *testing.T) {
-	arr := []TestModel{
+	arr := []testModel{
 		{ID: 1, Name: "a"},
 		{ID: 2, Name: "a"},
 		{ID: 3, Name: "b"},
 		{ID: 4, Name: "b"},
 	}
-	res := IndexBy(arr, "Name").(map[string]TestModel)
+	res := IndexBy(arr, "Name").(map[string]testModel)
 	if len(res) != 2 {
 		t.Error(res)
 	}
@@ -37,8 +37,8 @@ func Test_Chain_Index(t *testing.T) {
 }
 
 func Test_Chain_IndexBy(t *testing.T) {
-	res := make(map[string]TestModel)
-	Chain([]TestModel{
+	res := make(map[string]testModel)
+	Chain([]testModel{
 		{ID: 1, Name: "a"},
 		{ID: 2, Name: "a"},
 		{ID: 3, Name: "b"},

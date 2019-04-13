@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestRange(t *testing.T) {
+func Test_Range(t *testing.T) {
 	arr := make([]int, 0)
 	Range(0, 0, 1).Value(&arr)
 	if len(arr) != 0 {

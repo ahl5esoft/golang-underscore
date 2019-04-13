@@ -4,13 +4,13 @@ import (
 	"testing"
 )
 
-func TestFind(t *testing.T) {
-	arr := []TestModel{
+func Test_Find(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
-	item := Find(arr, func(r TestModel, _ int) bool {
+	item := Find(arr, func(r testModel, _ int) bool {
 		return r.ID == 1
 	})
 	if item != arr[0] {
@@ -18,8 +18,8 @@ func TestFind(t *testing.T) {
 	}
 }
 
-func TestFindBy(t *testing.T) {
-	arr := []TestModel{
+func Test_FindBy(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
@@ -32,14 +32,14 @@ func TestFindBy(t *testing.T) {
 	}
 }
 
-func TestChain_Find(t *testing.T) {
-	arr := []TestModel{
+func Test_Chain_Find(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
-	res := TestModel{}
-	Chain(arr).Find(func(r TestModel, _ int) bool {
+	res := testModel{}
+	Chain(arr).Find(func(r testModel, _ int) bool {
 		return r.ID == 1
 	}).Value(&res)
 	if res != arr[0] {
@@ -47,13 +47,13 @@ func TestChain_Find(t *testing.T) {
 	}
 }
 
-func TestChain_FindBy(t *testing.T) {
-	arr := []TestModel{
+func Test_Chain_FindBy(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
-	res := TestModel{}
+	res := testModel{}
 	Chain(arr).FindBy(map[string]interface{}{
 		"id": 2,
 	}).Value(&res)

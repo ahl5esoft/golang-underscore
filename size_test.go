@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestSize(t *testing.T) {
+func Test_Size(t *testing.T) {
 	dict := map[string]int{
 		"a": 1,
 		"b": 2,
@@ -15,7 +15,7 @@ func TestSize(t *testing.T) {
 	}
 }
 
-func TestChain_Size(t *testing.T) {
+func Test_Chain_Size(t *testing.T) {
 	arr := []string{"a", "b", "c"}
 	size := Chain(arr).Size()
 	if size != len(arr) {

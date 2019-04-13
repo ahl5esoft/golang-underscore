@@ -4,13 +4,13 @@ import (
 	"testing"
 )
 
-func TestFindIndex(t *testing.T) {
-	arr := []TestModel{
+func Test_FindIndex(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 1, Name: "two"},
 		{ID: 1, Name: "three"},
 	}
-	i := FindIndex(arr, func(r TestModel, _ int) bool {
+	i := FindIndex(arr, func(r testModel, _ int) bool {
 		return r.Name == arr[1].Name
 	})
 	if i != 1 {
@@ -18,8 +18,8 @@ func TestFindIndex(t *testing.T) {
 	}
 }
 
-func TestFindIndexBy(t *testing.T) {
-	arr := []TestModel{
+func Test_FindIndexBy(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
@@ -32,13 +32,13 @@ func TestFindIndexBy(t *testing.T) {
 	}
 }
 
-func TestChain_FindIndex(t *testing.T) {
-	arr := []TestModel{
+func Test_Chain_FindIndex(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
-	index := Chain(arr).FindIndex(func(r TestModel, _ int) bool {
+	index := Chain(arr).FindIndex(func(r testModel, _ int) bool {
 		return r.Name == arr[1].Name
 	})
 	if index != 1 {
@@ -46,8 +46,8 @@ func TestChain_FindIndex(t *testing.T) {
 	}
 }
 
-func TestChain_FindIndexBy(t *testing.T) {
-	arr := []TestModel{
+func Test_Chain_FindIndexBy(t *testing.T) {
+	arr := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},

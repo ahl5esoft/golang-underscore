@@ -1,43 +1,37 @@
 package underscore
 
 import (
-	"reflect"
 	"sort"
 )
 
 // Sort is 排序
-func Sort(source, selector, result interface{}) {
-	resultRV := reflect.ValueOf(result)
-	if resultRV.Kind() != reflect.Ptr {
-		panic("receive type must be a pointer")
-	}
-
+func Sort(source, selector interface{}) interface{} {
 	qs := sortQuery{}
 	qs.Sort(source, selector)
 	if qs.Len() == 0 {
-		return
+		return nil
 	}
 
 	sort.Sort(qs)
-	resultRV.Elem().Set(qs.ValuesRV)
+	return qs.ValuesRV.Interface()
 }
 
 // SortBy is 根据属性排序
-func SortBy(source interface{}, property string, result interface{}) {
+func SortBy(source interface{}, property string) interface{} {
 	getPropertyRV := PropertyRV(property)
-	Sort(source, func(value, _ interface{}) facade {
+	return Sort(source, func(value, _ interface{}) facade {
 		return facade{
 			getPropertyRV(value),
 		}
-	}, result)
+	})
 }
 
 func (m *query) Sort(selector interface{}) IQuery {
-	Sort(m.Source, selector, &m.Source)
+	m.Source = Sort(m.Source, selector)
 	return m
 }
 
 func (m *query) SortBy(property string) IQuery {
-	SortBy(m.Source, property, &m.Source)
+	m.Source = SortBy(m.Source, property)
 	return m
 }

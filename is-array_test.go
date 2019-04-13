@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestIsArray(t *testing.T) {
+func Test_IsArray(t *testing.T) {
 	if !IsArray([]int{}) {
 		t.Error("wrong")
 		return

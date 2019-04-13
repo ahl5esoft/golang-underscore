@@ -1,19 +1,16 @@
 package underscore
 
-import (
-	"testing"
-)
+import "testing"
 
 func Test_Reverse(t *testing.T) {
-	arr := []TestModel{
-		{ID: 2, Name: "two"},
-		{ID: 1, Name: "one"},
-		{ID: 3, Name: "three"},
+	arr := []testModel{
+		testModel{ID: 2, Name: "two"},
+		testModel{ID: 1, Name: "one"},
+		testModel{ID: 3, Name: "three"},
 	}
-	res := make([]TestModel, 0)
-	Reverse(arr, func(n TestModel, _ int) int {
+	res := Reverse(arr, func(n testModel, _ int) int {
 		return n.ID
-	}, &res)
+	}).([]testModel)
 	if len(res) != len(arr) {
 		t.Fatal("wrong length")
 	}
@@ -24,30 +21,29 @@ func Test_Reverse(t *testing.T) {
 }
 
 func Test_ReverseBy(t *testing.T) {
-	arr := []TestModel{
-		{ID: 2, Name: "two"},
-		{ID: 1, Name: "one"},
-		{ID: 3, Name: "three"},
+	arr := []testModel{
+		testModel{ID: 2, Name: "two"},
+		testModel{ID: 1, Name: "one"},
+		testModel{ID: 3, Name: "three"},
 	}
-	res := make([]TestModel, 0)
-	ReverseBy(arr, "id", &res)
+	res := ReverseBy(arr, "id").([]testModel)
 	if len(res) != len(arr) {
 		t.Fatal("wrong length")
 	}
 
 	if !(res[0].ID == 3 && res[1].ID == 2 && res[2].ID == 1) {
-		t.Error("reverse error")
+		t.Error("reverseBy error")
 	}
 }
 
 func Test_Chain_Reverse(t *testing.T) {
-	arr := []TestModel{
-		{ID: 2, Name: "two"},
-		{ID: 1, Name: "one"},
-		{ID: 3, Name: "three"},
+	arr := []testModel{
+		testModel{ID: 2, Name: "two"},
+		testModel{ID: 1, Name: "one"},
+		testModel{ID: 3, Name: "three"},
 	}
-	res := make([]TestModel, 0)
-	Chain(arr).Reverse(func(n TestModel, _ int) int {
+	var res []testModel
+	Chain(arr).Reverse(func(n testModel, _ int) int {
 		return n.ID
 	}).Value(&res)
 	if len(res) != len(arr) {
@@ -60,12 +56,12 @@ func Test_Chain_Reverse(t *testing.T) {
 }
 
 func Test_Chain_ReverseBy(t *testing.T) {
-	arr := []TestModel{
-		{ID: 2, Name: "two"},
-		{ID: 1, Name: "one"},
-		{ID: 3, Name: "three"},
+	arr := []testModel{
+		testModel{ID: 2, Name: "two"},
+		testModel{ID: 1, Name: "one"},
+		testModel{ID: 3, Name: "three"},
 	}
-	res := make([]TestModel, 0)
+	var res []testModel
 	Chain(arr).ReverseBy("id").Value(&res)
 	if len(res) != len(arr) {
 		t.Fatal("wrong length")

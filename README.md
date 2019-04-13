@@ -43,6 +43,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Keys`](#keys)
 * [`Last`](#last)
 * [`Map`](#map), [`MapBy`](#mapBy)
+* [`MapMany`](#mapMany), [`MapManyBy`](#mapManyBy)
 * [`Md5`](#md5)
 * [`Object`](#object)
 * [`Property`](#property), [`PropertyRV`](#propertyRV)
@@ -75,12 +76,12 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{1, "two"},
-	TestModel{1, "three"},
+src := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 1, Name: "two"},
+	{ID: 1, Name: "three"},
 }
-ok := All(arr, func(r TestModel, _ int) bool {
+ok := All(src, func(r testModel, _ int) bool {
 	return r.Id == 1
 })
 // ok == true
@@ -102,20 +103,20 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{1, "two"},
-	TestModel{1, "three"},
+src := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 1, Name: "two"},
+	{ID: 1, Name: "three"},
 }
-ok := AllBy(arr, nil)
+ok := AllBy(src, nil)
 // ok == true
 
-ok = AllBy(arr, map[string]interface{}{
+ok = AllBy(src, map[string]interface{}{
 	"name": "a",
 })
 // ok == false
 
-ok = AllBy(arr, map[string]interface{}{
+ok = AllBy(src, map[string]interface{}{
 	"id": 1,
 })
 // ok == true
@@ -137,12 +138,12 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{2, "two"},
-	TestModel{3, "three"},
+src := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
 }
-ok := Any(arr, func(r TestModel, _ int) bool {
+ok := Any(src, func(r testModel, _ int) bool {
 	return r.Id == 0
 })
 // ok == false
@@ -164,19 +165,19 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{2, "two"},
-	TestModel{3, "three"},
+src := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
 }
-ok := AnyBy(arr, map[string]interface{}{
+ok := AnyBy(src, map[string]interface{}{
 	"Id": 0,
 })
 // ok == false
 
-ok = AnyBy(arr, map[string]interface{}{
-	"id":   arr[0].Id,
-	"name": arr[0].Name,
+ok = AnyBy(src, map[string]interface{}{
+	"id":   src[0].Id,
+	"name": src[0].Name,
 })
 // ok == true
 ```
@@ -236,6 +237,9 @@ __Examples__
 
 ```go
 arr := []int{1, 2, 3}
+var duplicate []int
+Chain(arr).Clone().Value(&duplicate)
+// or
 duplicate := Clone(arr)
 ok := All(duplicate, func(n, i int) bool {
 	return arr[i] == n
@@ -255,12 +259,12 @@ __Arguments__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{1, "two"},
-	TestModel{1, "three"},
+src := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 1, Name: "two"},
+	{ID: 1, Name: "three"},
 }
-Each(arr, func (r TestModel, i int) {
+Each(src, func (r testModel, i int) {
 	// coding
 })
 ```
@@ -276,18 +280,23 @@ __Arguments__
 
 __Return__
 
-* interface{}
+* interface{} -- `source` elem
 
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{2, "two"},
-	TestModel{3, "three"},
+src := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
 }
-item := Find(arr, func(r TestModel, _ int) bool {
-	return r.Id == 1
+var item testModel
+Chain(src).Find(func(r testModel, _ int) bool {
+	return r.ID == 1
+}).Value(&item)
+// or
+item := Find(src, func(r testModel, _ int) bool {
+	return r.ID == 1
 })
 // item == arr[0]
 ```
@@ -303,16 +312,21 @@ __Arguments__
 
 __Return__
 
-* interface{}
+* interface{} - `source` elem
 
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{2, "two"},
-	TestModel{3, "three"},
+arr := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
 }
+var item testModel
+Chain(arr).FindBy(map[string]interface{}{
+	"id": 2,
+}).Value(&item)
+// or
 item := FindBy(arr, map[string]interface{}{
 	"id": 2,
 })
@@ -335,12 +349,12 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{1, "two"},
-	TestModel{1, "three"},
+arr := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 1, Name: "two"},
+	{ID: 1, Name: "three"},
 }
-i := FindIndex(arr, func(r TestModel, _ int) bool {
+i := FindIndex(arr, func(r testModel, _ int) bool {
 	return r.Name == arr[1].Name
 })
 // i == 1
@@ -362,10 +376,10 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{2, "two"},
-	TestModel{3, "three"},
+arr := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
 }
 i := FindIndexBy(arr, map[string]interface{}{
 	"id": 1,
@@ -389,16 +403,14 @@ __Examples__
 
 ```go
 arr := []int{ 1, 2, 3 }
-v := First(arr)
-n, ok := v.(int)
-if !(ok && n == 1) {
-	//wrong
-}
+var res int
+Chain(arr).First().Value(&res)
+// or
+res := First(arr).(int)
+// res = 1
 
-v = First(nil)
-if v != nil {
-	//wrong
-}
+res := First(nil) 
+// res == nil
 ```
 
 <a name="group" />
@@ -417,16 +429,22 @@ __Return__
 __Examples__
 
 ```go
-v := Group([]int{ 1, 2, 3, 4, 5 }, func (n, _ int) string {
+src := []int{ 1, 2, 3, 4, 5 }
+var res map[string][]int
+Chain(src).Group(func (n, _ int) string {
 	if n % 2 == 0 {
 		return "even"
 	}
 	return "odd"
-})
-dict, ok := v.(map[string][]int)
-if !(ok && len(dict["even"]) == 2) {
-	//wrong
-}
+}).Value(&res)
+// or
+res := Group(src, func (n, _ int) string {
+	if n % 2 == 0 {
+		return "even"
+	}
+	return "odd"
+}).(map[string][]int)
+// res = map[odd:[1 3 5] even:[2 4]]
 ```
 
 <a name="groupBy" />
@@ -445,17 +463,17 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{ 1, "a" },
-	TestModel{ 2, "a" },
-	TestModel{ 3, "b" },
-	TestModel{ 4, "b" },
+arr := []testModel{
+	{ID: 1, Name: "a"},
+	{ID: 2, Name: "a"},
+	{ID: 3, Name: "b"},
+	{ID: 4, Name: "b"},
 }
-v := GroupBy(arr, "name")
-dict, ok := v.(map[string][]TestModel)
-if !(ok && len(dict) == 2) {
-	//wrong
-}
+var res map[string][]testModel
+Chain(arr).GroupBy("name").Value(&res)
+// or
+res := GroupBy(arr, "name").(map[string][]testModel)
+// res = map[a:[{{0} 1 a} {{0} 2 a}] b:[{{0} 3 b} {{0} 4 b}]]
 ```
 
 <a name="index" />
@@ -474,13 +492,16 @@ __Return__
 __Examples__
 
 ```go
-v, _ := Index([]string{ "a", "b" }, func (item string, _ int) string {
-	return item
-})
-res, ok := v.(map[string]string)
-if !(ok && res["a"] == "a") {
-	// wrong
-}
+src := []string{ "a", "b" }
+var res map[string]string
+Chain(src).Index(func (r string, _ int) string {
+	return r
+}).Value(&res)
+// or
+res := Index(src, func (r string, _ int) string {
+	return r
+}).(map[string]string)
+// res = map[a:a b:b]
 ```
 
 <a name="indexBy" />
@@ -499,17 +520,17 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{ 1, "a" },
-	TestModel{ 2, "a" },
-	TestModel{ 3, "b" },
-	TestModel{ 4, "b" },
+arr := []testModel{
+	{ID: 1, Name: "a"},
+	{ID: 2, Name: "a"},
+	{ID: 3, Name: "b"},
+	{ID: 4, Name: "b"},
 }
-res := IndexBy(arr, "Name")
-dict, ok := res.(map[string]TestModel)
-if !(ok && len(dict) == 2) {
-	// wrong
-}
+var res map[int]testModel
+Chain(arr).IndexBy("id").Value(&res)
+// or
+res := IndexBy(arr, "id").(map[int]testModel)
+// res = map[1:{{0} 1 a} 2:{{0} 2 a} 3:{{0} 3 b} 4:{{0} 4 b}]
 ```
 
 <a name="isArray" />
@@ -552,32 +573,24 @@ __Return__
 __Examples__
 
 ```go
-m := TestModel{ 1, "one" }
+m := testModel{ 1, "one" }
 ok := IsMatch(nil, nil)
-if ok {
-	// wrong
-}
+// ok = false
 
 ok = IsMatch(m, nil)
-if ok {
-	// wrong
-}
+// ok = false
 
 ok = IsMatch(m, map[string]interface{}{
 	"id": m.Id,
 	"name": "a",
 })
-if ok {
-	// wrong
-}
+// ok = false
 
 ok = IsMatch(m, map[string]interface{}{
 	"id": m.Id,
 	"name": m.Name,
 })
-if !ok {
-	// wrong
-}
+// ok = true
 ```
 
 <a name="keys" />
@@ -597,9 +610,7 @@ __Examples__
 ```go
 arr := []string{ "aa" }
 v := Keys(arr)
-if v != nil {
-	// wrong
-}
+// v = nil
 
 dict := map[int]string{	
 	1: "a",
@@ -607,11 +618,11 @@ dict := map[int]string{
 	3: "c",
 	4: "d",
 }
-v = Keys(dict)
-res, ok := v.([]int)
-if !(ok && len(res) == len(dict)) {
-	// wrong
-}
+var res []int
+Chain(dict).Keys().Value(&res)
+// or
+res := Keys(dict).([]int)
+// res = [1 2 3 4]
 ```
 
 <a name="last" />
@@ -630,19 +641,21 @@ __Examples__
 
 ```go
 arr := []int{1, 2, 3}
-n := Last(arr)
-if n != 3 {
-	// wrong
-}
+var res int
+chain(arr).Last().Value(&res)
+// or
+res := Last(arr).(int)
+// res = 3
 
 dict := map[string]string{
 	"a": "aa",
 	"b": "bb",
 }
-str := Last(dict)
-if !(str == "aa" || str == "bb") {
-	// wrong
-}
+var str string
+Chain(dict).Last().Value(&str)
+// or
+str := Last(dict).(string)
+// res = "aa" or "bb"
 ```
 
 <a name="map" />
@@ -656,21 +669,23 @@ __Arguments__
 
 __Return__
 
-* interface{} - an array of anyType
+* interface{} - an slice of property value
 
 __Examples__
 
 ```go
 arr := []string{ "11", "12", "13" }
-v := Map(arr, func (s string, _ int) int {
+var res []int
+Chain(arr).Map(func (s string, _ int) int {
 	n, _ := strconv.Atoi(s)
 	return n
-})
-res, ok := v.([]int)
-if !(ok && len(res) == len(arr)) {
-	// wrong
-}
-
+}).Value(&res)
+// or
+res := Map(arr, func (s string, _ int) int {
+	n, _ := strconv.Atoi(s)
+	return n
+}).([]int)
+// res = [11 12 13]
 ```
 
 <a name="mapBy" />
@@ -684,26 +699,96 @@ __Arguments__
 
 __Return__
 
-* interface{} - an array of anyType
+* interface{} - an slice of property value
 
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{ID: 1, Name: "one"},
-	TestModel{ID: 2, Name: "two"},
-	TestModel{ID: 3, Name: "three"},
+arr := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
 }
+var res []string
+Chain(arr).MapBy("name").Value(&res)
+// or
 res := MapBy(arr, "name").([]string)
-if len(res) != len(arr) {
-	// wrong
-}
+// res = [one two three]
+```
 
-for i := 0; i < 3; i++ {
-	if res[i] != arr[i].Name {
-		// wrong
-	}
+<a name="mapMany" />
+
+### MapMany(source, selector)
+
+__Arguments__
+
+* `source` - array or map
+* `selector` - func(element, index or key) anyType with array or slice
+
+__Return__
+
+* interface{} - an slice of property elem value
+
+__Examples__
+
+```go
+src := []int{1, 2}
+MapMany(src, func(r, _ int) int {
+	return r // will panic because `r` is not array or slice
+})
+// or
+Chain(src).MapMany(func(r, _ int) int {
+	return r // will panic because `r` is not array or slice
+})
+
+var res []int
+Chain(src).MapMany(func(r, _ int) []int {
+	var temp []int
+	Range(0, r, 1).Map(func(_, _ int) int {
+		return r
+	}).Value(&temp)
+	return temp
+}).Value(&res)
+// or
+res := MapMany(src, func(r, _ int) []int {
+	var temp []int
+	Range(0, r, 1).Map(func(_, _ int) int {
+		return r
+	}).Value(&temp)
+	return temp
+}).([]int)
+// res = [1 2 2]
+```
+
+<a name="mapManyBy" />
+
+### MapManyBy(source, property)
+
+__Arguments__
+
+* `source` - array
+* `property` - string
+
+__Return__
+
+* interface{} - an slice of propery elem value
+
+__Examples__
+
+```go
+src := []mapManytestModel{
+	{"", []string{"a", "b"}, [2]int{1, 2}},
+	{"", []string{"c", "d"}, [2]int{3, 4}},
 }
+Chain(src).MapManyBy("Str") // will panic because `Str` property value is not array or slice
+// or
+MapManyBy(src, "Str") // will panic because `Str` property value is not array or slice
+
+var res []string
+Chain(src).MapManyBy("Slice").Value(&res)
+// or
+res := MapManyBy(src, "Slice").([]string)
+// res = [a b c d]
 ```
 
 <a name="md5" />
@@ -745,18 +830,11 @@ arr := []interface{}{
 	[]interface{}{"a", 1},
 	[]interface{}{"b", 2},
 }
-dic, ok := Object(arr).(map[string]int)
-if !(ok && len(dic) == 2) {
-	// wrong
-}
-
-if v1, ok := dic["a"]; !(ok && v1 == 1) {
-	// wrong
-}
-
-if v1, ok := dic["b"]; !(ok && v1 == 2) {
-	// wrong
-}
+var res map[string]int
+Chain(arr).Object().Value(&res)
+// or
+res := Object(arr).(map[string]int)
+// res = map[b:2 a:1] or map[a:1 b:2]
 ```
 
 <a name="property" />
@@ -774,19 +852,15 @@ __Return__
 __Examples__
 
 ```go
-item := TestModel{ 1, "one" }
+item := testModel{ 1, "one" }
 
 getAge := Property("age")
 _, err := getAge(item)
-if err == nil {
-	// wrong
-}
+// err != nil
 
 getName := Property("name")
 name, err := getName(item)
-if !(err == nil && name.(string) == item.Name) {
-	// wrong
-}
+// name = "one"
 ```
 
 <a name="propertyRV" />
@@ -804,19 +878,15 @@ __Return__
 __Examples__
 
 ```go
-item := TestModel{ 1, "one" }
+item := testModel{ 1, "one" }
 
 getAgeRV := PropertyRV("age")
 _, err := getAgeRV(item)
-if err == nil {
-	// wrong
-}
+// err != nil
 
 getNameRV := PropertyRV("name")
 nameRV, err := getNameRV(item)
-if !(err == nil && nameRV.String() == item.Name) {
-	// wrong
-}
+// nameRV = reflect.ValueOf("one")
 ```
 
 <a name="range" />
@@ -836,30 +906,25 @@ __Return__
 __Examples__
 
 ```go
-arr := Range(0, 0, 1)
-if len(arr) != 0 {
-	// wrong
-}
+var res []int
+Range(0, 0, 1).Value(&res)
+// res = []
 
-arr = Range(0, 10, 0)
-if len(arr) != 0 {
-	// wrong
-}
+var res []int
+Range(0, 10, 0).Value(&res)
+// res = []
 
-arr = Range(10, 0, 1)
-if len(arr) != 0 {
-	// wrong
-}
+var res []int
+Range(10, 0, 1).Value(&res)
+// res = []
 
-arr = Range(0, 2, 1)
-if !(len(arr) == 2 && arr[0] == 0 && arr[1] == 1) {
-	// wrong
-}
+var res []int
+Range(0, 2, 1).Value(&res)
+// res = [0 1]
 
-arr = Range(0, 3, 2)
-if !(len(arr) == 2 && arr[0] == 0 && arr[1] == 2) {
-	// wrong
-}
+var res []int
+Range(0, 3, 2).Value(&res)
+// res = [0 2]
 ```
 
 <a name="reduce" />
@@ -879,19 +944,19 @@ __Return__
 __Examples__
 
 ```go
-v := Reduce([]int{ 1, 2 }, func (memo []int, n, _ int) []int {
+var res []int
+Chain([]int{1, 2}).Reduce(func(memo []int, n, _ int) []int {
 	memo = append(memo, n)
-	memo = append(memo, n + 10)
+	memo = append(memo, n+10)
 	return memo
-}, make([]int, 0))
-res, ok := v.([]int)
-if !(ok && len(res) == 4) {
-	// wrong
-}
-
-if !(res[0] == 1 && res[1] == 11 && res[2] == 2 && res[3] == 12) {
-	// wrong
-}
+}, make([]int, 0)).Value(&res)
+// or
+res := Reduce([]int{1, 2}, func(memo []int, n, _ int) []int {
+	memo = append(memo, n)
+	memo = append(memo, n+10)
+	return memo
+}, make([]int, 0)).([]int)
+// res = [1 11 2 12]
 ```
 
 <a name="reject" />
@@ -910,18 +975,16 @@ __Return__
 __Examples__
 
 ```go
-arr := []int{ 1, 2, 3, 4 }
-v := Reject(arr, func (n, i int) bool {
-	return n % 2 == 0
-})
-res, ok := v.([]int)
-if !(ok && len(res) == 2) {
-	// wrong
-}
-
-if !(res[0] == 1 && res[1] == 3) {
-	// wrong
-}
+arr := []int{1, 2, 3, 4}
+var res []int
+Chain(arr).Reject(func(n, i int) bool {
+	return n%2 == 0
+}).Value(&res)
+// or
+res := Reject(arr, func(n, i int) bool {
+	return n%2 == 0
+}).([]int)
+// res = [1 3]
 ```
 
 <a name="rejectBy" />
@@ -940,18 +1003,20 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{ 1, "one" },
-	TestModel{ 2, "two" },
-	TestModel{ 3, "three" },
+arr := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
 }
-v := RejectBy(arr, map[string]interface{}{
+var res []testModel
+Chain(arr).RejectBy(map[string]interface{}{
 	"Id": 1,
-})
-res, ok := v.([]TestModel)
-if !(ok && len(res) == 2) {
-	// wrong
-}
+}).Value(&res)
+// or
+res := RejectBy(arr, map[string]interface{}{
+	"Id": 1,
+}).([]testModel)
+// res = [{{0} 2 two} {{0} 3 three}]
 ```
 
 <a name="reverse" />
@@ -970,22 +1035,20 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{ID: 2, Name: "two"},
-	TestModel{ID: 1, Name: "one"},
-	TestModel{ID: 3, Name: "three"},
+arr := []testModel{
+	{ID: 2, Name: "two"},
+	{ID: 1, Name: "one"},
+	{ID: 3, Name: "three"},
 }
-res := make([]TestModel, 0)
-Reverse(arr, func(n TestModel, _ int) int {
+var res []testModel
+Chain(arr).Reverse(func(n testModel, _ int) int {
 	return n.ID
-}, &res)
-if len(res) != len(arr) {
-	// wrong
-}
-
-if !(res[0].ID == 3 && res[1].ID == 2 && res[2].ID == 1) {
-	// wrong
-}
+}).Value(&res)
+// or
+res := Reverse(arr, func(n testModel, _ int) int {
+	return n.ID
+}).([]testModel)
+// res = [{{0} 3 three} {{0} 2 two} {{0} 1 one}]
 ```
 
 <a name="reverseBy" />
@@ -1004,20 +1067,16 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{ID: 2, Name: "two"},
-	TestModel{ID: 1, Name: "one"},
-	TestModel{ID: 3, Name: "three"},
+arr := []testModel{
+	{ID: 2, Name: "two"},
+	{ID: 1, Name: "one"},
+	{ID: 3, Name: "three"},
 }
-res := make([]TestModel, 0)
-ReverseBy(arr, "id", &res)
-if len(res) != len(arr) {
-	// wrong
-}
-
-if !(res[0].ID == 3 && res[1].ID == 2 && res[2].ID == 1) {
-	// wrong
-}
+var res []testModel
+Chain(arr).ReverseBy("id").Value(&res)
+// or
+res := ReverseBy(arr, "id").([]testModel)
+// res = [{{0} 3 three} {{0} 2 two} {{0} 1 one}]
 ```
 
 <a name="size" />
@@ -1040,9 +1099,8 @@ dict := map[string]int{
 	"b": 2,
 	"c": 3,
 }
-if Size(dict) != len(dict) {
-	// wrong
-}
+l := Size(dict)
+// l = 3
 ```
 
 <a name="sort" />
@@ -1061,20 +1119,20 @@ __Return__
 __Examples__
 
 ```go
-arr := []int{ 1, 2, 3, 5 }
-v := Sort([]int{ 5, 3, 2, 1 }, func (n, _ int) int {
-	return n
-})
-res, ok := v.([]int)
-if !(ok && len(res) == len(arr)) {
-	// wrong
+arr := []testModel{
+	{ID: 2, Name: "two"},
+	{ID: 1, Name: "one"},
+	{ID: 3, Name: "three"},
 }
-
-for i, n := range arr {
-	if res[i] != n {
-		// wrong
-	}
-}
+var res []testModel
+Chain(arr).Sort(func(n testModel, _ int) int {
+	return n.ID
+}).Value(&res)
+// or
+res := Sort(arr, func(n testModel, _ int) int {
+	return n.ID
+}).([]testModel)
+// res = [{{0} 1 one} {{0} 2 two} {{0} 3 three}]
 ```
 
 <a name="sortBy" />
@@ -1093,20 +1151,16 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{ 3, "three" },
-	TestModel{ 1, "one" },
-	TestModel{ 2, "two" },
+arr := []testModel{
+	{ID: 2, Name: "two"},
+	{ID: 1, Name: "one"},
+	{ID: 3, Name: "three"},
 }
-v := SortBy(arr, "id")
-res, ok := v.([]TestModel)
-if !(ok && len(res) == len(arr)) {
-	// wrong
-}
-
-if !(res[0].Id < res[1].Id && res[1].Id < res[2].Id) {
-	// wrong
-}
+var res []testModel
+Chain(arr).SortBy("id").Value(&res)
+// or
+res := SortBy(arr, "id").([]testModel)
+// res = [{{0} 1 one} {{0} 2 two} {{0} 3 three}]
 ```
 
 <a name="take" />
@@ -1125,16 +1179,12 @@ __Return__
 __Examples__
 
 ```go
-arr := []int{ 1, 2, 3 }
-v := Take(arr, 1)
-res, ok := v.([]int)
-if !ok {
-	// wrong
-}
-
-if res[0] != 1 {
-	// wrong
-}
+arr := []int{1, 2, 3}
+var res []int
+Chain(arr).Take(1).Value(&res)
+// or
+res := Take(arr, 1).([]int)
+// res = [1]
 ```
 
 <a name="uniq" />
@@ -1153,13 +1203,16 @@ __Return__
 __Examples__
 
 ```go
-v := Uniq([]int{ 1, 2, 1, 4, 1, 3 }, func (n, _ int) int {
+arr := []int{1, 2, 1, 4, 1, 3}
+var res []int
+Chain(arr).Uniq(func(n, _ int) int {
 	return n % 2
-})
-res, ok := v.([]int)
-if !(ok && len(res) == 2) {
-	// wrong
-}
+}).Value(&res)
+// or
+res := Uniq(arr, func(n, _ int) int {
+	return n % 2
+}).([]int)
+// res = [1 2]
 ```
 
 <a name="uniqBy" />
@@ -1178,16 +1231,16 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{ 1, "one" },
-	TestModel{ 2, "one" },
-	TestModel{ 3, "one" },
+arr := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "one"},
+	{ID: 3, Name: "one"},
 }
-v := UniqBy(arr, "Name")
-res, ok := v.([]TestModel)
-if !(ok && len(res) == 1) {
-	// wrong
-}
+var res []testModel
+Chain(arr).UniqBy("name").Value(&res)
+// or
+res := UniqBy(arr, "Name").([]testModel)
+// res = [{{0} 1 one}]
 ```
 
 <a name="uuid" />
@@ -1207,25 +1260,21 @@ uuid := UUID()
 
 <a name="value" />
 
-### Value()
-
-__Return__
-
-* interface{} - Chain final result
+### Value(result)
 
 __Examples__
 
 ```go
-res, ok := Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
+arr := []int{1, 2, 1, 4, 1, 3}
+var res map[string][]int
+Chain(arr).Uniq(nil).Group(func(n, _ int) string {
 	if n%2 == 0 {
 		return "even"
 	}
 
 	return "old"
-}).Value().(map[string][]int)
-if !(ok && len(res) == 2) {
-	// wrong
-}
+}).Value(&res)
+// res = map[old:[1 3] even:[2 4]]
 ```
 
 <a name="values" />
@@ -1239,22 +1288,21 @@ __Arguments__
 __Return__
 
 * interface{} - an array of `source`'s values
-* error
 
 __Examples__
 
 ```go
-dict := map[int]string{	
+src := map[int]string{
 	1: "a",
 	2: "b",
 	3: "c",
 	4: "d",
 }
-v, _ := Values(dict)
-res, ok := v.([]string)
-if !(ok && len(res) == len(dict)) {
-	// wrong
-}
+var res []string
+Chain(src).Values().Value(&res)
+// or
+res := Values(src).([]string)
+// res = [a b c d]
 ```
 
 <a name="where" />
@@ -1273,23 +1321,20 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{2, "two"},
-	TestModel{3, "three"},
-	TestModel{4, "three"},
+src := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
 }
-v := Where(arr, func(r TestModel, i int) bool {
-	return r.Id%2 == 0
-})
-res, ok := v.([]TestModel)
-if !(ok && len(res) == 2) {
-	// wrong
-}
-
-if !(res[0].Id == 2 && res[1].Id == 4) {
-	// wrong
-}
+var res []testModel
+Chain(src).Where(func(r testModel, i int) bool {
+	return r.ID%2 == 0
+}).Value(&res)
+// or
+res := Where(src, func(r testModel, i int) bool {
+	return r.ID%2 == 0
+}).([]testModel)
+// res = [{{0} 2 two}]
 ```
 
 <a name="whereBy" />
@@ -1308,17 +1353,18 @@ __Return__
 __Examples__
 
 ```go
-arr := []TestModel{
-	TestModel{1, "one"},
-	TestModel{2, "one"},
-	TestModel{3, "three"},
-	TestModel{4, "three"},
+src := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
 }
-v := WhereBy(arr, map[string]interface{}{
-	"Name": "one",
-})
-res, ok := v.([]TestModel)
-if !(ok && len(res) == 2 && res[0] == arr[0] && res[1] == arr[1]) {
-	// wrong
-}
+var res []testModel
+Chain(src).WhereBy(map[string]interface{}{
+	"name": "one",
+}).Value(&res)
+// or
+res := WhereBy(src, map[string]interface{}{
+	"name": "one",
+}).([]testModel
+// res = [{{0} 1 one}]
 ```

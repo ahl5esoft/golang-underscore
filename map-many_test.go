@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-type mapManyTestModel struct {
+type mapManytestModel struct {
 	Str   string
 	Slice []string
 	Array [2]int
@@ -43,7 +43,7 @@ func Test_MapManyBy_PropertyNotSliceOrArray(t *testing.T) {
 		}
 	}()
 
-	src := []mapManyTestModel{
+	src := []mapManytestModel{
 		{"", nil, [2]int{}},
 		{"", nil, [2]int{}},
 		{"", nil, [2]int{}},
@@ -58,7 +58,7 @@ func Test_Chain_MapManyBy_PropertyNotSliceOrArray(t *testing.T) {
 		}
 	}()
 
-	src := []mapManyTestModel{
+	src := []mapManytestModel{
 		{"", nil, [2]int{}},
 		{"", nil, [2]int{}},
 		{"", nil, [2]int{}},
@@ -96,7 +96,7 @@ func Test_Chain_MapMany_Slice(t *testing.T) {
 }
 
 func Test_MapManyBy_Slice(t *testing.T) {
-	src := []mapManyTestModel{
+	src := []mapManytestModel{
 		{"", []string{"a", "b"}, [2]int{}},
 		{"", []string{"c", "d"}, [2]int{}},
 	}
@@ -107,7 +107,7 @@ func Test_MapManyBy_Slice(t *testing.T) {
 }
 
 func Test_Chain_MapManyBy_Slice(t *testing.T) {
-	src := []mapManyTestModel{
+	src := []mapManytestModel{
 		{"", []string{"a", "b"}, [2]int{}},
 		{"", []string{"c", "d"}, [2]int{}},
 	}
@@ -148,7 +148,7 @@ func Test_Chain_MapMany_Array(t *testing.T) {
 }
 
 func Test_MapManyBy_Array(t *testing.T) {
-	src := []mapManyTestModel{
+	src := []mapManytestModel{
 		{"", nil, [2]int{1, 2}},
 		{"", nil, [2]int{3, 4}},
 	}
@@ -159,7 +159,7 @@ func Test_MapManyBy_Array(t *testing.T) {
 }
 
 func Test_Chain_MapManyBy_Array(t *testing.T) {
-	src := []mapManyTestModel{
+	src := []mapManytestModel{
 		{"", nil, [2]int{1, 2}},
 		{"", nil, [2]int{3, 4}},
 	}
