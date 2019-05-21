@@ -1,18 +1,8 @@
 package underscore
 
 import (
-	"crypto/md5"
-	"crypto/rand"
-	"encoding/hex"
 	"reflect"
 )
-
-// Md5 is 字符串转md5
-func Md5(plaintext string) string {
-	hash := md5.New()
-	hash.Write([]byte(plaintext))
-	return hex.EncodeToString(hash.Sum(nil))
-}
 
 // ToRealValue is 将反射值转为真实类型的值
 func ToRealValue(rv reflect.Value) interface{} {
@@ -47,16 +37,4 @@ func ToRealValue(rv reflect.Value) interface{} {
 		break
 	}
 	return value
-}
-
-// UUID is 生成UUID
-func UUID() string {
-	uuid := make([]byte, 16)
-	n, err := rand.Read(uuid)
-	if n != len(uuid) || err != nil {
-		return UUID()
-	}
-	uuid[8] = 0x80
-	uuid[4] = 0x40
-	return hex.EncodeToString(uuid)
 }

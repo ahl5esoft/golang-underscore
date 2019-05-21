@@ -24,7 +24,6 @@ func Test_GroupBy(t *testing.T) {
 		{ID: 4, Name: "b"},
 	}
 	dic := GroupBy(arr, "name").(map[string][]testModel)
-	t.Error(dic)
 	if len(dic) != 2 {
 		t.Error("wrong")
 	}
