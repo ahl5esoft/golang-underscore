@@ -54,7 +54,6 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Sort`](#sort), [`SortBy`](#sortBy)
 * [`Take`](#take)
 * [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
-* [`UUID`](#uuid)
 * [`Value`](#value)
 * [`Values`](#values)
 * [`Where`](#where), [`WhereBy`](#whereBy)
@@ -790,26 +789,6 @@ res := MapManyBy(src, "Slice").([]string)
 // res = [a b c d]
 ```
 
-<a name="md5" />
-
-### Md5(plaintext)
-
-__Arguments__
-
-* `plaintext` - string
-
-__Return__
-
-* string - md5 string
-
-__Examples__
-
-```go
-if Md5("123456") != "e10adc3949ba59abbe56e057f20f883e" {
-	// wrong
-}	
-```
-
 <a name="object" />
 
 ### Object(arr)
@@ -1240,21 +1219,6 @@ Chain(arr).UniqBy("name").Value(&res)
 // or
 res := UniqBy(arr, "Name").([]testModel)
 // res = [{{0} 1 one}]
-```
-
-<a name="uuid" />
-
-### UUID()
-
-__Return__
-
-* string - uuid string
-
-__Examples__
-
-```go
-uuid := UUID()
-//1a40272540e57d1c80e7b06042219d0c
 ```
 
 <a name="value" />
