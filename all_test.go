@@ -2,24 +2,41 @@ package underscore
 
 import "testing"
 
-type testModel struct {
-	testNestedModel
-
-	ID   int
-	Name string
+func Benchmark_All(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		Range(0, benchmarkSize, 1).All(func(r, _ int) bool {
+			return r < 1000
+		})
+	}
 }
 
-type testNestedModel struct {
-	Age int
+func Benchmark_All_New(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		Range2(0, benchmarkSize, 1).All(func(r, _ int) bool {
+			return r < 1000
+		})
+	}
 }
 
-func Test_All(t *testing.T) {
-	arr := []testModel{
+func Test_All_False(t *testing.T) {
+	ok := Chain2([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 1, Name: "two"},
 		{ID: 1, Name: "three"},
+	}).All(func(r testModel, _ int) bool {
+		return r.Name == "one"
+	})
+	if ok {
+		t.Error("wrong")
 	}
-	ok := All(arr, func(r testModel, _ int) bool {
+}
+
+func Test_All_True(t *testing.T) {
+	ok := Chain2([]testModel{
+		{ID: 1, Name: "one"},
+		{ID: 1, Name: "two"},
+		{ID: 1, Name: "three"},
+	}).All(func(r testModel, _ int) bool {
 		return r.ID == 1
 	})
 	if !ok {
@@ -27,26 +44,26 @@ func Test_All(t *testing.T) {
 	}
 }
 
-func Test_AllBy(t *testing.T) {
-	arr := []testModel{
+func Test_AllBy_False(t *testing.T) {
+	ok := Chain2([]testModel{
 		{ID: 1, Name: "one"},
-		{ID: 1, Name: "two"},
-		{ID: 1, Name: "three"},
-	}
-	ok := AllBy(arr, nil)
-	if ok {
-		t.Fatal("wrong")
-	}
-
-	ok = AllBy(arr, map[string]interface{}{
-		"name": "a",
+		{ID: 2, Name: "two"},
+		{ID: 3, Name: "three"},
+	}).AllBy(map[string]interface{}{
+		"Name": "a",
 	})
 	if ok {
-		t.Fatal("wrong")
+		t.Error("wrong")
 	}
+}
 
-	ok = AllBy(arr, map[string]interface{}{
-		"id": 1,
+func Test_AllBy_True(t *testing.T) {
+	ok := Chain2([]testModel{
+		{ID: 1, Name: "one"},
+		{ID: 2, Name: "one"},
+		{ID: 3, Name: "one"},
+	}).AllBy(map[string]interface{}{
+		"name": "one",
 	})
 	if !ok {
 		t.Error("wrong")

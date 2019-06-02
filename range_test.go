@@ -1,33 +1,54 @@
 package underscore
 
-import (
-	"testing"
-)
+import "testing"
 
-func Test_Range(t *testing.T) {
-	arr := make([]int, 0)
-	Range(0, 0, 1).Value(&arr)
-	if len(arr) != 0 {
-		t.Fatal("wrong")
-	}
+func Test_Range_StepEq0(t *testing.T) {
+	defer func() {
+		if rv := recover(); rv == nil {
+			t.Error("wrong")
+		}
+	}()
 
-	Range(0, 10, 0).Value(&arr)
-	if len(arr) != 0 {
-		t.Fatal("wrong")
-	}
+	dst := make([]int, 0)
+	Range2(0, 10, 0).Value(&dst)
+}
 
-	Range(10, 0, 1).Value(&arr)
-	if len(arr) != 0 {
-		t.Fatal("wrong")
-	}
-
-	Range(0, 2, 1).Value(&arr)
-	if !(len(arr) == 2 && arr[0] == 0 && arr[1] == 1) {
-		t.Fatal("wrong")
-	}
-
-	Range(0, 3, 2).Value(&arr)
-	if !(len(arr) == 2 && arr[0] == 0 && arr[1] == 2) {
+func Test_Range_StartEqStop(t *testing.T) {
+	dst := make([]int, 0)
+	Range2(0, 0, 1).Value(&dst)
+	if len(dst) != 0 {
 		t.Error("wrong")
+	}
+}
+
+func Test_Range_Increment(t *testing.T) {
+	size := 10
+	dst := make([]int, 0)
+	Range2(0, size, 1).Value(&dst)
+	if len(dst) != size {
+		t.Fatal(dst)
+	}
+
+	for i := 0; i < size; i++ {
+		if dst[i] != i {
+			t.Fatal(dst)
+		}
+	}
+}
+
+func Test_Range_Decrement(t *testing.T) {
+	start := 10
+	step := -2
+	dst := make([]int, 0)
+	Range2(start, 0, step).Value(&dst)
+	if len(dst) != 5 {
+		t.Fatal(dst)
+	}
+
+	for i := 0; i < 5; i++ {
+		if dst[i] != start {
+			t.Fatal(dst)
+		}
+		start += step
 	}
 }

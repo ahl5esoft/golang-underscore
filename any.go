@@ -4,27 +4,39 @@ import (
 	"reflect"
 )
 
-// Any is if any of the values in the `source` pass the `predicate` truth test
-func Any(source, predicate interface{}) bool {
+func (m *query) Any(predicate interface{}) bool {
 	var ok bool
-	each(source, predicate, func(resRV, _, _ reflect.Value) bool {
+	each(m.Source, predicate, func(resRV, _, _ reflect.Value) bool {
 		ok = resRV.Bool()
 		return ok
 	})
 	return ok
 }
 
-// AnyBy will stop traversing the `source` if a true element is found
-func AnyBy(source interface{}, properties map[string]interface{}) bool {
-	return Any(source, func(value, _ interface{}) bool {
+func (m *query) AnyBy(properties map[string]interface{}) bool {
+	return m.Any(func(value, _ interface{}) bool {
 		return IsMatch(value, properties)
 	})
 }
 
-func (m *query) Any(predicate interface{}) bool {
-	return Any(m.Source, predicate)
+func (m enumerable) Any(predicate interface{}) bool {
+	iterator := m.GetEnumerator()
+	predicateRV := reflect.ValueOf(predicate)
+	for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
+		returnRVs := predicateRV.Call([]reflect.Value{
+			iterator.GetValue(),
+			iterator.GetKey(),
+		})
+		if returnRVs[0].Bool() {
+			return true
+		}
+	}
+
+	return false
 }
 
-func (m *query) AnyBy(properties map[string]interface{}) bool {
-	return AnyBy(m.Source, properties)
+func (m enumerable) AnyBy(dict map[string]interface{}) bool {
+	return m.Any(func(v, _ interface{}) bool {
+		return IsMatch(v, dict)
+	})
 }

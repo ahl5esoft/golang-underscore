@@ -5,8 +5,6 @@ import (
 	"strings"
 )
 
-var nilRV = reflect.ValueOf(nil)
-
 // GetProeprtyRVFunc is get property reflect.Value func
 type GetProeprtyRVFunc func(interface{}) reflect.Value
 

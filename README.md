@@ -9,7 +9,7 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-1.1.0-green.svg)
 like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 
 ## Installation
@@ -19,13 +19,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-* Performance optimization
-* Benchmark
-* Compatible with `.NET LINQ`
-* more...
-
-## Suggest
-	always using `chain`
+* IQuery性能差，将来会逐步用IEnumerable替代
 
 ## Documentation
 
@@ -57,17 +51,15 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Sort`](#sort), [`SortBy`](#sortBy)
 * [`Take`](#take)
 * [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
-* [`Value`](#value)
 * [`Values`](#values)
 * [`Where`](#where), [`WhereBy`](#whereBy)
 
 <a name="all" />
 
-### All(source, predicate)
+### All(predicate) bool
 
 __Arguments__
 
-* `source` - array or map
 * `predicate` - func(element, index or key) bool
 
 __Return__
@@ -77,59 +69,47 @@ __Return__
 __Examples__
 
 ```go
-src := []testModel{
+ok := Chain2([]testModel{
 	{ID: 1, Name: "one"},
 	{ID: 1, Name: "two"},
 	{ID: 1, Name: "three"},
-}
-ok := All(src, func(r testModel, _ int) bool {
-	return r.Id == 1
+}).All(func(r testModel, _ int) bool {
+	return r.ID == 1
 })
 // ok == true
 ```
 
 <a name="allBy" />
 
-### AllBy(source, properties)
+### AllBy(properties) bool
 
 __Arguments__
 
-* `source` - array or map
 * `properties` - map[string]interface{}
 
 __Return__
 
-* bool
+* bool - all the values that pass a truth test `predicate`
 
 __Examples__
 
 ```go
-src := []testModel{
+ok := Chain2([]testModel{
 	{ID: 1, Name: "one"},
-	{ID: 1, Name: "two"},
-	{ID: 1, Name: "three"},
-}
-ok := AllBy(src, nil)
-// ok == true
-
-ok = AllBy(src, map[string]interface{}{
-	"name": "a",
-})
-// ok == false
-
-ok = AllBy(src, map[string]interface{}{
-	"id": 1,
+	{ID: 2, Name: "one"},
+	{ID: 3, Name: "one"},
+}).AllBy(map[string]interface{}{
+	"name": "one",
 })
 // ok == true
 ```
 
 <a name="any" />
 
-### Any(source, predicate)
+### Any(predicate) bool
 
 __Arguments__
 
-* `source` - array or map
 * `predicate` - func(element or value, index or key) bool
 
 __Return__
@@ -139,24 +119,22 @@ __Return__
 __Examples__
 
 ```go
-src := []testModel{
+ok := Chain2([]testModel{
 	{ID: 1, Name: "one"},
 	{ID: 2, Name: "two"},
 	{ID: 3, Name: "three"},
-}
-ok := Any(src, func(r testModel, _ int) bool {
-	return r.Id == 0
+}).Any(func(r testModel, _ int) bool {
+	return r.ID == 0
 })
 // ok == false
 ```
 
 <a name="anyBy" />
 
-### AnyBy(source, properties)
+### AnyBy(properties) bool
 
 __Arguments__
 
-* `source` - array or map
 * `properties` - map[string]interface{}
 
 __Return__
@@ -166,19 +144,12 @@ __Return__
 __Examples__
 
 ```go
-src := []testModel{
+ok := Chain2([]testModel{
 	{ID: 1, Name: "one"},
 	{ID: 2, Name: "two"},
 	{ID: 3, Name: "three"},
-}
-ok := AnyBy(src, map[string]interface{}{
-	"Id": 0,
-})
-// ok == false
-
-ok = AnyBy(src, map[string]interface{}{
-	"id":   src[0].Id,
-	"name": src[0].Name,
+}).AnyBy(map[string]interface{}{
+	"name": "two",
 })
 // ok == true
 ```
@@ -272,16 +243,42 @@ Each(src, func (r testModel, i int) {
 
 <a name="find" />
 
-### Find(source, predicate)
+### Find(predicate) IQuery
+### Find(predicate) IEnumerable
 
 __Arguments__
 
-* `source` - array or map
 * `predicate` - func(element or value, index or key) bool
 
-__Return__
+__Examples__
 
-* interface{} -- `source` elem
+```go
+var dst int
+Chain2([]int{1, 2, 3}).Find(func(r, _ int) bool {
+	return r == 2
+}).Value(&dst)
+// dst == 2
+// or
+var dst int
+Chain2([][]int{
+	[]int{1, 3, 5, 7},
+	[]int{2, 4, 6, 8},
+}).Find(func(r []int, _ int) bool {
+	return r[0]%2 == 0
+}).Find(func(r, _ int) bool {
+	return r > 6
+}).Value(&dst)
+// dst == 8
+```
+
+<a name="findBy" />
+
+### FindBy(properties) IQuery
+### FindBy(properties) IEnumerable
+
+__Arguments__
+
+* `properties` - map[string]interface{}
 
 __Examples__
 
@@ -291,47 +288,11 @@ src := []testModel{
 	{ID: 2, Name: "two"},
 	{ID: 3, Name: "three"},
 }
-var item testModel
-Chain(src).Find(func(r testModel, _ int) bool {
-	return r.ID == 1
-}).Value(&item)
-// or
-item := Find(src, func(r testModel, _ int) bool {
-	return r.ID == 1
-})
-// item == arr[0]
-```
-
-<a name="findBy" />
-
-### FindBy(source, properties)
-
-__Arguments__
-
-* `source` - array or map
-* `properties` - map[string]interface{}
-
-__Return__
-
-* interface{} - `source` elem
-
-__Examples__
-
-```go
-arr := []testModel{
-	{ID: 1, Name: "one"},
-	{ID: 2, Name: "two"},
-	{ID: 3, Name: "three"},
-}
-var item testModel
-Chain(arr).FindBy(map[string]interface{}{
+var dst testModel
+Chain2(src).FindBy(map[string]interface{}{
 	"id": 2,
-}).Value(&item)
-// or
-item := FindBy(arr, map[string]interface{}{
-	"id": 2,
-})
-// item == arr[1]
+}).Value(&dst)
+// dst == src[1]
 ```
 
 <a name="findIndex" />
@@ -390,28 +351,26 @@ i := FindIndexBy(arr, map[string]interface{}{
 
 <a name="first" />
 
-### First(source)
+### First() IQuery
+### First() IEnumerable
 
 __Arguments__
 
-* `source` - array or map
-
-__Return__
-
-* interface{}
+* `predicate` - func(element or value, index or key) bool
 
 __Examples__
 
 ```go
-arr := []int{ 1, 2, 3 }
-var res int
-Chain(arr).First().Value(&res)
+var dst int
+Chain2([]int{1, 2, 3}).First().Value(&dst)
+// dst == 1
 // or
-res := First(arr).(int)
-// res = 1
-
-res := First(nil) 
-// res == nil
+var dst int
+Chain2([][]int{
+	[]int{1, 3, 5, 7},
+	[]int{2, 4, 6, 8},
+}).First().First().Value(&dst)
+// dst == 1
 ```
 
 <a name="group" />
@@ -872,7 +831,8 @@ nameRV, err := getNameRV(item)
 
 <a name="range" />
 
-### Range(start, stop, step)
+### Range(start, stop, step) IQuery
+### Range(start, stop, step) IEnumerable
 
 __Arguments__
 
@@ -880,31 +840,27 @@ __Arguments__
 * `stop` - int
 * `step` - int
 
-__Return__
-
-* IQuery - a wrapped object, wrapped objects until value is called
-
 __Examples__
 
 ```go
 var res []int
-Range(0, 0, 1).Value(&res)
+Range2(0, 0, 1).Value(&res)
 // res = []
 
 var res []int
-Range(0, 10, 0).Value(&res)
-// res = []
+Range2(0, 10, 0).Value(&res)
+// panic
 
 var res []int
-Range(10, 0, 1).Value(&res)
-// res = []
+Range2(4, 0, -1).Value(&res)
+// res = [4 3 2 1]
 
 var res []int
-Range(0, 2, 1).Value(&res)
+Range2(0, 2, 1).Value(&res)
 // res = [0 1]
 
 var res []int
-Range(0, 3, 2).Value(&res)
+Range2(0, 3, 2).Value(&res)
 // res = [0 2]
 ```
 
@@ -1224,25 +1180,6 @@ res := UniqBy(arr, "Name").([]testModel)
 // res = [{{0} 1 one}]
 ```
 
-<a name="value" />
-
-### Value(result)
-
-__Examples__
-
-```go
-arr := []int{1, 2, 1, 4, 1, 3}
-var res map[string][]int
-Chain(arr).Uniq(nil).Group(func(n, _ int) string {
-	if n%2 == 0 {
-		return "even"
-	}
-
-	return "old"
-}).Value(&res)
-// res = map[old:[1 3] even:[2 4]]
-```
-
 <a name="values" />
 
 ### Values(source)
@@ -1336,6 +1273,11 @@ res := WhereBy(src, map[string]interface{}{
 ```
 
 ## Release Notes
+~~~
+v1.1.0 (2018-06-02)
+* 增加IEnumerable、IEnumerator
+* All、Any、Chain2、Find、First、Range2、Value支持IEnumerable
+~~~
 
 ~~~
 v1.0.0 (2018-04-23)

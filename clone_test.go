@@ -12,18 +12,6 @@ type cloneModel struct {
 	Age  int
 }
 
-func TestClone_Array(t *testing.T) {
-	arr := []int{1, 2, 3}
-	duplicate := make([]int, 0)
-	Clone(arr, &duplicate)
-	ok := All(duplicate, func(n, i int) bool {
-		return arr[i] == n
-	})
-	if !ok {
-		t.Error(arr, duplicate)
-	}
-}
-
 func TestClone_Struct(t *testing.T) {
 	m := cloneModel{
 		ID:   "id",
@@ -36,18 +24,6 @@ func TestClone_Struct(t *testing.T) {
 	sNew, _ := fjson.MarshalToString(duplicate)
 	if sOld != sNew {
 		t.Error(sOld, sNew)
-	}
-}
-
-func TestChain_Clone_Array(t *testing.T) {
-	arr := []int{1, 2, 3}
-	duplicate := make([]int, 0)
-	Chain(arr).Clone().Value(&duplicate)
-	ok := All(duplicate, func(n, i int) bool {
-		return arr[i] == n
-	})
-	if !ok {
-		t.Error(arr, duplicate)
 	}
 }
 

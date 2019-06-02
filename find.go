@@ -4,33 +4,44 @@ import (
 	"reflect"
 )
 
-// Find is 根据断言获取元素
-func Find(source, predicate interface{}) interface{} {
+func (m *query) Find(predicate interface{}) IQuery {
 	var ok bool
-	var v interface{}
-	each(source, predicate, func(resRV, valueRV, _ reflect.Value) bool {
+	each(m.Source, predicate, func(resRV, valueRV, _ reflect.Value) bool {
 		ok = resRV.Bool()
 		if ok {
-			v = valueRV.Interface()
+			m.Source = valueRV.Interface()
 		}
 		return ok
 	})
-	return v
-}
-
-// FindBy is 根据属性值获取元素
-func FindBy(source interface{}, properties map[string]interface{}) interface{} {
-	return Find(source, func(value, _ interface{}) bool {
-		return IsMatch(value, properties)
-	})
-}
-
-func (m *query) Find(predicate interface{}) IQuery {
-	m.Source = Find(m.Source, predicate)
 	return m
 }
 
 func (m *query) FindBy(properties map[string]interface{}) IQuery {
-	m.Source = FindBy(m.Source, properties)
-	return m
+	return m.Find(func(value, _ interface{}) bool {
+		return IsMatch(value, properties)
+	})
+}
+
+func (m enumerable) Find(predicate interface{}) IEnumerable {
+	iterator := m.GetEnumerator()
+	predicateRV := reflect.ValueOf(predicate)
+	for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
+		returnRVs := predicateRV.Call([]reflect.Value{
+			iterator.GetValue(),
+			iterator.GetKey(),
+		})
+		if returnRVs[0].Bool() {
+			return Chain2(
+				iterator.GetValue().Interface(),
+			)
+		}
+	}
+
+	return nilEnumerable
+}
+
+func (m enumerable) FindBy(dict map[string]interface{}) IEnumerable {
+	return m.Find(func(v, _ interface{}) bool {
+		return IsMatch(v, dict)
+	})
 }

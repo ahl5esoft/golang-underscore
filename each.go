@@ -5,8 +5,6 @@ import (
 	"sync"
 )
 
-var facadeRT = reflect.TypeOf(facade{})
-
 // Each will iterate over a list of elements
 func Each(source, iterator interface{}) {
 	each(source, iterator, nil)
