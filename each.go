@@ -5,19 +5,12 @@ import (
 	"sync"
 )
 
-// Each will iterate over a list of elements
-func Each(source, iterator interface{}) {
-	each(source, iterator, nil)
-}
-
-func (m *query) Each(iterator interface{}) IQuery {
+func (m *query) Each(iterator interface{}) {
 	if m.IsParallel {
 		eachAsParallel(m.Source, iterator)
 	} else {
 		each(m.Source, iterator, nil)
 	}
-
-	return m
 }
 
 func each(source interface{}, iterator interface{}, predicate func(reflect.Value, reflect.Value, reflect.Value) bool) {
@@ -94,4 +87,15 @@ func parseSource(source interface{}) (int, func(i int) (reflect.Value, reflect.V
 		}
 	}
 	return 0, nil
+}
+
+func (m enumerable) Each(action interface{}) {
+	iterator := m.GetEnumerator()
+	actionRV := reflect.ValueOf(action)
+	for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
+		actionRV.Call([]reflect.Value{
+			iterator.GetValue(),
+			iterator.GetKey(),
+		})
+	}
 }

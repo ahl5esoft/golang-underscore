@@ -27,8 +27,8 @@ func Test_First(t *testing.T) {
 func Test_First_Twice(t *testing.T) {
 	var dst int
 	Chain2([][]int{
-		[]int{1, 3, 5, 7},
-		[]int{2, 4, 6, 8},
+		{1, 3, 5, 7},
+		{2, 4, 6, 8},
 	}).First().First().Value(&dst)
 	if dst != 1 {
 		t.Error("wrong")

@@ -8,7 +8,7 @@ type IQuery interface {
 	AnyBy(map[string]interface{}) bool
 	AsParallel() IQuery
 	Clone() IQuery
-	Each(interface{}) IQuery
+	Each(interface{})
 	Find(interface{}) IQuery
 	FindBy(map[string]interface{}) IQuery
 	FindIndex(interface{}) int

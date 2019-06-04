@@ -9,7 +9,7 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-1.1.0-green.svg)
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-1.2.0-green.svg)
 like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 
 ## Installation
@@ -30,6 +30,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Chain`](#chain)
 * [`Clone`](#clone)
 * [`Each`](#each)
+* [`Filter`](#filter), [`FilterBy`](#filterBy)
 * [`Find`](#find), [`FindBy`](#findBy)
 * [`FindIndex`](#findIndex), [`FindIndexBy`](#findIndexBy)
 * [`First`](#first)
@@ -221,24 +222,73 @@ ok := All(duplicate, func(n, i int) bool {
 
 <a name="each" />
 
-### Each(source, iterator)
+### Each(iterator)
 
 __Arguments__
 
-* `source` - array or map
 * `iterator` - func(element or value, index or key)
+
+__Examples__
+
+```go
+arr := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 1, Name: "two"},
+	{ID: 1, Name: "three"},
+}
+Chain2(arr).Each(func(r testModel, i int) {
+	if !(r.ID == arr[i].ID && r.Name == arr[i].Name) {
+		// wrong
+	}
+})
+```
+
+<a name="filter" />
+
+### Filter(predicate) IEnumerable
+
+__Arguments__
+
+* `predicate` - func(element or value, index or key) bool
 
 __Examples__
 
 ```go
 src := []testModel{
 	{ID: 1, Name: "one"},
-	{ID: 1, Name: "two"},
-	{ID: 1, Name: "three"},
+	{ID: 2, Name: "one"},
+	{ID: 3, Name: "three"},
+	{ID: 4, Name: "three"},
 }
-Each(src, func (r testModel, i int) {
-	// coding
-})
+dst := make([]testModel, 0)
+Chain2(src).Filter(func(r testModel, _ int) bool {
+	return r.ID%2 == 0
+}).Value(&dst)
+// len(dst) == 2 && dst[0] == src[1] && dst[1] == src[3]
+```
+
+<a name="filterBy" />
+
+### filterBy(properties) IEnumerable
+
+__Arguments__
+
+* `properties` - map[string]interface{}
+
+__Examples__
+
+```go
+src := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "one"},
+	{ID: 3, Name: "three"},
+	{ID: 4, Name: "three"},
+}
+dst := make([]testModel, 0)
+Chain2(src).FilterBy(map[string]interface{}{
+	"Name": "one",
+}).Value(&dst)
+// len(dst) == 2 && dst[0] == src[0] && dst[1] == src[1]
 ```
 
 <a name="find" />
@@ -1210,69 +1260,61 @@ res := Values(src).([]string)
 
 <a name="where" />
 
-### Where(source, predicate)
+### Where(predicate) IQuery
+### Where(predicate) IEnumerable
+
 
 __Arguments__
 
-* `source` - array or map
 * `predicate` - func(element or value, index or key) bool
-
-__Return__
-
-* interface{} - an array of all the values that pass a truth test `predicate`
 
 __Examples__
 
 ```go
 src := []testModel{
 	{ID: 1, Name: "one"},
-	{ID: 2, Name: "two"},
+	{ID: 2, Name: "one"},
 	{ID: 3, Name: "three"},
+	{ID: 4, Name: "three"},
 }
-var res []testModel
-Chain(src).Where(func(r testModel, i int) bool {
+dst := make([]testModel, 0)
+Chain2(src).Where(func(r testModel, _ int) bool {
 	return r.ID%2 == 0
-}).Value(&res)
-// or
-res := Where(src, func(r testModel, i int) bool {
-	return r.ID%2 == 0
-}).([]testModel)
-// res = [{{0} 2 two}]
+}).Value(&dst)
+// len(dst) == 2 && dst[0] == src[1] && dst[1] == src[3])
 ```
 
 <a name="whereBy" />
 
-### WhereBy(source, properties)
+### WhereBy(properties) IQuery
+### WhereBy(properties) IEnumerable
 
 __Arguments__
 
-* `source` - array or map
 * `properties` - map[string]interface{}
-
-__Return__
-
-* interface{} - an array of all the values that pass a truth test `properties`
 
 __Examples__
 
 ```go
 src := []testModel{
 	{ID: 1, Name: "one"},
-	{ID: 2, Name: "two"},
+	{ID: 2, Name: "one"},
 	{ID: 3, Name: "three"},
+	{ID: 4, Name: "three"},
 }
-var res []testModel
-Chain(src).WhereBy(map[string]interface{}{
-	"name": "one",
-}).Value(&res)
-// or
-res := WhereBy(src, map[string]interface{}{
-	"name": "one",
-}).([]testModel
-// res = [{{0} 1 one}]
+dst := make([]testModel, 0)
+Chain2(src).WhereBy(map[string]interface{}{
+	"Name": "one",
+}).Value(&dst)
+// len(dst) == 2 && dst[0] == src[0] && dst[1] == src[1]
 ```
 
 ## Release Notes
+~~~
+v1.2.0 (2018-06-02)
+* Each、Filter、Where支持IEnumerable
+~~~
+
 ~~~
 v1.1.0 (2018-06-02)
 * 增加IEnumerable、IEnumerator
