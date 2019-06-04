@@ -1311,7 +1311,7 @@ Chain2(src).WhereBy(map[string]interface{}{
 
 ## Release Notes
 ~~~
-v1.2.0 (2018-06-02)
+v1.2.0 (2018-06-04)
 * Each、Filter、Where支持IEnumerable
 ~~~
 
