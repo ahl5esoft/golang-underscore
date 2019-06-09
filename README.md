@@ -1235,23 +1235,23 @@ __Same__
 
 ## Release Notes
 ~~~
-v1.3.0 (2018-06-09)
+v1.3.0 (2019-06-09)
 * FindIndex、FindIndexBy、Keys、Map、MapBy、Object、Uniq、UniqBy、Values支持IEnumerable
 * IEnumerable增加Distinct、DistinctBy、Select、SelectBy
 ~~~
 
 ~~~
-v1.2.0 (2018-06-04)
+v1.2.0 (2019-06-04)
 * Each、Filter、Where支持IEnumerable
 ~~~
 
 ~~~
-v1.1.0 (2018-06-02)
+v1.1.0 (2019-06-02)
 * 增加IEnumerable、IEnumerator
 * All、Any、Chain2、Find、First、Range2、Value支持IEnumerable
 ~~~
 
 ~~~
-v1.0.0 (2018-04-23)
+v1.0.0 (2019-04-23)
 * first edition
 ~~~
