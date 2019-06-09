@@ -29,8 +29,9 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`AsParallel`](#asParallel)
 * [`Chain`](#chain)
 * [`Clone`](#clone)
+* [`Distinct`](#distinct), [`DistinctBy`](#distinctBy)
 * [`Each`](#each)
-* [`Filter`](#filter), [`FilterBy`](#filterBy)
+* [`Filter`](#where), [`FilterBy`](#whereBy)
 * [`Find`](#find), [`FindBy`](#findBy)
 * [`FindIndex`](#findIndex), [`FindIndexBy`](#findIndexBy)
 * [`First`](#first)
@@ -40,7 +41,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`IsMatch`](#isMatch)
 * [`Keys`](#keys)
 * [`Last`](#last)
-* [`Map`](#map), [`MapBy`](#mapBy)
+* [`Map`](#select), [`MapBy`](#selectBy)
 * [`MapMany`](#mapMany), [`MapManyBy`](#mapManyBy)
 * [`Object`](#object)
 * [`Property`](#property), [`PropertyRV`](#propertyRV)
@@ -48,10 +49,11 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Reduce`](#reduce)
 * [`Reject`](#reject), [`RejectBy`](#rejectBy)
 * [`Reverse`](#reverse), [`ReverseBy`](#reverseBy)
+* [`Select`](#select), [`SelectBy`](#selectBy)
 * [`Size`](#size)
 * [`Sort`](#sort), [`SortBy`](#sortBy)
 * [`Take`](#take)
-* [`Uniq`](#uniq), [`UniqBy`](#uniqBy)
+* [`Uniq`](#distinct), [`UniqBy`](#distinctBy)
 * [`Values`](#values)
 * [`Where`](#where), [`WhereBy`](#whereBy)
 
@@ -220,6 +222,54 @@ ok := All(duplicate, func(n, i int) bool {
 // ok == true
 ```
 
+<a name="distinct" />
+
+### Distinct(selector) IEnumerable
+
+__Arguments__
+
+* `selector` - nil or func(element or value, index or key) anyType
+
+__Examples__
+
+```go
+src := []int{1, 2, 1, 4, 1, 3}
+dst := make([]int, 0)
+Chain2(src).Distinct(func(n, _ int) (int, error) {
+	return n % 2, nil
+}).Value(&dst)
+// dst = [1 2]
+```
+
+__Same__
+
+* `Uniq`
+
+<a name="distinctBy" />
+
+### DistinctBy(fieldName) IEnumerable
+
+__Arguments__
+
+* `fieldName` - string
+
+__Examples__
+
+```go
+src := []testModel{
+	{ID: 1, Name: "a"},
+	{ID: 2, Name: "a"},
+	{ID: 3, Name: "a"},
+}
+dst := make([]testModel, 0)
+Chain2(src).DistinctBy("name").Value(&dst)
+// dst = [{1 a}]
+```
+
+__Same__
+
+* `UniqBy`
+
 <a name="each" />
 
 ### Each(iterator)
@@ -241,54 +291,6 @@ Chain2(arr).Each(func(r testModel, i int) {
 		// wrong
 	}
 })
-```
-
-<a name="filter" />
-
-### Filter(predicate) IEnumerable
-
-__Arguments__
-
-* `predicate` - func(element or value, index or key) bool
-
-__Examples__
-
-```go
-src := []testModel{
-	{ID: 1, Name: "one"},
-	{ID: 2, Name: "one"},
-	{ID: 3, Name: "three"},
-	{ID: 4, Name: "three"},
-}
-dst := make([]testModel, 0)
-Chain2(src).Filter(func(r testModel, _ int) bool {
-	return r.ID%2 == 0
-}).Value(&dst)
-// len(dst) == 2 && dst[0] == src[1] && dst[1] == src[3]
-```
-
-<a name="filterBy" />
-
-### filterBy(properties) IEnumerable
-
-__Arguments__
-
-* `properties` - map[string]interface{}
-
-__Examples__
-
-```go
-src := []testModel{
-	{ID: 1, Name: "one"},
-	{ID: 2, Name: "one"},
-	{ID: 3, Name: "three"},
-	{ID: 4, Name: "three"},
-}
-dst := make([]testModel, 0)
-Chain2(src).FilterBy(map[string]interface{}{
-	"Name": "one",
-}).Value(&dst)
-// len(dst) == 2 && dst[0] == src[0] && dst[1] == src[1]
 ```
 
 <a name="find" />
@@ -347,11 +349,10 @@ Chain2(src).FindBy(map[string]interface{}{
 
 <a name="findIndex" />
 
-### FindIndex(source, predicate)
+### FindIndex(predicate) int
 
 __Arguments__
 
-* `source` - array or map
 * `predicate` - func(element or value, index or key) bool
 
 __Return__
@@ -361,24 +362,23 @@ __Return__
 __Examples__
 
 ```go
-arr := []testModel{
+src := []testModel{
 	{ID: 1, Name: "one"},
-	{ID: 1, Name: "two"},
-	{ID: 1, Name: "three"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
 }
-i := FindIndex(arr, func(r testModel, _ int) bool {
-	return r.Name == arr[1].Name
+index := Chain2(src).FindIndex(func(r testModel, _ int) bool {
+	return r.Name == src[1].Name
 })
 // i == 1
 ```
 
 <a name="findIndexBy" />
 
-### FindIndexBy(source, properties)
+### FindIndexBy(properties) int
 
 __Arguments__
 
-* `source` - array or map
 * `properties` - map[string]interface{}
 
 __Return__
@@ -388,15 +388,15 @@ __Return__
 __Examples__
 
 ```go
-arr := []testModel{
+src := []testModel{
 	{ID: 1, Name: "one"},
 	{ID: 2, Name: "two"},
 	{ID: 3, Name: "three"},
 }
-i := FindIndexBy(arr, map[string]interface{}{
+index := Chain2(src).FindIndexBy(map[string]interface{}{
 	"id": 1,
 })
-// i == 0
+// index == 0
 ```
 
 <a name="first" />
@@ -605,34 +605,30 @@ ok = IsMatch(m, map[string]interface{}{
 
 <a name="keys" />
 
-### Keys()
+### Keys() IEnumerable
+### Keys() IQuery
 
 __Arguments__
 
 * `source` - map
 
-__Return__
-
-* interface{} - []keyType
-
 __Examples__
 
 ```go
-arr := []string{ "aa" }
-v := Keys(arr)
-// v = nil
+src := []string{"aa", "bb", "cc"}
+dst := make([]int, 0)
+Chain2(src).Keys().Value(&dst)
+// dst = [0 1 2]
 
-dict := map[int]string{	
+src := map[int]string{
 	1: "a",
 	2: "b",
 	3: "c",
 	4: "d",
 }
-var res []int
-Chain(dict).Keys().Value(&res)
-// or
-res := Keys(dict).([]int)
-// res = [1 2 3 4]
+dst := make([]int, 0)
+Chain2(src).Keys().Value(&dst)
+// dst = [1 2 3 4]
 ```
 
 <a name="last" />
@@ -666,64 +662,6 @@ Chain(dict).Last().Value(&str)
 // or
 str := Last(dict).(string)
 // res = "aa" or "bb"
-```
-
-<a name="map" />
-
-### Map(source, selector)
-
-__Arguments__
-
-* `source` - array or map
-* `selector` - func(element, index or key) anyType
-
-__Return__
-
-* interface{} - an slice of property value
-
-__Examples__
-
-```go
-arr := []string{ "11", "12", "13" }
-var res []int
-Chain(arr).Map(func (s string, _ int) int {
-	n, _ := strconv.Atoi(s)
-	return n
-}).Value(&res)
-// or
-res := Map(arr, func (s string, _ int) int {
-	n, _ := strconv.Atoi(s)
-	return n
-}).([]int)
-// res = [11 12 13]
-```
-
-<a name="mapBy" />
-
-### MapBy(source, property)
-
-__Arguments__
-
-* `source` - array
-* `property` - string
-
-__Return__
-
-* interface{} - an slice of property value
-
-__Examples__
-
-```go
-arr := []testModel{
-	{ID: 1, Name: "one"},
-	{ID: 2, Name: "two"},
-	{ID: 3, Name: "three"},
-}
-var res []string
-Chain(arr).MapBy("name").Value(&res)
-// or
-res := MapBy(arr, "name").([]string)
-// res = [one two three]
 ```
 
 <a name="mapMany" />
@@ -803,28 +741,18 @@ res := MapManyBy(src, "Slice").([]string)
 
 <a name="object" />
 
-### Object(arr)
-
-__Arguments__
-
-* `arr` - array
-
-__Return__
-
-* map, error
+### Object() IEnumerable
 
 __Examples__
 
 ```go
-arr := []interface{}{
+src := [][]interface{}{
 	[]interface{}{"a", 1},
 	[]interface{}{"b", 2},
 }
-var res map[string]int
-Chain(arr).Object().Value(&res)
-// or
-res := Object(arr).(map[string]int)
-// res = map[b:2 a:1] or map[a:1 b:2]
+dst := make(map[string]int)
+Chain2(src).Object().Value(&dst)
+// dst = map[a:1 b:2]
 ```
 
 <a name="property" />
@@ -1066,6 +994,55 @@ res := ReverseBy(arr, "id").([]testModel)
 // res = [{{0} 3 three} {{0} 2 two} {{0} 1 one}]
 ```
 
+<a name="select" />
+
+### Select(selector) IEnumerable
+
+__Arguments__
+
+* `selector` - func(element, index or key) anyType
+
+__Examples__
+
+```go
+src := []string{"11", "12", "13"}
+dst := make([]int, 0)
+Chain2(src).Select(func(s string, _ int) int {
+	n, _ := strconv.Atoi(s)
+	return n
+}).Value(&dst)
+// dst = [11 12 13]
+```
+
+__Same__
+
+* `Map`
+
+<a name="selectBy" />
+
+### SelectBy(fieldName) IEnumerable
+
+__Arguments__
+
+* `fieldName` - string
+
+__Examples__
+
+```go
+src := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
+}
+dst := make([]string, 0)
+Chain2(src).SelectBy("name").Value(&dst)
+// dst = [one two three]
+```
+
+__Same__
+
+* `MapBy`
+
 <a name="size" />
 
 ### Size(source)
@@ -1174,95 +1151,34 @@ res := Take(arr, 1).([]int)
 // res = [1]
 ```
 
-<a name="uniq" />
-
-### Uniq(source, selector)
-
-__Arguments__
-
-* `source` - array
-* `selector` - nil or func(element or value, index or key) anyType
-
-__Return__
-
-* interface{} - only the first occurence of each value is kept
-
-__Examples__
-
-```go
-arr := []int{1, 2, 1, 4, 1, 3}
-var res []int
-Chain(arr).Uniq(func(n, _ int) int {
-	return n % 2
-}).Value(&res)
-// or
-res := Uniq(arr, func(n, _ int) int {
-	return n % 2
-}).([]int)
-// res = [1 2]
-```
-
-<a name="uniqBy" />
-
-### UniqBy(source, property)
-
-__Arguments__
-
-* `source` - array
-* `property` - string
-
-__Return__
-
-* interface{}
-
-__Examples__
-
-```go
-arr := []testModel{
-	{ID: 1, Name: "one"},
-	{ID: 2, Name: "one"},
-	{ID: 3, Name: "one"},
-}
-var res []testModel
-Chain(arr).UniqBy("name").Value(&res)
-// or
-res := UniqBy(arr, "Name").([]testModel)
-// res = [{{0} 1 one}]
-```
-
 <a name="values" />
 
-### Values(source)
-
-__Arguments__
-
-* `source` - map
-
-__Return__
-
-* interface{} - an array of `source`'s values
+### Values() IEnumerable
+### Values() IQuery
 
 __Examples__
 
 ```go
+src := []string{"a", "b"}
+dst := make([]string, 0)
+Chain2(src).Values().Value(&dst)
+// dst = [a b]
+
 src := map[int]string{
 	1: "a",
 	2: "b",
 	3: "c",
 	4: "d",
 }
-var res []string
-Chain(src).Values().Value(&res)
-// or
-res := Values(src).([]string)
-// res = [a b c d]
+dst := make([]string, 0)
+Chain2(src).Values().Value(&dst)
+// dst = [a b c d]
 ```
 
 <a name="where" />
 
-### Where(predicate) IQuery
 ### Where(predicate) IEnumerable
-
+### Where(predicate) IQuery
 
 __Arguments__
 
@@ -1284,10 +1200,14 @@ Chain2(src).Where(func(r testModel, _ int) bool {
 // len(dst) == 2 && dst[0] == src[1] && dst[1] == src[3])
 ```
 
+__Same__
+
+* `Filter`
+
 <a name="whereBy" />
 
-### WhereBy(properties) IQuery
 ### WhereBy(properties) IEnumerable
+### WhereBy(properties) IQuery
 
 __Arguments__
 
@@ -1309,7 +1229,17 @@ Chain2(src).WhereBy(map[string]interface{}{
 // len(dst) == 2 && dst[0] == src[0] && dst[1] == src[1]
 ```
 
+__Same__
+
+* `FilterBy`
+
 ## Release Notes
+~~~
+v1.3.0 (2018-06-09)
+* FindIndex、FindIndexBy、Keys、Map、MapBy、Object、Uniq、UniqBy、Values支持IEnumerable
+* IEnumerable增加Distinct、DistinctBy、Select、SelectBy
+~~~
+
 ~~~
 v1.2.0 (2018-06-04)
 * Each、Filter、Where支持IEnumerable

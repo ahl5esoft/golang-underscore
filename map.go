@@ -42,3 +42,11 @@ func (m *query) MapBy(property string) IQuery {
 	m.Source = MapBy(m.Source, property)
 	return m
 }
+
+func (m enumerable) Map(selector interface{}) IEnumerable {
+	return m.Select(selector)
+}
+
+func (m enumerable) MapBy(fieldName string) IEnumerable {
+	return m.SelectBy(fieldName)
+}

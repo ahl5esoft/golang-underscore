@@ -44,13 +44,18 @@ func PropertyRV(name string) GetProeprtyRVFunc {
 }
 
 func getRV(v interface{}) reflect.Value {
-	if reflect.TypeOf(v) == reflect.TypeOf(nilRV) {
-		return v.(reflect.Value)
+	rv := reflect.ValueOf(v)
+	if rv.Type() == rtOfRV {
+		rv = v.(reflect.Value)
 	}
 
-	rv := reflect.ValueOf(v)
 	if rv.Kind() == reflect.Ptr {
 		rv = rv.Elem()
 	}
+
+	if rv.Type() == facadeRT {
+		rv = rv.Interface().(facade).Real
+	}
+
 	return rv
 }

@@ -4,19 +4,35 @@ import (
 	"reflect"
 )
 
-// Values is 字典的所有value
-func Values(source interface{}) interface{} {
-	sourceRV := reflect.ValueOf(source)
-	if sourceRV.Kind() != reflect.Map {
-		return nil
+func (m *query) Values() IQuery {
+	sourceRV := reflect.ValueOf(m.Source)
+	if sourceRV.Kind() == reflect.Map {
+		m.Source = m.Map(func(value, _ interface{}) facade {
+			return facade{reflect.ValueOf(value)}
+		})
+	} else {
+		m.Source = nil
 	}
 
-	return Map(source, func(value, _ interface{}) facade {
-		return facade{reflect.ValueOf(value)}
-	})
+	return m
 }
 
-func (m *query) Values() IQuery {
-	m.Source = Values(m.Source)
-	return m
+func (m enumerable) Values() IEnumerable {
+	iterator := m.GetEnumerator()
+	return enumerable{
+		Enumerator: func() IEnumerator {
+			index := 0
+			return &enumerator{
+				MoveNextFunc: func() (valueRV reflect.Value, keyRV reflect.Value, ok bool) {
+					if ok = iterator.MoveNext(); ok {
+						valueRV = iterator.GetValue()
+						keyRV = reflect.ValueOf(index)
+						index++
+					}
+
+					return
+				},
+			}
+		},
+	}
 }

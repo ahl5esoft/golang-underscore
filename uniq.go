@@ -1,11 +1,8 @@
 package underscore
 
-import (
-	"reflect"
-)
+import "reflect"
 
-// Uniq is 去重
-func Uniq(source, selector interface{}) interface{} {
+func (m *query) Uniq(selector interface{}) IQuery {
 	if selector == nil {
 		selector = func(value, _ interface{}) facade {
 			return facade{reflect.ValueOf(value)}
@@ -14,7 +11,7 @@ func Uniq(source, selector interface{}) interface{} {
 
 	var mapRV reflect.Value
 	var arrRV reflect.Value
-	each(source, selector, func(resRV, valueRv, _ reflect.Value) bool {
+	each(m.Source, selector, func(resRV, valueRv, _ reflect.Value) bool {
 		if !mapRV.IsValid() {
 			mapRT := reflect.MapOf(resRV.Type(), reflect.TypeOf(false))
 			mapRV = reflect.MakeMap(mapRT)
@@ -32,28 +29,24 @@ func Uniq(source, selector interface{}) interface{} {
 	})
 
 	if mapRV.IsValid() {
-		return arrRV.Interface()
+		m.Source = arrRV.Interface()
 	}
-
-	return nil
+	return m
 }
 
-// UniqBy is 根据某个属性去重
-func UniqBy(source interface{}, property string) interface{} {
+func (m *query) UniqBy(property string) IQuery {
 	getPropertyRV := PropertyRV(property)
-	return Uniq(source, func(value, _ interface{}) facade {
+	return m.Uniq(func(value, _ interface{}) facade {
 		return facade{
 			getPropertyRV(value),
 		}
 	})
 }
 
-func (m *query) Uniq(selector interface{}) IQuery {
-	m.Source = Uniq(m.Source, selector)
-	return m
+func (m enumerable) Uniq(predicate interface{}) IEnumerable {
+	return m.Distinct(predicate)
 }
 
-func (m *query) UniqBy(property string) IQuery {
-	m.Source = UniqBy(m.Source, property)
-	return m
+func (m enumerable) UniqBy(fieldName string) IEnumerable {
+	return m.DistinctBy(fieldName)
 }

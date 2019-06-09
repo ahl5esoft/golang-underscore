@@ -5,10 +5,10 @@ import (
 	"testing"
 )
 
-func Test_Map(t *testing.T) {
+func Test_Select(t *testing.T) {
 	src := []string{"11", "12", "13"}
 	dst := make([]int, 0)
-	Chain2(src).Map(func(s string, _ int) int {
+	Chain2(src).Select(func(s string, _ int) int {
 		n, _ := strconv.Atoi(s)
 		return n
 	}).Value(&dst)
@@ -17,14 +17,14 @@ func Test_Map(t *testing.T) {
 	}
 }
 
-func Test_MapBy(t *testing.T) {
+func Test_SelectBy(t *testing.T) {
 	src := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
 	dst := make([]string, 0)
-	Chain2(src).MapBy("name").Value(&dst)
+	Chain2(src).SelectBy("name").Value(&dst)
 	if len(dst) != len(src) {
 		t.Fatal(dst)
 	}

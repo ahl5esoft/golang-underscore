@@ -11,6 +11,6 @@ var (
 			}
 		},
 	}
-	nilRV     = reflect.ValueOf(nil)
-	rtOfNilRV = reflect.TypeOf(nilRV)
+	nilRV  = reflect.ValueOf(nil)
+	rtOfRV = reflect.TypeOf(nilRV)
 )

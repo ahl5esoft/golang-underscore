@@ -5,36 +5,27 @@ import (
 	"sync"
 )
 
-// Object 将二维数组转化为字典
-func Object(source interface{}) interface{} {
-	var tempRV reflect.Value
-	each(source, func(item, _ interface{}) {
-		rv := reflect.ValueOf(item)
-		keyRv := rv.Index(0).Elem()
-		valueRv := rv.Index(1).Elem()
-		if !tempRV.IsValid() {
-			tempRV = reflect.MakeMap(
-				reflect.MapOf(
-					keyRv.Type(),
-					valueRv.Type(),
-				),
-			)
-		}
-
-		tempRV.SetMapIndex(keyRv, valueRv)
-	}, nil)
-
-	if tempRV.IsValid() {
-		return tempRV.Interface()
-	}
-	return nil
-}
-
 func (m *query) Object() IQuery {
 	if m.IsParallel {
 		m.Source = objectAsParallel(m.Source)
 	} else {
-		m.Source = Object(m.Source)
+		var tempRV reflect.Value
+		each(m.Source, func(item, _ interface{}) {
+			rv := reflect.ValueOf(item)
+			keyRv := rv.Index(0).Elem()
+			valueRv := rv.Index(1).Elem()
+			if !tempRV.IsValid() {
+				tempRV = reflect.MakeMap(
+					reflect.MapOf(
+						keyRv.Type(),
+						valueRv.Type(),
+					),
+				)
+			}
+
+			tempRV.SetMapIndex(keyRv, valueRv)
+		}, nil)
+		m.Source = tempRV.Interface()
 	}
 
 	return m
@@ -68,4 +59,22 @@ func objectAsParallel(source interface{}) interface{} {
 	})
 
 	return tempRV.Interface()
+}
+
+func (m enumerable) Object() IEnumerable {
+	iterator := m.GetEnumerator()
+	return enumerable{
+		Enumerator: func() IEnumerator {
+			return &enumerator{
+				MoveNextFunc: func() (valueRV reflect.Value, keyRV reflect.Value, ok bool) {
+					if ok = iterator.MoveNext(); ok {
+						keyRV = iterator.GetValue().Index(0).Elem()
+						valueRV = iterator.GetValue().Index(1).Elem()
+					}
+
+					return
+				},
+			}
+		},
+	}
 }

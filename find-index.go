@@ -1,18 +1,15 @@
 package underscore
 
-import (
-	"reflect"
-)
+import "reflect"
 
-// FindIndex is 根据断言函数获取下标
-func FindIndex(source, predicate interface{}) int {
+func (m *query) FindIndex(predicate interface{}) int {
 	index := -1
 
-	if !IsArray(source) {
+	if !IsArray(m.Source) {
 		return index
 	}
 
-	each(source, predicate, func(okRV, _, keyRV reflect.Value) bool {
+	each(m.Source, predicate, func(okRV, _, keyRV reflect.Value) bool {
 		ok := okRV.Bool()
 		if ok {
 			index = int(keyRV.Int())
@@ -23,17 +20,33 @@ func FindIndex(source, predicate interface{}) int {
 	return index
 }
 
-// FindIndexBy is 根据字典获取下标
-func FindIndexBy(source interface{}, properties map[string]interface{}) int {
-	return FindIndex(source, func(item interface{}, _ int) bool {
+func (m *query) FindIndexBy(properties map[string]interface{}) int {
+	return m.FindIndex(func(item interface{}, _ int) bool {
 		return IsMatch(item, properties)
 	})
 }
 
-func (m *query) FindIndex(predicate interface{}) int {
-	return FindIndex(m.Source, predicate)
+func (m enumerable) FindIndex(predicate interface{}) int {
+	iterator := m.GetEnumerator()
+	predicateRV := reflect.ValueOf(predicate)
+	index := 0
+	for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
+		returnRVs := predicateRV.Call([]reflect.Value{
+			iterator.GetValue(),
+			iterator.GetKey(),
+		})
+		if returnRVs[0].Bool() {
+			return index
+		}
+
+		index++
+	}
+
+	return -1
 }
 
-func (m *query) FindIndexBy(properties map[string]interface{}) int {
-	return FindIndexBy(m.Source, properties)
+func (m enumerable) FindIndexBy(dict map[string]interface{}) int {
+	return m.FindIndex(func(v, _ interface{}) bool {
+		return IsMatch(v, dict)
+	})
 }

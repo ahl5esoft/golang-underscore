@@ -16,11 +16,7 @@ func (m enumerator) GetKey() reflect.Value {
 }
 
 func (m enumerator) GetValue() reflect.Value {
-	if m.value.Type() == facadeRT {
-		return m.value.Interface().(facade).Real
-	}
-
-	return m.value
+	return getRV(m.value)
 }
 
 func (m *enumerator) MoveNext() (ok bool) {

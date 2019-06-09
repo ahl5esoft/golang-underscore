@@ -1,49 +1,30 @@
 package underscore
 
-import (
-	"testing"
-)
+import "testing"
 
 func Test_Keys_Array(t *testing.T) {
-	arr := []string{"aa"}
-	res := Keys(arr)
-	if res != nil {
-		t.Error(res)
+	src := []string{"aa", "bb", "cc"}
+	dst := make([]int, 0)
+	Chain2(src).Keys().Value(&dst)
+	if len(dst) != len(src) {
+		t.Fatal(dst)
+	}
+
+	if dst[0] != 0 {
+		t.Error(dst)
 	}
 }
 
-func Test_Keys_Hash(t *testing.T) {
-	dict := map[int]string{
+func Test_Keys_Map(t *testing.T) {
+	src := map[int]string{
 		1: "a",
 		2: "b",
 		3: "c",
 		4: "d",
 	}
-	res := Keys(dict).([]int)
-	if len(res) != len(dict) {
-		t.Error(res)
-	}
-}
-
-func Test_Chain_Keys_Array(t *testing.T) {
-	arr := []string{"aa"}
-	res := make([]string, 0)
-	Chain(arr).Keys().Value(&res)
-	if len(res) != 0 {
-		t.Error(res)
-	}
-}
-
-func Test_Chain_Keys_Hash(t *testing.T) {
-	dict := map[int]string{
-		1: "a",
-		2: "b",
-		3: "c",
-		4: "d",
-	}
-	res := make([]int, 0)
-	Chain(dict).Keys().Value(&res)
-	if len(res) != len(dict) {
-		t.Error("wrong")
+	dst := make([]int, 0)
+	Chain2(src).Keys().Value(&dst)
+	if len(dst) != len(src) {
+		t.Fatal(dst)
 	}
 }

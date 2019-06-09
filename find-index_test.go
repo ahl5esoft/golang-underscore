@@ -1,61 +1,47 @@
 package underscore
 
-import (
-	"testing"
-)
+import "testing"
+
+func Benchmark_FindIndex(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		Range(1, benchmarkSize, 1).FindIndex(func(r, _ int) bool {
+			return r == 200
+		})
+	}
+}
+
+func Benchmark_FindIndex_New(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		Range2(1, benchmarkSize, 1).FindIndex(func(r, _ int) bool {
+			return r == 200
+		})
+	}
+}
 
 func Test_FindIndex(t *testing.T) {
-	arr := []testModel{
-		{ID: 1, Name: "one"},
-		{ID: 1, Name: "two"},
-		{ID: 1, Name: "three"},
-	}
-	i := FindIndex(arr, func(r testModel, _ int) bool {
-		return r.Name == arr[1].Name
-	})
-	if i != 1 {
-		t.Error("wrong")
-	}
-}
-
-func Test_FindIndexBy(t *testing.T) {
-	arr := []testModel{
+	src := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
-	i := FindIndexBy(arr, map[string]interface{}{
-		"id": 1,
-	})
-	if i != 0 {
-		t.Error("wrong")
-	}
-}
-
-func Test_Chain_FindIndex(t *testing.T) {
-	arr := []testModel{
-		{ID: 1, Name: "one"},
-		{ID: 2, Name: "two"},
-		{ID: 3, Name: "three"},
-	}
-	index := Chain(arr).FindIndex(func(r testModel, _ int) bool {
-		return r.Name == arr[1].Name
+	index := Chain2(src).FindIndex(func(r testModel, _ int) bool {
+		return r.Name == src[1].Name
 	})
 	if index != 1 {
 		t.Error("wrong")
 	}
 }
 
-func Test_Chain_FindIndexBy(t *testing.T) {
-	arr := []testModel{
+func Test_FindIndexBy(t *testing.T) {
+	src := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
-	index := Chain(arr).FindIndexBy(map[string]interface{}{
+	index := Chain2(src).FindIndexBy(map[string]interface{}{
 		"id": 1,
 	})
-	if index == -1 || arr[index].ID != 1 {
+	if index == -1 || src[index].ID != 1 {
 		t.Error("wrong")
 	}
 }
