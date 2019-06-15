@@ -2,6 +2,7 @@ package underscore
 
 // IEnumerable is 迭代器接口
 type IEnumerable interface {
+	Aggregate(memo interface{}, fn interface{}) IEnumerable
 	All(predicate interface{}) bool
 	AllBy(dict map[string]interface{}) bool
 	Any(predicate interface{}) bool
@@ -17,12 +18,17 @@ type IEnumerable interface {
 	FindIndexBy(dict map[string]interface{}) int
 	First() IEnumerable
 	GetEnumerator() IEnumerator
+	Index(keySelector interface{}) IEnumerable
+	IndexBy(fieldName string) IEnumerable
 	Keys() IEnumerable
 	Map(selector interface{}) IEnumerable
 	MapBy(fieldName string) IEnumerable
 	Object() IEnumerable
+	Reduce(memo interface{}, fn interface{}) IEnumerable
 	Select(selector interface{}) IEnumerable
 	SelectBy(fieldName string) IEnumerable
+	Skip(count int) IEnumerable
+	Take(count int) IEnumerable
 	Uniq(selector interface{}) IEnumerable
 	UniqBy(fieldName string) IEnumerable
 	Value(res interface{})

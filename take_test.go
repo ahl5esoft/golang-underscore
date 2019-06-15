@@ -1,20 +1,26 @@
 package underscore
 
-import (
-	"testing"
-)
+import "testing"
 
-func Test_Chain_Take(t *testing.T) {
-	arr := []int{1, 2, 3}
-	res := make([]int, 0)
-	Chain(arr).Take(1).Value(&res)
-	if res[0] != 1 {
-		t.Fatal("wrong")
+func Benchmark_Take(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		dst := make([]int, 0)
+		Range(1, benchmarkSize, 1).Take(200).Value(&dst)
 	}
+}
 
-	res = make([]int, 0)
-	Chain(nil).Take(1).Value(&res)
-	if len(res) > 0 {
-		t.Error("wrong")
+func Benchmark_Take_New(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		dst := make([]int, 0)
+		Range2(1, benchmarkSize, 1).Take(200).Value(&dst)
+	}
+}
+
+func Test_Take(t *testing.T) {
+	src := []int{1, 2, 3}
+	dst := make([]int, 0)
+	Chain2(src).Take(1).Value(&dst)
+	if len(dst) != 1 || dst[0] != 1 {
+		t.Fatal(dst)
 	}
 }

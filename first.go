@@ -19,8 +19,8 @@ func (m *query) First() IQuery {
 func (m enumerable) First() IEnumerable {
 	iterator := m.GetEnumerator()
 	for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
-		return Chain2(
-			iterator.GetValue().Interface(),
+		return chainFromRV(
+			iterator.GetValue(),
 		)
 	}
 

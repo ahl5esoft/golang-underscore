@@ -18,10 +18,10 @@ func (m *query) Values() IQuery {
 }
 
 func (m enumerable) Values() IEnumerable {
-	iterator := m.GetEnumerator()
 	return enumerable{
 		Enumerator: func() IEnumerator {
 			index := 0
+			iterator := m.GetEnumerator()
 			return &enumerator{
 				MoveNextFunc: func() (valueRV reflect.Value, keyRV reflect.Value, ok bool) {
 					if ok = iterator.MoveNext(); ok {

@@ -31,3 +31,7 @@ func (m *query) Reduce(iterator, memo interface{}) IQuery {
 	m.Source = Reduce(m.Source, iterator, memo)
 	return m
 }
+
+func (m enumerable) Reduce(memo interface{}, fn interface{}) IEnumerable {
+	return m.Aggregate(memo, fn)
+}

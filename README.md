@@ -9,7 +9,7 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-1.2.0-green.svg)
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-1.4.0-green.svg)
 like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 
 ## Installation
@@ -24,11 +24,11 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 ## Documentation
 
 ### API
+* [`Aggregate`](#aggregate)
 * [`All`](#all), [`AllBy`](#allBy)
 * [`Any`](#any), [`AnyBy`](#anyBy)
 * [`AsParallel`](#asParallel)
 * [`Chain`](#chain)
-* [`Clone`](#clone)
 * [`Distinct`](#distinct), [`DistinctBy`](#distinctBy)
 * [`Each`](#each)
 * [`Filter`](#where), [`FilterBy`](#whereBy)
@@ -46,16 +46,43 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Object`](#object)
 * [`Property`](#property), [`PropertyRV`](#propertyRV)
 * [`Range`](#range)
-* [`Reduce`](#reduce)
+* [`Reduce`](#aggregate)
 * [`Reject`](#reject), [`RejectBy`](#rejectBy)
 * [`Reverse`](#reverse), [`ReverseBy`](#reverseBy)
 * [`Select`](#select), [`SelectBy`](#selectBy)
 * [`Size`](#size)
+* [`Skip`](#skip)
 * [`Sort`](#sort), [`SortBy`](#sortBy)
 * [`Take`](#take)
 * [`Uniq`](#distinct), [`UniqBy`](#distinctBy)
 * [`Values`](#values)
 * [`Where`](#where), [`WhereBy`](#whereBy)
+
+<a name="aggregate" />
+
+### Aggregate(memo, fn) IEnumerable
+### Aggregate(source, iterator) IQuery
+
+__Arguments__
+
+* `memo` - anyType
+* `iterator` - func(memo, element or value, key or index) memo
+
+__Examples__
+
+```go
+dst := make([]int, 0)
+Chain2([]int{1, 2}).Aggregate(make([]int, 0), func(memo []int, n, _ int) []int {
+	memo = append(memo, n)
+	memo = append(memo, n+10)
+	return memo
+}).Value(&dst)
+// dst = [1 11 2 12]
+```
+
+__Same__
+
+* `Reduce`
 
 <a name="all" />
 
@@ -198,28 +225,6 @@ Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
 	return "old"
 }).Value(&res)
 // len(res) == 2 && ok == true
-```
-
-<a name="clone" />
-
-### Clone()
-
-__Return__
-
-* interface{}
-
-__Examples__
-
-```go
-arr := []int{1, 2, 3}
-var duplicate []int
-Chain(arr).Clone().Value(&duplicate)
-// or
-duplicate := Clone(arr)
-ok := All(duplicate, func(n, i int) bool {
-	return arr[i] == n
-})
-// ok == true
 ```
 
 <a name="distinct" />
@@ -842,38 +847,6 @@ Range2(0, 3, 2).Value(&res)
 // res = [0 2]
 ```
 
-<a name="reduce" />
-
-### Reduce(source, iterator)
-
-__Arguments__
-
-* `source` - array
-* `iterator` - func(memo, element or value, key or index) memo
-* `memo` - anyType
-
-__Return__
-
-* interface{} - memo
-
-__Examples__
-
-```go
-var res []int
-Chain([]int{1, 2}).Reduce(func(memo []int, n, _ int) []int {
-	memo = append(memo, n)
-	memo = append(memo, n+10)
-	return memo
-}, make([]int, 0)).Value(&res)
-// or
-res := Reduce([]int{1, 2}, func(memo []int, n, _ int) []int {
-	memo = append(memo, n)
-	memo = append(memo, n+10)
-	return memo
-}, make([]int, 0)).([]int)
-// res = [1 11 2 12]
-```
-
 <a name="reject" />
 
 ### Reject(source, predicate)
@@ -1067,6 +1040,23 @@ l := Size(dict)
 // l = 3
 ```
 
+<a name="skip" />
+
+### Skip(count) IEnumerable
+
+__Arguments__
+
+* `count` - int
+
+__Examples__
+
+```go
+src := []int{1, 2, 3}
+dst := make([]int, 0)
+Chain2(src).Skip(2).Value(&dst)
+// dst = [3]
+```
+
 <a name="sort" />
 
 ### Sort(source, selector)
@@ -1129,25 +1119,19 @@ res := SortBy(arr, "id").([]testModel)
 
 <a name="take" />
 
-### Take(source, count)
+### Take(count) IEnumerable
+### Take(count) IQuery
 
 __Arguments__
 
-* `source` - array or map
 * `count` - int
-
-__Return__
-
-* interface{}
 
 __Examples__
 
 ```go
-arr := []int{1, 2, 3}
-var res []int
-Chain(arr).Take(1).Value(&res)
-// or
-res := Take(arr, 1).([]int)
+src := []int{1, 2, 3}
+dst := make([]int, 0)
+Chain2(src).Take(1).Value(&dst)
 // res = [1]
 ```
 
@@ -1234,6 +1218,14 @@ __Same__
 * `FilterBy`
 
 ## Release Notes
+~~~
+v1.4.0 (2019-06-15)
+* Reduce、Take支持IEnumerable
+* IEnumerable增加Aggregate、Skip
+* IQuery删除Clone
+* 优化IEnumerable的First、Index、Values
+~~~
+
 ~~~
 v1.3.0 (2019-06-09)
 * FindIndex、FindIndexBy、Keys、Map、MapBy、Object、Uniq、UniqBy、Values支持IEnumerable
