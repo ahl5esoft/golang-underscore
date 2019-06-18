@@ -18,6 +18,8 @@ type IEnumerable interface {
 	FindIndexBy(dict map[string]interface{}) int
 	First() IEnumerable
 	GetEnumerator() IEnumerator
+	Group(keySelector interface{}) enumerable
+	GroupBy(fieldName string) enumerable
 	Index(keySelector interface{}) IEnumerable
 	IndexBy(fieldName string) IEnumerable
 	Keys() IEnumerable

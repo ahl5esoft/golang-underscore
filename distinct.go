@@ -21,9 +21,7 @@ func (m enumerable) Distinct(selector interface{}) IEnumerable {
 					for ok = iterator.MoveNext(); ok; ok = iterator.MoveNext() {
 						valueRV = iterator.GetValue()
 						keyRV = iterator.GetKey()
-						v := getRV(
-							selectorRV.Call([]reflect.Value{valueRV, keyRV})[0],
-						).Interface()
+						v := getFuncReturnRV(selectorRV, iterator).Interface()
 						if _, has := set[v]; !has {
 							set[v] = true
 							return

@@ -1,40 +1,29 @@
 package underscore
 
-import (
-	"reflect"
-)
+import "reflect"
 
-// ToRealValue is 将反射值转为真实类型的值
-func ToRealValue(rv reflect.Value) interface{} {
-	var value interface{}
-	switch rv.Kind() {
-	case reflect.Bool:
-		value = rv.Bool()
-		break
-	case reflect.Float32, reflect.Float64:
-		value = rv.Float()
-		break
-	case reflect.Int, reflect.Int16, reflect.Int32, reflect.Int64:
-		value = rv.Int()
-		break
-	case reflect.String:
-		value = rv.String()
-		break
-	case reflect.Struct:
-		value = rv.Interface()
-		break
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		value = rv.Uint()
-		break
-	case reflect.Ptr:
-		return ToRealValue(
-			reflect.Indirect(rv),
-		)
-	default:
-		if !rv.IsNil() {
-			value = rv.Interface()
-		}
-		break
+func getRealRV(v interface{}) reflect.Value {
+	rv := reflect.ValueOf(v)
+	if rv.Type() == rtOfRV {
+		rv = v.(reflect.Value)
 	}
-	return value
+
+	if rv.Kind() == reflect.Ptr {
+		rv = rv.Elem()
+	}
+
+	if rv.Type() == facadeRT {
+		rv = rv.Interface().(facade).Real
+	}
+
+	return rv
+}
+
+func getFuncReturnRV(selectorRV reflect.Value, enumerator IEnumerator) reflect.Value {
+	return getRealRV(
+		selectorRV.Call([]reflect.Value{
+			enumerator.GetValue(),
+			enumerator.GetKey(),
+		})[0],
+	)
 }

@@ -50,12 +50,7 @@ func (m enumerable) Index(keySelector interface{}) IEnumerable {
 			return &enumerator{
 				MoveNextFunc: func() (valueRV reflect.Value, keyRV reflect.Value, ok bool) {
 					if ok = iterator.MoveNext(); ok {
-						keyRV = getRV(
-							keySelectorRV.Call([]reflect.Value{
-								iterator.GetValue(),
-								iterator.GetKey(),
-							})[0],
-						)
+						keyRV = getFuncReturnRV(keySelectorRV, iterator)
 						valueRV = iterator.GetValue()
 					}
 

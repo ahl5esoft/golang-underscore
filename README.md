@@ -430,65 +430,46 @@ Chain2([][]int{
 
 <a name="group" />
 
-### Group(source, keySelector)
+### Group(keySelector) IEnumerable
+### Group(keySelector) IQuery
 
 __Arguments__
 
-* `source` - array or map
 * `keySelector` - func(element or value, index or key) anyType
-
-__Return__
-
-* interface{} - map[anyType][](element or value)
 
 __Examples__
 
 ```go
-src := []int{ 1, 2, 3, 4, 5 }
-var res map[string][]int
-Chain(src).Group(func (n, _ int) string {
-	if n % 2 == 0 {
+dst := make(map[string][]int)
+Chain2([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
+	if n%2 == 0 {
 		return "even"
 	}
 	return "odd"
-}).Value(&res)
-// or
-res := Group(src, func (n, _ int) string {
-	if n % 2 == 0 {
-		return "even"
-	}
-	return "odd"
-}).(map[string][]int)
-// res = map[odd:[1 3 5] even:[2 4]]
+}).Value(&dst)
+// dst = map[odd:[1 3 5] even:[2 4]]
 ```
 
 <a name="groupBy" />
 
-### GroupBy(source, property)
+### GroupBy(fieldName) IEnumerable
+### GroupBy(fieldName) IQuery
 
 __Arguments__
 
-* `source` - array or map
-* `property` - property name
-
-__Return__
-
-* interface{} - map[property type][](element or value)
+* `fieldName` - field name
 
 __Examples__
 
 ```go
-arr := []testModel{
+dst := make(map[string][]testModel)
+Chain2([]testModel{
 	{ID: 1, Name: "a"},
 	{ID: 2, Name: "a"},
 	{ID: 3, Name: "b"},
 	{ID: 4, Name: "b"},
-}
-var res map[string][]testModel
-Chain(arr).GroupBy("name").Value(&res)
-// or
-res := GroupBy(arr, "name").(map[string][]testModel)
-// res = map[a:[{{0} 1 a} {{0} 2 a}] b:[{{0} 3 b} {{0} 4 b}]]
+}).GroupBy("Name").Value(&dst)
+// dst = map[a:[{1 a} {2 a}] b:[{3 b} {4 b}]]
 ```
 
 <a name="index" />
@@ -1218,6 +1199,13 @@ __Same__
 * `FilterBy`
 
 ## Release Notes
+~~~
+v1.5.0 (2019-06-18)
+* 增加Chain Benchmark
+* IEnumerable增加Group、GroupBy
+* 优化IEnumerable的Distinct、Enumerator、Index、Property、Select、Where
+~~~
+
 ~~~
 v1.4.0 (2019-06-15)
 * Reduce、Take支持IEnumerable

@@ -24,8 +24,7 @@ func (m enumerable) Where(predicate interface{}) IEnumerable {
 					for ok = iterator.MoveNext(); ok; ok = iterator.MoveNext() {
 						valueRV = iterator.GetValue()
 						keyRV = iterator.GetKey()
-						returnRVs := predicateRV.Call([]reflect.Value{valueRV, keyRV})
-						if returnRVs[0].Bool() {
+						if predicateRV.Call([]reflect.Value{valueRV, keyRV})[0].Bool() {
 							return
 						}
 					}

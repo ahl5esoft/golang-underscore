@@ -1,56 +1,53 @@
 package underscore
 
-import (
-	"testing"
-)
+import "testing"
+
+func Benchmark_Group(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		dst := make([]int, 0)
+		Range(1, benchmarkSize, 1).Group(func(n, _ int) string {
+			if n%2 == 0 {
+				return "even"
+			}
+			return "odd"
+		}).Value(&dst)
+	}
+}
+
+func Benchmark_Group_New(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		dst := make([]int, 0)
+		Range2(1, benchmarkSize, 1).Group(func(n, _ int) string {
+			if n%2 == 0 {
+				return "even"
+			}
+			return "odd"
+		}).Value(&dst)
+	}
+}
 
 func Test_Group(t *testing.T) {
-	dic := Group([]int{1, 2, 3, 4, 5}, func(n, _ int) string {
+	dst := make(map[string][]int)
+	Chain2([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
 		if n%2 == 0 {
 			return "even"
 		}
 		return "odd"
-	}).(map[string][]int)
-	if len(dic["even"]) != 2 {
+	}).Value(&dst)
+	if len(dst["even"]) != 2 {
 		t.Error("wrong")
 	}
 }
 
 func Test_GroupBy(t *testing.T) {
-	arr := []testModel{
+	dst := make(map[string][]testModel)
+	Chain2([]testModel{
 		{ID: 1, Name: "a"},
 		{ID: 2, Name: "a"},
 		{ID: 3, Name: "b"},
 		{ID: 4, Name: "b"},
-	}
-	dic := GroupBy(arr, "name").(map[string][]testModel)
-	if len(dic) != 2 {
-		t.Error("wrong")
-	}
-}
-
-func Test_Chain_Group(t *testing.T) {
-	res := make(map[string][]int)
-	Chain([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
-		if n%2 == 0 {
-			return "even"
-		}
-		return "odd"
-	}).Value(&res)
-	if len(res["even"]) != 2 {
-		t.Error("wrong")
-	}
-}
-
-func Test_Chain_GroupBy(t *testing.T) {
-	res := make(map[string][]testModel)
-	Chain([]testModel{
-		{ID: 1, Name: "a"},
-		{ID: 2, Name: "a"},
-		{ID: 3, Name: "b"},
-		{ID: 4, Name: "b"},
-	}).GroupBy("Name").Value(&res)
-	if len(res) != 2 {
+	}).GroupBy("Name").Value(&dst)
+	if len(dst) != 2 {
 		t.Error("wrong")
 	}
 }

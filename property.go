@@ -20,7 +20,7 @@ func Property(name string) func(interface{}) interface{} {
 func PropertyRV(name string) GetProeprtyRVFunc {
 	var getter GetProeprtyRVFunc
 	getter = func(item interface{}) reflect.Value {
-		itemRV := getRV(item)
+		itemRV := getRealRV(item)
 		itemRT := itemRV.Type()
 		for i := 0; i < itemRT.NumField(); i++ {
 			field := itemRT.Field(i)
@@ -41,21 +41,4 @@ func PropertyRV(name string) GetProeprtyRVFunc {
 		return nilRV
 	}
 	return getter
-}
-
-func getRV(v interface{}) reflect.Value {
-	rv := reflect.ValueOf(v)
-	if rv.Type() == rtOfRV {
-		rv = v.(reflect.Value)
-	}
-
-	if rv.Kind() == reflect.Ptr {
-		rv = rv.Elem()
-	}
-
-	if rv.Type() == facadeRT {
-		rv = rv.Interface().(facade).Real
-	}
-
-	return rv
 }
