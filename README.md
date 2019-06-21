@@ -9,7 +9,7 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-1.5.0-green.svg)
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-1.6.0-green.svg)
 like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 
 ## Installation
@@ -19,6 +19,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
+* OrderBy、ThenBy
 * IQuery性能差，将来会逐步用IEnumerable替代
 
 ## Documentation
@@ -29,6 +30,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Any`](#any), [`AnyBy`](#anyBy)
 * [`AsParallel`](#asParallel)
 * [`Chain`](#chain)
+* [`Count`](#count)
 * [`Distinct`](#distinct), [`DistinctBy`](#distinctBy)
 * [`Each`](#each)
 * [`Filter`](#where), [`FilterBy`](#whereBy)
@@ -50,7 +52,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Reject`](#reject), [`RejectBy`](#rejectBy)
 * [`Reverse`](#reverse), [`ReverseBy`](#reverseBy)
 * [`Select`](#select), [`SelectBy`](#selectBy)
-* [`Size`](#size)
+* [`Size`](#count)
 * [`Skip`](#skip)
 * [`Sort`](#sort), [`SortBy`](#sortBy)
 * [`Take`](#take)
@@ -226,6 +228,21 @@ Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
 }).Value(&res)
 // len(res) == 2 && ok == true
 ```
+
+<a name="count" />
+
+### Count() int
+
+__Examples__
+
+```go
+src := []string{"a", "b", "c"}
+dst := Chain2(src).Count()
+// dst = 3
+```
+
+__Same__
+* `Size`
 
 <a name="distinct" />
 
@@ -997,30 +1014,6 @@ __Same__
 
 * `MapBy`
 
-<a name="size" />
-
-### Size(source)
-
-__Arguments__
-
-* `source` - array or map
-
-__Return__
-
-* int
-
-__Examples__
-
-```go
-dict := map[string]int{
-	"a": 1,
-	"b": 2,
-	"c": 3,
-}
-l := Size(dict)
-// l = 3
-```
-
 <a name="skip" />
 
 ### Skip(count) IEnumerable
@@ -1199,6 +1192,12 @@ __Same__
 * `FilterBy`
 
 ## Release Notes
+~~~
+v1.6.0 (2019-06-21)
+* IEnumerable增加Count、Size
+* 删除FindLastIndex
+~~~
+
 ~~~
 v1.5.0 (2019-06-18)
 * 增加Chain Benchmark

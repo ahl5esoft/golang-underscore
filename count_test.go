@@ -2,10 +2,10 @@ package underscore
 
 import "testing"
 
-func Test_Size(t *testing.T) {
+func Test_Count(t *testing.T) {
 	src := []string{"a", "b", "c"}
-	size := Chain2(src).Size()
-	if size != len(src) {
+	dst := Chain2(src).Count()
+	if dst != len(src) {
 		t.Error("wrong")
 	}
 }

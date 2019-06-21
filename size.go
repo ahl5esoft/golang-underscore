@@ -1,11 +1,10 @@
 package underscore
 
-// Size is 数组或字典的长度
-func Size(source interface{}) int {
-	length, _ := parseSource(source)
+func (m *query) Size() int {
+	length, _ := parseSource(m.Source)
 	return length
 }
 
-func (m *query) Size() int {
-	return Size(m.Source)
+func (m enumerable) Size() int {
+	return m.Count()
 }

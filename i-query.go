@@ -12,7 +12,6 @@ type IQuery interface {
 	FindBy(map[string]interface{}) IQuery
 	FindIndex(interface{}) int
 	FindIndexBy(map[string]interface{}) int
-	FindLastIndex() IQuery
 	First() IQuery
 	Group(interface{}) IQuery
 	GroupBy(string) IQuery

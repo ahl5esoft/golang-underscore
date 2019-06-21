@@ -2,6 +2,24 @@ package underscore
 
 import "testing"
 
+func Test_Range(t *testing.T) {
+	q := Range2(0, 100, 1)
+
+	odd := q.Where(func(r, _ int) bool {
+		return r%2 == 1
+	}).Count()
+	if odd != 50 {
+		t.Fatal(odd)
+	}
+
+	even := q.Where(func(r, _ int) bool {
+		return r%2 == 0
+	}).Count()
+	if even != 50 {
+		t.Fatal(even)
+	}
+}
+
 func Test_Range_StepEq0(t *testing.T) {
 	defer func() {
 		if rv := recover(); rv == nil {

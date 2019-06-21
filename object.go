@@ -33,7 +33,7 @@ func (m *query) Object() IQuery {
 
 func objectAsParallel(source interface{}) interface{} {
 	first := First(source)
-	if first == nil || Size(first) != 2 {
+	if first == nil || Chain(first).Size() != 2 {
 		return nil
 	}
 

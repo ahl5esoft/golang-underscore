@@ -41,18 +41,19 @@ func Range2(start, stop, step int) IEnumerable {
 
 	return enumerable{
 		Enumerator: func() IEnumerator {
+			current := start
 			index := 0
 			return &enumerator{
 				MoveNextFunc: func() (valueRV reflect.Value, keyRV reflect.Value, ok bool) {
 					if step > 0 {
-						ok = start < stop
+						ok = current < stop
 					} else {
-						ok = start > stop
+						ok = current > stop
 					}
 					if ok {
-						valueRV = reflect.ValueOf(start)
+						valueRV = reflect.ValueOf(current)
 						keyRV = reflect.ValueOf(index)
-						start += step
+						current += step
 						index++
 					}
 
