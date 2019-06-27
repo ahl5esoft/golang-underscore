@@ -2,18 +2,6 @@ package underscore
 
 import "reflect"
 
-func (m *query) Where(predicate interface{}) IQuery {
-	m.Source = filter(m.Source, predicate, true)
-	return m
-}
-
-func (m *query) WhereBy(properties map[string]interface{}) IQuery {
-	m.Source = m.Where(func(value, _ interface{}) bool {
-		return IsMatch(value, properties)
-	})
-	return m
-}
-
 func (m enumerable) Where(predicate interface{}) IEnumerable {
 	return enumerable{
 		Enumerator: func() IEnumerator {

@@ -9,8 +9,8 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-1.6.0-green.svg)
-like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.0.0-green.svg)
+like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for Go
 
 ## Installation
     $ go get github.com/ahl5esoft/golang-underscore
@@ -19,7 +19,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-* OrderBy、ThenBy
+* Except、ExceptBy、Last、Order、OrderBy、Reject、RejectBy、Reverse、ReverseBy、Sort、SortBy、ThenBy
 * IQuery性能差，将来会逐步用IEnumerable替代
 
 ## Documentation
@@ -28,7 +28,6 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Aggregate`](#aggregate)
 * [`All`](#all), [`AllBy`](#allBy)
 * [`Any`](#any), [`AnyBy`](#anyBy)
-* [`AsParallel`](#asParallel)
 * [`Chain`](#chain)
 * [`Count`](#count)
 * [`Distinct`](#distinct), [`DistinctBy`](#distinctBy)
@@ -44,7 +43,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Keys`](#keys)
 * [`Last`](#last)
 * [`Map`](#select), [`MapBy`](#selectBy)
-* [`MapMany`](#mapMany), [`MapManyBy`](#mapManyBy)
+* [`MapMany`](#selectMany), [`MapManyBy`](#selectManyBy)
 * [`Object`](#object)
 * [`Property`](#property), [`PropertyRV`](#propertyRV)
 * [`Range`](#range)
@@ -52,6 +51,7 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 * [`Reject`](#reject), [`RejectBy`](#rejectBy)
 * [`Reverse`](#reverse), [`ReverseBy`](#reverseBy)
 * [`Select`](#select), [`SelectBy`](#selectBy)
+* [`SelectMany`](#selectMany), [`SelectManyBy`](#selectManyBy)
 * [`Size`](#count)
 * [`Skip`](#skip)
 * [`Sort`](#sort), [`SortBy`](#sortBy)
@@ -63,7 +63,6 @@ like <a href="http://underscorejs.org/">underscore.js</a>, but for Go
 <a name="aggregate" />
 
 ### Aggregate(memo, fn) IEnumerable
-### Aggregate(source, iterator) IQuery
 
 __Arguments__
 
@@ -74,7 +73,7 @@ __Examples__
 
 ```go
 dst := make([]int, 0)
-Chain2([]int{1, 2}).Aggregate(make([]int, 0), func(memo []int, n, _ int) []int {
+Chain([]int{1, 2}).Aggregate(make([]int, 0), func(memo []int, n, _ int) []int {
 	memo = append(memo, n)
 	memo = append(memo, n+10)
 	return memo
@@ -101,7 +100,7 @@ __Return__
 __Examples__
 
 ```go
-ok := Chain2([]testModel{
+ok := Chain([]testModel{
 	{ID: 1, Name: "one"},
 	{ID: 1, Name: "two"},
 	{ID: 1, Name: "three"},
@@ -126,7 +125,7 @@ __Return__
 __Examples__
 
 ```go
-ok := Chain2([]testModel{
+ok := Chain([]testModel{
 	{ID: 1, Name: "one"},
 	{ID: 2, Name: "one"},
 	{ID: 3, Name: "one"},
@@ -151,7 +150,7 @@ __Return__
 __Examples__
 
 ```go
-ok := Chain2([]testModel{
+ok := Chain([]testModel{
 	{ID: 1, Name: "one"},
 	{ID: 2, Name: "two"},
 	{ID: 3, Name: "three"},
@@ -176,7 +175,7 @@ __Return__
 __Examples__
 
 ```go
-ok := Chain2([]testModel{
+ok := Chain([]testModel{
 	{ID: 1, Name: "one"},
 	{ID: 2, Name: "two"},
 	{ID: 3, Name: "three"},
@@ -186,47 +185,24 @@ ok := Chain2([]testModel{
 // ok == true
 ```
 
-<a name="asParallel" />
-
-### Chain(source).AsParallel()...
-
-__Support__
-* `Each`
-* `Object`
-
-__Examples__
-
-```go
-arr := []int{ 1, 2, 3 }
-Chain(arr).AsParallel().Each(func (n, i int) {
-	// code
-})
-```
-
 <a name="chain" />
 
-### Chain(source)
+### Chain(source) IEnumerable
 
 __Arguments__
 
 * `source` - array or map
 
-__Return__
-
-* IQuery - a wrapped object, wrapped objects until value is called
-
 __Examples__
 
 ```go
-res := make(map[string][]int)
-Chain([]int{1, 2, 1, 4, 1, 3}).Uniq(nil).Group(func(n, _ int) string {
-	if n%2 == 0 {
-		return "even"
-	}
-
-	return "old"
-}).Value(&res)
-// len(res) == 2 && ok == true
+var dst int
+Range(1, benchmarkSize, 1).Select(func(r, _ int) int {
+	return -r
+}).Where(func(r, _ int) bool {
+	return r < -20
+}).First().Value(&dst)
+// dst = -21
 ```
 
 <a name="count" />
@@ -237,7 +213,7 @@ __Examples__
 
 ```go
 src := []string{"a", "b", "c"}
-dst := Chain2(src).Count()
+dst := Chain(src).Count()
 // dst = 3
 ```
 
@@ -257,7 +233,7 @@ __Examples__
 ```go
 src := []int{1, 2, 1, 4, 1, 3}
 dst := make([]int, 0)
-Chain2(src).Distinct(func(n, _ int) (int, error) {
+Chain(src).Distinct(func(n, _ int) (int, error) {
 	return n % 2, nil
 }).Value(&dst)
 // dst = [1 2]
@@ -284,7 +260,7 @@ src := []testModel{
 	{ID: 3, Name: "a"},
 }
 dst := make([]testModel, 0)
-Chain2(src).DistinctBy("name").Value(&dst)
+Chain(src).DistinctBy("name").Value(&dst)
 // dst = [{1 a}]
 ```
 
@@ -308,7 +284,7 @@ arr := []testModel{
 	{ID: 1, Name: "two"},
 	{ID: 1, Name: "three"},
 }
-Chain2(arr).Each(func(r testModel, i int) {
+Chain(arr).Each(func(r testModel, i int) {
 	if !(r.ID == arr[i].ID && r.Name == arr[i].Name) {
 		// wrong
 	}
@@ -317,7 +293,6 @@ Chain2(arr).Each(func(r testModel, i int) {
 
 <a name="find" />
 
-### Find(predicate) IQuery
 ### Find(predicate) IEnumerable
 
 __Arguments__
@@ -328,13 +303,13 @@ __Examples__
 
 ```go
 var dst int
-Chain2([]int{1, 2, 3}).Find(func(r, _ int) bool {
+Chain([]int{1, 2, 3}).Find(func(r, _ int) bool {
 	return r == 2
 }).Value(&dst)
 // dst == 2
 // or
 var dst int
-Chain2([][]int{
+Chain([][]int{
 	[]int{1, 3, 5, 7},
 	[]int{2, 4, 6, 8},
 }).Find(func(r []int, _ int) bool {
@@ -347,7 +322,6 @@ Chain2([][]int{
 
 <a name="findBy" />
 
-### FindBy(properties) IQuery
 ### FindBy(properties) IEnumerable
 
 __Arguments__
@@ -363,7 +337,7 @@ src := []testModel{
 	{ID: 3, Name: "three"},
 }
 var dst testModel
-Chain2(src).FindBy(map[string]interface{}{
+Chain(src).FindBy(map[string]interface{}{
 	"id": 2,
 }).Value(&dst)
 // dst == src[1]
@@ -389,7 +363,7 @@ src := []testModel{
 	{ID: 2, Name: "two"},
 	{ID: 3, Name: "three"},
 }
-index := Chain2(src).FindIndex(func(r testModel, _ int) bool {
+index := Chain(src).FindIndex(func(r testModel, _ int) bool {
 	return r.Name == src[1].Name
 })
 // i == 1
@@ -415,7 +389,7 @@ src := []testModel{
 	{ID: 2, Name: "two"},
 	{ID: 3, Name: "three"},
 }
-index := Chain2(src).FindIndexBy(map[string]interface{}{
+index := Chain(src).FindIndexBy(map[string]interface{}{
 	"id": 1,
 })
 // index == 0
@@ -423,7 +397,6 @@ index := Chain2(src).FindIndexBy(map[string]interface{}{
 
 <a name="first" />
 
-### First() IQuery
 ### First() IEnumerable
 
 __Arguments__
@@ -434,11 +407,11 @@ __Examples__
 
 ```go
 var dst int
-Chain2([]int{1, 2, 3}).First().Value(&dst)
+Chain([]int{1, 2, 3}).First().Value(&dst)
 // dst == 1
 // or
 var dst int
-Chain2([][]int{
+Chain([][]int{
 	[]int{1, 3, 5, 7},
 	[]int{2, 4, 6, 8},
 }).First().First().Value(&dst)
@@ -448,7 +421,6 @@ Chain2([][]int{
 <a name="group" />
 
 ### Group(keySelector) IEnumerable
-### Group(keySelector) IQuery
 
 __Arguments__
 
@@ -458,7 +430,7 @@ __Examples__
 
 ```go
 dst := make(map[string][]int)
-Chain2([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
+Chain([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
 	if n%2 == 0 {
 		return "even"
 	}
@@ -470,7 +442,6 @@ Chain2([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
 <a name="groupBy" />
 
 ### GroupBy(fieldName) IEnumerable
-### GroupBy(fieldName) IQuery
 
 __Arguments__
 
@@ -480,7 +451,7 @@ __Examples__
 
 ```go
 dst := make(map[string][]testModel)
-Chain2([]testModel{
+Chain([]testModel{
 	{ID: 1, Name: "a"},
 	{ID: 2, Name: "a"},
 	{ID: 3, Name: "b"},
@@ -491,16 +462,11 @@ Chain2([]testModel{
 
 <a name="index" />
 
-### Index(source, indexSelector)
+### Index(indexSelector) IEnumerable
 
 __Arguments__
 
-* `source` - array or map
 * `indexSelector` - func(element or value, index or key) anyType
-
-__Return__
-
-* interface{} - map[anyType](element or value)
 
 __Examples__
 
@@ -519,16 +485,11 @@ res := Index(src, func (r string, _ int) string {
 
 <a name="indexBy" />
 
-### IndexBy(source, property)
+### IndexBy(property) IEnumerable
 
 __Arguments__
 
-* `source` - array or map
 * `property` - string
-
-__Return__
-
-* interface{} - map[propertyType](element or value)
 
 __Examples__
 
@@ -548,15 +509,11 @@ res := IndexBy(arr, "id").(map[int]testModel)
 
 <a name="isArray" />
 
-### IsArray(element)
+### IsArray(element) bool
 
 __Arguments__
 
 * `element` - object
-
-__Return__
-
-* bool
 
 __Examples__
 
@@ -572,16 +529,12 @@ if IsArray(map[string]int{}) {
 
 <a name="isMatch" />
 
-### IsMatch(element, properties)
+### IsMatch(element, properties) bool
 
 __Arguments__
 
 * `element` - object
 * `properties` - map[string]interface{}
-
-__Return__
-
-* bool
 
 __Examples__
 
@@ -609,18 +562,13 @@ ok = IsMatch(m, map[string]interface{}{
 <a name="keys" />
 
 ### Keys() IEnumerable
-### Keys() IQuery
-
-__Arguments__
-
-* `source` - map
 
 __Examples__
 
 ```go
 src := []string{"aa", "bb", "cc"}
 dst := make([]int, 0)
-Chain2(src).Keys().Value(&dst)
+Chain(src).Keys().Value(&dst)
 // dst = [0 1 2]
 
 src := map[int]string{
@@ -630,21 +578,13 @@ src := map[int]string{
 	4: "d",
 }
 dst := make([]int, 0)
-Chain2(src).Keys().Value(&dst)
+Chain(src).Keys().Value(&dst)
 // dst = [1 2 3 4]
 ```
 
 <a name="last" />
 
-### Last(source)
-
-__Arguments__
-
-* `source` - array or map
-
-__Return__
-
-* interface{} - last element of `source`
+### Last() IEnumerable
 
 __Examples__
 
@@ -667,81 +607,6 @@ str := Last(dict).(string)
 // res = "aa" or "bb"
 ```
 
-<a name="mapMany" />
-
-### MapMany(source, selector)
-
-__Arguments__
-
-* `source` - array or map
-* `selector` - func(element, index or key) anyType with array or slice
-
-__Return__
-
-* interface{} - an slice of property elem value
-
-__Examples__
-
-```go
-src := []int{1, 2}
-MapMany(src, func(r, _ int) int {
-	return r // will panic because `r` is not array or slice
-})
-// or
-Chain(src).MapMany(func(r, _ int) int {
-	return r // will panic because `r` is not array or slice
-})
-
-var res []int
-Chain(src).MapMany(func(r, _ int) []int {
-	var temp []int
-	Range(0, r, 1).Map(func(_, _ int) int {
-		return r
-	}).Value(&temp)
-	return temp
-}).Value(&res)
-// or
-res := MapMany(src, func(r, _ int) []int {
-	var temp []int
-	Range(0, r, 1).Map(func(_, _ int) int {
-		return r
-	}).Value(&temp)
-	return temp
-}).([]int)
-// res = [1 2 2]
-```
-
-<a name="mapManyBy" />
-
-### MapManyBy(source, property)
-
-__Arguments__
-
-* `source` - array
-* `property` - string
-
-__Return__
-
-* interface{} - an slice of propery elem value
-
-__Examples__
-
-```go
-src := []mapManyTestModel{
-	{Slice: []string{"a", "b"}},
-	{Slice: []string{"c", "d"}},
-}
-Chain(src).MapManyBy("Str") // will panic because `Str` property value is not array or slice
-// or
-MapManyBy(src, "Str") // will panic because `Str` property value is not array or slice
-
-var res []string
-Chain(src).MapManyBy("Slice").Value(&res)
-// or
-res := MapManyBy(src, "Slice").([]string)
-// res = [a b c d]
-```
-
 <a name="object" />
 
 ### Object() IEnumerable
@@ -754,7 +619,7 @@ src := [][]interface{}{
 	[]interface{}{"b", 2},
 }
 dst := make(map[string]int)
-Chain2(src).Object().Value(&dst)
+Chain(src).Object().Value(&dst)
 // dst = map[a:1 b:2]
 ```
 
@@ -812,7 +677,6 @@ nameRV, err := getNameRV(item)
 
 <a name="range" />
 
-### Range(start, stop, step) IQuery
 ### Range(start, stop, step) IEnumerable
 
 __Arguments__
@@ -847,16 +711,11 @@ Range2(0, 3, 2).Value(&res)
 
 <a name="reject" />
 
-### Reject(source, predicate)
+### Reject(predicate) IEnumerable
 
 __Arguments__
 
-* `source` - array or map
 * `predicate` - func(element or value, index or key) bool
-
-__Return__
-
-* interface{} - an array of all the values that without pass a truth test `predicate`
 
 __Examples__
 
@@ -875,16 +734,11 @@ res := Reject(arr, func(n, i int) bool {
 
 <a name="rejectBy" />
 
-### RejectBy(source, properties)
+### RejectBy(properties) IEnumerable
 
 __Arguments__
 
-* `source` - array or map
 * `properties` - map[string]interface{}
-
-__Return__
-
-* interface{} - an array of all the values that without pass a truth test `properties`
 
 __Examples__
 
@@ -907,16 +761,12 @@ res := RejectBy(arr, map[string]interface{}{
 
 <a name="reverse" />
 
-### Reverse(source, selector)
+### Reverse(selector) IEnumerable
 
 __Arguments__
 
-* `source` - array or map
 * `selector` - func(element, key or index) anyType
 
-__Return__
-
-* interface{} - an array of `source` that reversed
 
 __Examples__
 
@@ -939,16 +789,11 @@ res := Reverse(arr, func(n testModel, _ int) int {
 
 <a name="reverseBy" />
 
-### ReverseBy(source, selector)
+### ReverseBy(fieldName) IEnumerable
 
 __Arguments__
 
-* `source` - array or map
-* `property` - string
-
-__Return__
-
-* interface{} - an array of `source` that reversed
+* `fieldName` - string
 
 __Examples__
 
@@ -978,7 +823,7 @@ __Examples__
 ```go
 src := []string{"11", "12", "13"}
 dst := make([]int, 0)
-Chain2(src).Select(func(s string, _ int) int {
+Chain(src).Select(func(s string, _ int) int {
 	n, _ := strconv.Atoi(s)
 	return n
 }).Value(&dst)
@@ -1006,13 +851,60 @@ src := []testModel{
 	{ID: 3, Name: "three"},
 }
 dst := make([]string, 0)
-Chain2(src).SelectBy("name").Value(&dst)
+Chain(src).SelectBy("name").Value(&dst)
 // dst = [one two three]
 ```
 
 __Same__
 
 * `MapBy`
+
+<a name="selectMany" />
+
+### SelectMany(selector) IEnumerable
+
+__Arguments__
+
+* `selector` - func(element, index or key) anyType with array or slice
+
+__Examples__
+
+```go
+src := [2]int{1, 2}
+var dst []int
+Chain(src).SelectMany(func(r, _ int) []int {
+	return []int{r - 1, r + 1}
+}).Value(&dst)
+// dst = [0 2 1 3]
+```
+
+__Same__
+
+* `MapMany`
+
+<a name="mapManyBy" />
+
+### MapManyBy(property) IEnumerable
+
+__Arguments__
+
+* `property` - string
+
+__Examples__
+
+```go
+src := []testSelectManyModel{
+	{Array: [2]int{1, 2}},
+	{Array: [2]int{3, 4}},
+}
+var dst []int
+Chain(src).SelectManyBy("Array").Value(&dst)
+// res = [1 2 3 4]
+```
+
+__Same__
+
+* `MapManyBy`
 
 <a name="skip" />
 
@@ -1027,22 +919,18 @@ __Examples__
 ```go
 src := []int{1, 2, 3}
 dst := make([]int, 0)
-Chain2(src).Skip(2).Value(&dst)
+Chain(src).Skip(2).Value(&dst)
 // dst = [3]
 ```
 
 <a name="sort" />
 
-### Sort(source, selector)
+### Sort(selector) IEnumerable
 
 __Arguments__
 
-* `source` - array or map
 * `selector` - func(element, key or index) anyType
 
-__Return__
-
-* interface{} - an array of `source` that sorted
 
 __Examples__
 
@@ -1065,16 +953,11 @@ res := Sort(arr, func(n testModel, _ int) int {
 
 <a name="sortBy" />
 
-### SortBy(source, property)
+### SortBy(fieldName) IEnumerable
 
 __Arguments__
 
-* `source` - array or map
-* `property` - string
-
-__Return__
-
-* interface{}
+* `fieldName` - string
 
 __Examples__
 
@@ -1094,7 +977,6 @@ res := SortBy(arr, "id").([]testModel)
 <a name="take" />
 
 ### Take(count) IEnumerable
-### Take(count) IQuery
 
 __Arguments__
 
@@ -1105,21 +987,20 @@ __Examples__
 ```go
 src := []int{1, 2, 3}
 dst := make([]int, 0)
-Chain2(src).Take(1).Value(&dst)
+Chain(src).Take(1).Value(&dst)
 // res = [1]
 ```
 
 <a name="values" />
 
 ### Values() IEnumerable
-### Values() IQuery
 
 __Examples__
 
 ```go
 src := []string{"a", "b"}
 dst := make([]string, 0)
-Chain2(src).Values().Value(&dst)
+Chain(src).Values().Value(&dst)
 // dst = [a b]
 
 src := map[int]string{
@@ -1129,14 +1010,13 @@ src := map[int]string{
 	4: "d",
 }
 dst := make([]string, 0)
-Chain2(src).Values().Value(&dst)
+Chain(src).Values().Value(&dst)
 // dst = [a b c d]
 ```
 
 <a name="where" />
 
 ### Where(predicate) IEnumerable
-### Where(predicate) IQuery
 
 __Arguments__
 
@@ -1152,7 +1032,7 @@ src := []testModel{
 	{ID: 4, Name: "three"},
 }
 dst := make([]testModel, 0)
-Chain2(src).Where(func(r testModel, _ int) bool {
+Chain(src).Where(func(r testModel, _ int) bool {
 	return r.ID%2 == 0
 }).Value(&dst)
 // len(dst) == 2 && dst[0] == src[1] && dst[1] == src[3])
@@ -1165,7 +1045,6 @@ __Same__
 <a name="whereBy" />
 
 ### WhereBy(properties) IEnumerable
-### WhereBy(properties) IQuery
 
 __Arguments__
 
@@ -1181,7 +1060,7 @@ src := []testModel{
 	{ID: 4, Name: "three"},
 }
 dst := make([]testModel, 0)
-Chain2(src).WhereBy(map[string]interface{}{
+Chain(src).WhereBy(map[string]interface{}{
 	"Name": "one",
 }).Value(&dst)
 // len(dst) == 2 && dst[0] == src[0] && dst[1] == src[1]
@@ -1192,6 +1071,12 @@ __Same__
 * `FilterBy`
 
 ## Release Notes
+~~~
+v2.0.0 (2019-06-27)
+* 删除IQuery
+* IEnumerable增加MapMany、MapManyBy、SelectMany、SelectManyBy
+~~~
+
 ~~~
 v1.6.0 (2019-06-21)
 * IEnumerable增加Count、Size
@@ -1227,7 +1112,7 @@ v1.2.0 (2019-06-04)
 ~~~
 v1.1.0 (2019-06-02)
 * 增加IEnumerable、IEnumerator
-* All、Any、Chain2、Find、First、Range2、Value支持IEnumerable
+* All、Any、Chain、Find、First、Range2、Value支持IEnumerable
 ~~~
 
 ~~~

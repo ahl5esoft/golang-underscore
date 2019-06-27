@@ -8,7 +8,7 @@ import (
 func Test_Map(t *testing.T) {
 	src := []string{"11", "12", "13"}
 	dst := make([]int, 0)
-	Chain2(src).Map(func(s string, _ int) int {
+	Chain(src).Map(func(s string, _ int) int {
 		n, _ := strconv.Atoi(s)
 		return n
 	}).Value(&dst)
@@ -24,7 +24,7 @@ func Test_MapBy(t *testing.T) {
 		{ID: 3, Name: "three"},
 	}
 	dst := make([]string, 0)
-	Chain2(src).MapBy("name").Value(&dst)
+	Chain(src).MapBy("name").Value(&dst)
 	if len(dst) != len(src) {
 		t.Fatal(dst)
 	}

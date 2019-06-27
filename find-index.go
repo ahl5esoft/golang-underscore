@@ -2,30 +2,6 @@ package underscore
 
 import "reflect"
 
-func (m *query) FindIndex(predicate interface{}) int {
-	index := -1
-
-	if !IsArray(m.Source) {
-		return index
-	}
-
-	each(m.Source, predicate, func(okRV, _, keyRV reflect.Value) bool {
-		ok := okRV.Bool()
-		if ok {
-			index = int(keyRV.Int())
-		}
-		return ok
-	})
-
-	return index
-}
-
-func (m *query) FindIndexBy(properties map[string]interface{}) int {
-	return m.FindIndex(func(item interface{}, _ int) bool {
-		return IsMatch(item, properties)
-	})
-}
-
 func (m enumerable) FindIndex(predicate interface{}) int {
 	iterator := m.GetEnumerator()
 	predicateRV := reflect.ValueOf(predicate)

@@ -7,6 +7,7 @@ type IEnumerable interface {
 	AllBy(dict map[string]interface{}) bool
 	Any(predicate interface{}) bool
 	AnyBy(dict map[string]interface{}) bool
+	Count() int
 	Distinct(selector interface{}) IEnumerable
 	DistinctBy(fieldName string) IEnumerable
 	Each(action interface{})
@@ -25,10 +26,15 @@ type IEnumerable interface {
 	Keys() IEnumerable
 	Map(selector interface{}) IEnumerable
 	MapBy(fieldName string) IEnumerable
+	MapMany(selector interface{}) IEnumerable
+	MapManyBy(fieldName string) IEnumerable
 	Object() IEnumerable
 	Reduce(memo interface{}, fn interface{}) IEnumerable
 	Select(selector interface{}) IEnumerable
 	SelectBy(fieldName string) IEnumerable
+	SelectMany(selector interface{}) IEnumerable
+	SelectManyBy(fieldName string) IEnumerable
+	Size() int
 	Skip(count int) IEnumerable
 	Take(count int) IEnumerable
 	Uniq(selector interface{}) IEnumerable

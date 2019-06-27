@@ -11,15 +11,6 @@ func Benchmark_Find(b *testing.B) {
 	}
 }
 
-func Benchmark_Find_New(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		var dst int
-		Range2(1, benchmarkSize, 1).Find(func(r, _ int) bool {
-			return r > 0
-		}).Value(&dst)
-	}
-}
-
 func Test_Chain_Find(t *testing.T) {
 	arr := []testModel{
 		{ID: 1, Name: "one"},
@@ -52,7 +43,7 @@ func Test_Chain_FindBy(t *testing.T) {
 
 func Test_Find(t *testing.T) {
 	var dst int
-	Chain2([]int{1, 2, 3}).Find(func(r, _ int) bool {
+	Chain([]int{1, 2, 3}).Find(func(r, _ int) bool {
 		return r == 2
 	}).Value(&dst)
 	if dst != 2 {
@@ -67,7 +58,7 @@ func Test_FindBy(t *testing.T) {
 		{ID: 3, Name: "three"},
 	}
 	var dst testModel
-	Chain2(src).FindBy(map[string]interface{}{
+	Chain(src).FindBy(map[string]interface{}{
 		"id": 2,
 	}).Value(&dst)
 	if dst != src[1] {

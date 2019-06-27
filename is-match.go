@@ -6,7 +6,7 @@ func IsMatch(item interface{}, properties map[string]interface{}) bool {
 		return false
 	}
 
-	return Chain2(properties).All(func(v interface{}, k string) bool {
+	return Chain(properties).All(func(v interface{}, k string) bool {
 		return Property(k)(item) == v
 	})
 }

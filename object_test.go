@@ -1,8 +1,6 @@
 package underscore
 
-import (
-	"testing"
-)
+import "testing"
 
 func Test_Object(t *testing.T) {
 	src := [][]interface{}{
@@ -10,7 +8,7 @@ func Test_Object(t *testing.T) {
 		{"b", 2},
 	}
 	dst := make(map[string]int)
-	Chain2(src).Object().Value(&dst)
+	Chain(src).Object().Value(&dst)
 	if len(dst) != 2 {
 		t.Fatal(dst)
 	}

@@ -1,23 +1,6 @@
 package underscore
 
-import (
-	"reflect"
-)
-
-func (m *query) All(predicate interface{}) bool {
-	var ok bool
-	each(m.Source, predicate, func(resRV, _, _ reflect.Value) bool {
-		ok = resRV.Bool()
-		return !ok
-	})
-	return ok
-}
-
-func (m *query) AllBy(properties map[string]interface{}) bool {
-	return m.All(func(value, _ interface{}) bool {
-		return IsMatch(value, properties)
-	})
-}
+import "reflect"
 
 func (m enumerable) All(predicate interface{}) bool {
 	iterator := m.GetEnumerator()

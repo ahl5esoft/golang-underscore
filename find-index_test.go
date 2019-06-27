@@ -10,21 +10,13 @@ func Benchmark_FindIndex(b *testing.B) {
 	}
 }
 
-func Benchmark_FindIndex_New(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		Range2(1, benchmarkSize, 1).FindIndex(func(r, _ int) bool {
-			return r == 200
-		})
-	}
-}
-
 func Test_FindIndex(t *testing.T) {
 	src := []testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
-	index := Chain2(src).FindIndex(func(r testModel, _ int) bool {
+	index := Chain(src).FindIndex(func(r testModel, _ int) bool {
 		return r.Name == src[1].Name
 	})
 	if index != 1 {
@@ -38,7 +30,7 @@ func Test_FindIndexBy(t *testing.T) {
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
-	index := Chain2(src).FindIndexBy(map[string]interface{}{
+	index := Chain(src).FindIndexBy(map[string]interface{}{
 		"id": 1,
 	})
 	if index == -1 || src[index].ID != 1 {

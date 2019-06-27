@@ -10,16 +10,8 @@ func Benchmark_All(b *testing.B) {
 	}
 }
 
-func Benchmark_All_New(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		Range2(0, benchmarkSize, 1).All(func(r, _ int) bool {
-			return r < 1000
-		})
-	}
-}
-
 func Test_All_False(t *testing.T) {
-	ok := Chain2([]testModel{
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 1, Name: "two"},
 		{ID: 1, Name: "three"},
@@ -32,7 +24,7 @@ func Test_All_False(t *testing.T) {
 }
 
 func Test_All_True(t *testing.T) {
-	ok := Chain2([]testModel{
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 1, Name: "two"},
 		{ID: 1, Name: "three"},
@@ -45,7 +37,7 @@ func Test_All_True(t *testing.T) {
 }
 
 func Test_AllBy_False(t *testing.T) {
-	ok := Chain2([]testModel{
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
@@ -58,64 +50,12 @@ func Test_AllBy_False(t *testing.T) {
 }
 
 func Test_AllBy_True(t *testing.T) {
-	ok := Chain2([]testModel{
+	ok := Chain([]testModel{
 		{ID: 1, Name: "one"},
 		{ID: 2, Name: "one"},
 		{ID: 3, Name: "one"},
 	}).AllBy(map[string]interface{}{
 		"name": "one",
-	})
-	if !ok {
-		t.Error("wrong")
-	}
-}
-
-func Test_Chain_All_False(t *testing.T) {
-	ok := Chain([]testModel{
-		{ID: 1, Name: "one"},
-		{ID: 1, Name: "two"},
-		{ID: 1, Name: "three"},
-	}).All(func(r testModel, _ int) bool {
-		return r.ID != 1
-	})
-	if ok {
-		t.Error("wrong")
-	}
-}
-
-func Test_Chain_All_True(t *testing.T) {
-	ok := Chain([]testModel{
-		{ID: 1, Name: "one"},
-		{ID: 1, Name: "two"},
-		{ID: 1, Name: "three"},
-	}).All(func(r testModel, _ int) bool {
-		return r.ID == 1
-	})
-	if !ok {
-		t.Error("wrong")
-	}
-}
-
-func Test_Chain_AllBy_False(t *testing.T) {
-	ok := Chain([]testModel{
-		{ID: 1, Name: "one"},
-		{ID: 2, Name: "two"},
-		{ID: 3, Name: "three"},
-	}).AllBy(map[string]interface{}{
-		"Name": "a",
-	})
-	if ok {
-		t.Error("wrong")
-	}
-}
-
-func Test_Chain_AllBy_True(t *testing.T) {
-	ok := Chain([]testModel{
-		{ID: 1, Name: "one"},
-		{ID: 2, Name: "one"},
-		{ID: 3, Name: "one"},
-	}).AllBy(map[string]interface{}{
-		"Name": "one",
 	})
 	if !ok {
 		t.Error("wrong")

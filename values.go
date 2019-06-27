@@ -1,21 +1,6 @@
 package underscore
 
-import (
-	"reflect"
-)
-
-func (m *query) Values() IQuery {
-	sourceRV := reflect.ValueOf(m.Source)
-	if sourceRV.Kind() == reflect.Map {
-		m.Source = m.Map(func(value, _ interface{}) facade {
-			return facade{reflect.ValueOf(value)}
-		})
-	} else {
-		m.Source = nil
-	}
-
-	return m
-}
+import "reflect"
 
 func (m enumerable) Values() IEnumerable {
 	return enumerable{

@@ -5,7 +5,7 @@ import "testing"
 func Test_Keys_Array(t *testing.T) {
 	src := []string{"aa", "bb", "cc"}
 	dst := make([]int, 0)
-	Chain2(src).Keys().Value(&dst)
+	Chain(src).Keys().Value(&dst)
 	if len(dst) != len(src) {
 		t.Fatal(dst)
 	}
@@ -23,7 +23,7 @@ func Test_Keys_Map(t *testing.T) {
 		4: "d",
 	}
 	dst := make([]int, 0)
-	Chain2(src).Keys().Value(&dst)
+	Chain(src).Keys().Value(&dst)
 	if len(dst) != len(src) {
 		t.Fatal(dst)
 	}

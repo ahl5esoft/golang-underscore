@@ -12,16 +12,6 @@ func Benchmark_Where(b *testing.B) {
 	}
 }
 
-func Benchmark_Where_New(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		Range2(0, benchmarkSize, 1).Where(func(r, _ int) bool {
-			return r > 100
-		}).Any(func(r, _ int) bool {
-			return true
-		})
-	}
-}
-
 func Test_Where(t *testing.T) {
 	src := []testModel{
 		{ID: 1, Name: "one"},
@@ -30,7 +20,7 @@ func Test_Where(t *testing.T) {
 		{ID: 4, Name: "three"},
 	}
 	dst := make([]testModel, 0)
-	Chain2(src).Where(func(r testModel, _ int) bool {
+	Chain(src).Where(func(r testModel, _ int) bool {
 		return r.ID%2 == 0
 	}).Value(&dst)
 	if !(len(dst) == 2 && dst[0] == src[1] && dst[1] == src[3]) {
@@ -46,7 +36,7 @@ func Test_WhereBy(t *testing.T) {
 		{ID: 4, Name: "three"},
 	}
 	dst := make([]testModel, 0)
-	Chain2(src).WhereBy(map[string]interface{}{
+	Chain(src).WhereBy(map[string]interface{}{
 		"Name": "one",
 	}).Value(&dst)
 	if !(len(dst) == 2 && dst[0] == src[0] && dst[1] == src[1]) {

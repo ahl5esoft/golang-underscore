@@ -17,7 +17,7 @@ func Benchmark_Group(b *testing.B) {
 func Benchmark_Group_New(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		dst := make([]int, 0)
-		Range2(1, benchmarkSize, 1).Group(func(n, _ int) string {
+		Range(1, benchmarkSize, 1).Group(func(n, _ int) string {
 			if n%2 == 0 {
 				return "even"
 			}
@@ -28,7 +28,7 @@ func Benchmark_Group_New(b *testing.B) {
 
 func Test_Group(t *testing.T) {
 	dst := make(map[string][]int)
-	Chain2([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
+	Chain([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
 		if n%2 == 0 {
 			return "even"
 		}
@@ -41,7 +41,7 @@ func Test_Group(t *testing.T) {
 
 func Test_GroupBy(t *testing.T) {
 	dst := make(map[string][]testModel)
-	Chain2([]testModel{
+	Chain([]testModel{
 		{ID: 1, Name: "a"},
 		{ID: 2, Name: "a"},
 		{ID: 3, Name: "b"},

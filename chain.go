@@ -2,15 +2,8 @@ package underscore
 
 import "reflect"
 
-// Chain will cause all future method calls to return wrapped objects
-func Chain(source interface{}) IQuery {
-	return &query{
-		Source: source,
-	}
-}
-
-// Chain2 is 初始化
-func Chain2(src interface{}) IEnumerable {
+// Chain is 初始化
+func Chain(src interface{}) IEnumerable {
 	return chainFromRV(
 		reflect.ValueOf(src),
 	)

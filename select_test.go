@@ -8,7 +8,7 @@ import (
 func Test_Select(t *testing.T) {
 	src := []string{"11", "12", "13"}
 	dst := make([]int, 0)
-	Chain2(src).Select(func(s string, _ int) int {
+	Chain(src).Select(func(s string, _ int) int {
 		n, _ := strconv.Atoi(s)
 		return n
 	}).Value(&dst)
@@ -24,7 +24,7 @@ func Test_SelectBy(t *testing.T) {
 		{ID: 3, Name: "three"},
 	}
 	dst := make([]string, 0)
-	Chain2(src).SelectBy("name").Value(&dst)
+	Chain(src).SelectBy("name").Value(&dst)
 	if len(dst) != len(src) {
 		t.Fatal(dst)
 	}

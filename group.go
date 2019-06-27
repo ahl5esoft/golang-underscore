@@ -2,40 +2,6 @@ package underscore
 
 import "reflect"
 
-func (m *query) Group(keySelector interface{}) IQuery {
-	var groupRV reflect.Value
-	each(m.Source, keySelector, func(groupKeyRV, valueRV, _ reflect.Value) bool {
-		groupValueRT := reflect.SliceOf(valueRV.Type())
-		if !groupRV.IsValid() {
-			groupRT := reflect.MapOf(groupKeyRV.Type(), groupValueRT)
-			groupRV = reflect.MakeMap(groupRT)
-		}
-
-		valuesRV := groupRV.MapIndex(groupKeyRV)
-		if !valuesRV.IsValid() {
-			valuesRV = reflect.MakeSlice(groupValueRT, 0, 0)
-		}
-		valuesRV = reflect.Append(valuesRV, valueRV)
-
-		groupRV.SetMapIndex(groupKeyRV, valuesRV)
-		return false
-	})
-	if groupRV.IsValid() {
-		m.Source = groupRV.Interface()
-	}
-
-	return m
-}
-
-func (m *query) GroupBy(property string) IQuery {
-	getPropertyRV := PropertyRV(property)
-	return m.Group(func(value, _ interface{}) facade {
-		return facade{
-			getPropertyRV(value),
-		}
-	})
-}
-
 func (m enumerable) Group(keySelector interface{}) enumerable {
 	return enumerable{
 		Enumerator: func() IEnumerator {
