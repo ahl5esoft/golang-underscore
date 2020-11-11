@@ -19,8 +19,7 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-* Except、ExceptBy、Last、Order、OrderBy、Reject、RejectBy、Reverse、ReverseBy、Sort、SortBy、ThenBy
-* IQuery性能差，将来会逐步用IEnumerable替代
+* Except、ExceptBy、Order、OrderBy、Reject、RejectBy、ThenBy
 
 ## Documentation
 
