@@ -11,7 +11,7 @@ func (m enumerable) Find(predicate interface{}) IEnumerable {
 			iterator.GetKey(),
 		})
 		if returnRVs[0].Bool() {
-			return chainFromRV(
+			return chainFromValue(
 				iterator.GetValue(),
 			)
 		}

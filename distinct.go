@@ -14,14 +14,14 @@ func (m enumerable) Distinct(selector interface{}) IEnumerable {
 	return enumerable{
 		Enumerator: func() IEnumerator {
 			iterator := m.GetEnumerator()
-			selectorRV := reflect.ValueOf(selector)
+			selectValue := reflect.ValueOf(selector)
 			set := make(map[interface{}]bool)
 			return &enumerator{
-				MoveNextFunc: func() (valueRV reflect.Value, keyRV reflect.Value, ok bool) {
+				MoveNextFunc: func() (valueValue reflect.Value, keyValue reflect.Value, ok bool) {
 					for ok = iterator.MoveNext(); ok; ok = iterator.MoveNext() {
-						valueRV = iterator.GetValue()
-						keyRV = iterator.GetKey()
-						v := getFuncReturnRV(selectorRV, iterator).Interface()
+						valueValue = iterator.GetValue()
+						keyValue = iterator.GetKey()
+						v := getFuncReturnRV(selectValue, iterator).Interface()
 						if _, has := set[v]; !has {
 							set[v] = true
 							return

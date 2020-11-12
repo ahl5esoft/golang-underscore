@@ -18,7 +18,7 @@ func (m enumerable) SelectMany(selector interface{}) IEnumerable {
 							}
 
 							selectorResultRV := getFuncReturnRV(selectorRV, iterator)
-							tempIterator = chainFromRV(selectorResultRV).GetEnumerator()
+							tempIterator = chainFromValue(selectorResultRV).GetEnumerator()
 						}
 
 						if ok = tempIterator.MoveNext(); ok {

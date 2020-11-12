@@ -9,11 +9,11 @@ type nullEnumerator struct {
 }
 
 func (m nullEnumerator) GetKey() reflect.Value {
-	return nilRV
+	return nilValue
 }
 
 func (m nullEnumerator) GetValue() reflect.Value {
-	if m.Src.IsValid() && m.Src.Type() == facadeRT {
+	if m.Src.IsValid() && m.Src.Type() == facadeType {
 		return m.Src.Interface().(facade).Real
 	}
 

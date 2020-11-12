@@ -1,8 +1,12 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
 
-func Benchmark_Any_New(b *testing.B) {
+	"github.com/stretchr/testify/assert"
+)
+
+func Benchmark_Any(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		Range(1, benchmarkSize, 1).Any(func(r, _ int) bool {
 			return r > 1000
@@ -18,9 +22,7 @@ func Test_Any_False(t *testing.T) {
 	}).Any(func(r testModel, _ int) bool {
 		return r.ID == 0
 	})
-	if ok {
-		t.Error("wrong")
-	}
+	assert.False(t, ok)
 }
 
 func Test_Any_True(t *testing.T) {
@@ -31,9 +33,7 @@ func Test_Any_True(t *testing.T) {
 	}).Any(func(r testModel, _ int) bool {
 		return r.ID == 1
 	})
-	if !ok {
-		t.Error("wrong")
-	}
+	assert.True(t, ok)
 }
 
 func Test_AnyBy_False(t *testing.T) {
@@ -44,9 +44,7 @@ func Test_AnyBy_False(t *testing.T) {
 	}).AnyBy(map[string]interface{}{
 		"id": 0,
 	})
-	if ok {
-		t.Error("wrong")
-	}
+	assert.False(t, ok)
 }
 
 func Test_AnyBy_True(t *testing.T) {
@@ -57,7 +55,5 @@ func Test_AnyBy_True(t *testing.T) {
 	}).AnyBy(map[string]interface{}{
 		"name": "two",
 	})
-	if !ok {
-		t.Error("wrong")
-	}
+	assert.True(t, ok)
 }

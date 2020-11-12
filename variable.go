@@ -3,14 +3,14 @@ package underscore
 import "reflect"
 
 var (
-	facadeRT      = reflect.TypeOf(facade{})
+	facadeType    = reflect.TypeOf(facade{})
 	nilEnumerable = enumerable{
 		Enumerator: func() IEnumerator {
 			return nullEnumerator{
-				Src: nilRV,
+				Src: nilValue,
 			}
 		},
 	}
-	nilRV  = reflect.ValueOf(nil)
-	rtOfRV = reflect.TypeOf(nilRV)
+	nilValue  = reflect.ValueOf(nil)
+	valueType = reflect.TypeOf(nilValue)
 )

@@ -9,7 +9,7 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.0.0-green.svg)
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.0.1-green.svg)
 like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for Go
 
 ## Installation
@@ -19,7 +19,7 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-* Except、ExceptBy、Order、OrderBy、ThenBy
+* Except/ExceptBy/Reject/RejectBy/Reverse/ReverseBy/ThenBy
 
 ## Documentation
 
@@ -44,16 +44,15 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 * [`Map`](#select), [`MapBy`](#selectBy)
 * [`MapMany`](#selectMany), [`MapManyBy`](#selectManyBy)
 * [`Object`](#object)
+* [`Order`](#order), [`OrderBy`](#orderBy)
 * [`Property`](#property), [`PropertyRV`](#propertyRV)
 * [`Range`](#range)
 * [`Reduce`](#aggregate)
-* [`Reject`](#reject), [`RejectBy`](#rejectBy)
-* [`Reverse`](#reverse), [`ReverseBy`](#reverseBy)
 * [`Select`](#select), [`SelectBy`](#selectBy)
 * [`SelectMany`](#selectMany), [`SelectManyBy`](#selectManyBy)
 * [`Size`](#count)
 * [`Skip`](#skip)
-* [`Sort`](#sort), [`SortBy`](#sortBy)
+* [`Sort`](#order), [`SortBy`](#orderBy)
 * [`Take`](#take)
 * [`Uniq`](#distinct), [`UniqBy`](#distinctBy)
 * [`Values`](#values)
@@ -622,6 +621,59 @@ Chain(src).Object().Value(&dst)
 // dst = map[a:1 b:2]
 ```
 
+<a name="order" />
+
+### Order(selector) IEnumerable
+
+__Arguments__
+
+* `selector` - func(element, key or index) anyType
+
+
+__Examples__
+
+```go
+arr := []testModel{
+	{ID: 2, Name: "two"},
+	{ID: 1, Name: "one"},
+	{ID: 3, Name: "three"},
+}
+var res []testModel
+Chain(arr).Order(func(n testModel, _ int) int {
+	return n.ID
+}).Value(&res)
+// res = [{{0} 1 one} {{0} 2 two} {{0} 3 three}]
+```
+
+__Same__
+
+* `Sort`
+
+<a name="orderBy" />
+
+### OrderBy(fieldName) IEnumerable
+
+__Arguments__
+
+* `fieldName` - string
+
+__Examples__
+
+```go
+arr := []testModel{
+	{ID: 2, Name: "two"},
+	{ID: 1, Name: "one"},
+	{ID: 3, Name: "three"},
+}
+var res []testModel
+Chain(arr).OrderBy("id").Value(&res)
+// res = [{{0} 1 one} {{0} 2 two} {{0} 3 three}]
+```
+
+__Same__
+
+* `SortBy`
+
 <a name="property" />
 
 ### Property(name)
@@ -708,107 +760,6 @@ Range2(0, 3, 2).Value(&res)
 // res = [0 2]
 ```
 
-<a name="reject" />
-
-### Reject(predicate) IEnumerable
-
-__Arguments__
-
-* `predicate` - func(element or value, index or key) bool
-
-__Examples__
-
-```go
-arr := []int{1, 2, 3, 4}
-var res []int
-Chain(arr).Reject(func(n, i int) bool {
-	return n%2 == 0
-}).Value(&res)
-// or
-res := Reject(arr, func(n, i int) bool {
-	return n%2 == 0
-}).([]int)
-// res = [1 3]
-```
-
-<a name="rejectBy" />
-
-### RejectBy(properties) IEnumerable
-
-__Arguments__
-
-* `properties` - map[string]interface{}
-
-__Examples__
-
-```go
-arr := []testModel{
-	{ID: 1, Name: "one"},
-	{ID: 2, Name: "two"},
-	{ID: 3, Name: "three"},
-}
-var res []testModel
-Chain(arr).RejectBy(map[string]interface{}{
-	"Id": 1,
-}).Value(&res)
-// or
-res := RejectBy(arr, map[string]interface{}{
-	"Id": 1,
-}).([]testModel)
-// res = [{{0} 2 two} {{0} 3 three}]
-```
-
-<a name="reverse" />
-
-### Reverse(selector) IEnumerable
-
-__Arguments__
-
-* `selector` - func(element, key or index) anyType
-
-
-__Examples__
-
-```go
-arr := []testModel{
-	{ID: 2, Name: "two"},
-	{ID: 1, Name: "one"},
-	{ID: 3, Name: "three"},
-}
-var res []testModel
-Chain(arr).Reverse(func(n testModel, _ int) int {
-	return n.ID
-}).Value(&res)
-// or
-res := Reverse(arr, func(n testModel, _ int) int {
-	return n.ID
-}).([]testModel)
-// res = [{{0} 3 three} {{0} 2 two} {{0} 1 one}]
-```
-
-<a name="reverseBy" />
-
-### ReverseBy(fieldName) IEnumerable
-
-__Arguments__
-
-* `fieldName` - string
-
-__Examples__
-
-```go
-arr := []testModel{
-	{ID: 2, Name: "two"},
-	{ID: 1, Name: "one"},
-	{ID: 3, Name: "three"},
-}
-var res []testModel
-Chain(arr).ReverseBy("id").Value(&res)
-// or
-res := ReverseBy(arr, "id").([]testModel)
-// res = [{{0} 3 three} {{0} 2 two} {{0} 1 one}]
-```
-
 <a name="select" />
 
 ### Select(selector) IEnumerable
@@ -881,9 +832,9 @@ __Same__
 
 * `MapMany`
 
-<a name="mapManyBy" />
+<a name="selectManyBy" />
 
-### MapManyBy(property) IEnumerable
+### SelectManyBy(property) IEnumerable
 
 __Arguments__
 
@@ -920,57 +871,6 @@ src := []int{1, 2, 3}
 dst := make([]int, 0)
 Chain(src).Skip(2).Value(&dst)
 // dst = [3]
-```
-
-<a name="sort" />
-
-### Sort(selector) IEnumerable
-
-__Arguments__
-
-* `selector` - func(element, key or index) anyType
-
-
-__Examples__
-
-```go
-arr := []testModel{
-	{ID: 2, Name: "two"},
-	{ID: 1, Name: "one"},
-	{ID: 3, Name: "three"},
-}
-var res []testModel
-Chain(arr).Sort(func(n testModel, _ int) int {
-	return n.ID
-}).Value(&res)
-// or
-res := Sort(arr, func(n testModel, _ int) int {
-	return n.ID
-}).([]testModel)
-// res = [{{0} 1 one} {{0} 2 two} {{0} 3 three}]
-```
-
-<a name="sortBy" />
-
-### SortBy(fieldName) IEnumerable
-
-__Arguments__
-
-* `fieldName` - string
-
-__Examples__
-
-```go
-arr := []testModel{
-	{ID: 2, Name: "two"},
-	{ID: 1, Name: "one"},
-	{ID: 3, Name: "three"},
-}
-var res []testModel
-Chain(arr).SortBy("id").Value(&res)
-// or
-res := SortBy(arr, "id").([]testModel)
-// res = [{{0} 1 one} {{0} 2 two} {{0} 3 three}]
 ```
 
 <a name="take" />

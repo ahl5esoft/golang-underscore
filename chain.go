@@ -2,23 +2,23 @@ package underscore
 
 import "reflect"
 
-// Chain is 初始化
+// Chain is 创建枚举器
 func Chain(src interface{}) IEnumerable {
-	return chainFromRV(
+	return chainFromValue(
 		reflect.ValueOf(src),
 	)
 }
 
-func chainFromArrayOrSlice(srcRV reflect.Value, size int) IEnumerable {
+func chainFromArrayOrSlice(srcValue reflect.Value, size int) IEnumerable {
 	return enumerable{
 		Enumerator: func() IEnumerator {
 			index := 0
 			return &enumerator{
-				MoveNextFunc: func() (valueRV reflect.Value, keyRV reflect.Value, ok bool) {
+				MoveNextFunc: func() (valueValue reflect.Value, keyValue reflect.Value, ok bool) {
 					ok = index < size
 					if ok {
-						valueRV = srcRV.Index(index)
-						keyRV = reflect.ValueOf(index)
+						valueValue = srcValue.Index(index)
+						keyValue = reflect.ValueOf(index)
 						index++
 					}
 
@@ -29,17 +29,17 @@ func chainFromArrayOrSlice(srcRV reflect.Value, size int) IEnumerable {
 	}
 }
 
-func chainFromMap(srcRV reflect.Value, size int) IEnumerable {
+func chainFromMap(srcValue reflect.Value, size int) IEnumerable {
 	return enumerable{
 		Enumerator: func() IEnumerator {
 			index := 0
-			keyRVs := srcRV.MapKeys()
+			keyValues := srcValue.MapKeys()
 			return &enumerator{
-				MoveNextFunc: func() (valueRV reflect.Value, keyRV reflect.Value, ok bool) {
+				MoveNextFunc: func() (valueValue reflect.Value, keyValue reflect.Value, ok bool) {
 					ok = index < size
 					if ok {
-						valueRV = srcRV.MapIndex(keyRVs[index])
-						keyRV = keyRVs[index]
+						valueValue = srcValue.MapIndex(keyValues[index])
+						keyValue = keyValues[index]
 						index++
 					}
 
@@ -50,14 +50,20 @@ func chainFromMap(srcRV reflect.Value, size int) IEnumerable {
 	}
 }
 
-func chainFromRV(rv reflect.Value) IEnumerable {
-	switch rv.Kind() {
+func chainFromValue(value reflect.Value) IEnumerable {
+	switch value.Kind() {
 	case reflect.Array, reflect.Slice:
-		return chainFromArrayOrSlice(rv, rv.Len())
+		return chainFromArrayOrSlice(
+			value,
+			value.Len(),
+		)
 	case reflect.Map:
-		return chainFromMap(rv, rv.Len())
+		return chainFromMap(
+			value,
+			value.Len(),
+		)
 	default:
-		if iterator, ok := rv.Interface().(IEnumerator); ok {
+		if iterator, ok := value.Interface().(IEnumerator); ok {
 			return enumerable{
 				Enumerator: func() IEnumerator {
 					return iterator
@@ -68,7 +74,7 @@ func chainFromRV(rv reflect.Value) IEnumerable {
 		return enumerable{
 			Enumerator: func() IEnumerator {
 				return nullEnumerator{
-					Src: rv,
+					Src: value,
 				}
 			},
 		}

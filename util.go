@@ -3,27 +3,29 @@ package underscore
 import "reflect"
 
 func getRealRV(v interface{}) reflect.Value {
-	rv := reflect.ValueOf(v)
-	if rv.Type() == rtOfRV {
-		rv = v.(reflect.Value)
+	value := reflect.ValueOf(v)
+	if value.Type() == valueType {
+		value = v.(reflect.Value)
 	}
 
-	if rv.Kind() == reflect.Ptr {
-		rv = rv.Elem()
+	if value.Kind() == reflect.Ptr {
+		value = value.Elem()
 	}
 
-	if rv.Type() == facadeRT {
-		rv = rv.Interface().(facade).Real
+	if value.Type() == facadeType {
+		value = value.Interface().(facade).Real
 	}
 
-	return rv
+	return value
 }
 
-func getFuncReturnRV(selectorRV reflect.Value, enumerator IEnumerator) reflect.Value {
+func getFuncReturnRV(selectorValue reflect.Value, enumerator IEnumerator) reflect.Value {
 	return getRealRV(
-		selectorRV.Call([]reflect.Value{
-			enumerator.GetValue(),
-			enumerator.GetKey(),
-		})[0],
+		selectorValue.Call(
+			[]reflect.Value{
+				enumerator.GetValue(),
+				enumerator.GetKey(),
+			},
+		)[0],
 	)
 }

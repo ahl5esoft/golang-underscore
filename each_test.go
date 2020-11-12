@@ -1,6 +1,10 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/go-playground/assert/v2"
+)
 
 func Test_Each(t *testing.T) {
 	arr := []testModel{
@@ -9,8 +13,6 @@ func Test_Each(t *testing.T) {
 		{ID: 1, Name: "three"},
 	}
 	Chain(arr).Each(func(r testModel, i int) {
-		if !(r.ID == arr[i].ID && r.Name == arr[i].Name) {
-			t.Error("wrong")
-		}
+		assert.Equal(t, r, arr[i])
 	})
 }

@@ -28,7 +28,7 @@ func PropertyRV(name string) GetProeprtyRVFunc {
 				rv := getter(
 					itemRV.Field(i),
 				)
-				if rv != nilRV {
+				if rv != nilValue {
 					return rv
 				}
 			}
@@ -38,7 +38,7 @@ func PropertyRV(name string) GetProeprtyRVFunc {
 			}
 		}
 
-		return nilRV
+		return nilValue
 	}
 	return getter
 }

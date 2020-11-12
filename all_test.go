@@ -1,6 +1,10 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Benchmark_All(b *testing.B) {
 	for n := 0; n < b.N; n++ {
@@ -18,9 +22,7 @@ func Test_All_False(t *testing.T) {
 	}).All(func(r testModel, _ int) bool {
 		return r.Name == "one"
 	})
-	if ok {
-		t.Error("wrong")
-	}
+	assert.False(t, ok)
 }
 
 func Test_All_True(t *testing.T) {
@@ -31,9 +33,7 @@ func Test_All_True(t *testing.T) {
 	}).All(func(r testModel, _ int) bool {
 		return r.ID == 1
 	})
-	if !ok {
-		t.Error("wrong")
-	}
+	assert.True(t, ok)
 }
 
 func Test_AllBy_False(t *testing.T) {
@@ -44,9 +44,7 @@ func Test_AllBy_False(t *testing.T) {
 	}).AllBy(map[string]interface{}{
 		"Name": "a",
 	})
-	if ok {
-		t.Error("wrong")
-	}
+	assert.False(t, ok)
 }
 
 func Test_AllBy_True(t *testing.T) {
@@ -57,7 +55,5 @@ func Test_AllBy_True(t *testing.T) {
 	}).AllBy(map[string]interface{}{
 		"name": "one",
 	})
-	if !ok {
-		t.Error("wrong")
-	}
+	assert.True(t, ok)
 }

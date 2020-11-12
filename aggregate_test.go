@@ -2,6 +2,8 @@ package underscore
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Benchmark_Aggregate(b *testing.B) {
@@ -32,7 +34,9 @@ func Test_Aggregate(t *testing.T) {
 		memo = append(memo, n+10)
 		return memo
 	}).Value(&dst)
-	if !(len(dst) == 4 && dst[0] == 1 && dst[1] == 11 && dst[2] == 2 && dst[3] == 12) {
-		t.Error(dst)
-	}
+	assert.EqualValues(
+		t,
+		dst,
+		[]int{1, 11, 2, 12},
+	)
 }

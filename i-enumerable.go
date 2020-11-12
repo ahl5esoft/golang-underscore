@@ -29,11 +29,15 @@ type IEnumerable interface {
 	MapMany(selector interface{}) IEnumerable
 	MapManyBy(fieldName string) IEnumerable
 	Object() IEnumerable
+	Order(selector interface{}) IEnumerable
+	OrderBy(fieldName string) IEnumerable
 	Reduce(memo interface{}, fn interface{}) IEnumerable
 	Select(selector interface{}) IEnumerable
 	SelectBy(fieldName string) IEnumerable
 	SelectMany(selector interface{}) IEnumerable
 	SelectManyBy(fieldName string) IEnumerable
+	Sort(selector interface{}) IEnumerable
+	SortBy(fieldName string) IEnumerable
 	Size() int
 	Skip(count int) IEnumerable
 	Take(count int) IEnumerable

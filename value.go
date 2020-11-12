@@ -3,42 +3,42 @@ package underscore
 import "reflect"
 
 func (m enumerable) Value(res interface{}) {
-	resRV := reflect.ValueOf(res)
-	switch resRV.Elem().Kind() {
+	resValue := reflect.ValueOf(res)
+	switch resValue.Elem().Kind() {
 	case reflect.Array, reflect.Slice:
-		m.valueToArrayOrSlice(resRV)
+		m.valueToArrayOrSlice(resValue)
 	case reflect.Map:
-		m.valueToMap(resRV)
+		m.valueToMap(resValue)
 	default:
 		if nullIterator, ok := m.GetEnumerator().(nullEnumerator); ok {
-			if rv := nullIterator.GetValue(); rv.IsValid() {
-				resRV.Elem().Set(rv)
+			if value := nullIterator.GetValue(); value.IsValid() {
+				resValue.Elem().Set(value)
 			}
 		}
 	}
 }
 
-func (m enumerable) valueToArrayOrSlice(resRV reflect.Value) {
+func (m enumerable) valueToArrayOrSlice(resValue reflect.Value) {
 	iterator := m.GetEnumerator()
-	sliceRV := resRV.Elem()
+	sliceValue := resValue.Elem()
 	for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
-		sliceRV = reflect.Append(
-			sliceRV,
+		sliceValue = reflect.Append(
+			sliceValue,
 			iterator.GetValue(),
 		)
 	}
 
-	resRV.Elem().Set(sliceRV)
+	resValue.Elem().Set(sliceValue)
 }
 
-func (m enumerable) valueToMap(resRV reflect.Value) {
+func (m enumerable) valueToMap(resValue reflect.Value) {
 	iterator := m.GetEnumerator()
-	mapRV := resRV.Elem()
+	mapValue := resValue.Elem()
 	for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
-		mapRV.SetMapIndex(
+		mapValue.SetMapIndex(
 			iterator.GetKey(),
 			iterator.GetValue(),
 		)
 	}
-	resRV.Elem().Set(mapRV)
+	resValue.Elem().Set(mapValue)
 }
