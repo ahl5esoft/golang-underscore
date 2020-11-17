@@ -1,5 +1,5 @@
 package underscore
 
-func (m enumerable) Reduce(memo interface{}, fn interface{}) IEnumerable {
-	return m.Aggregate(memo, fn)
+func (m enumerable) Reduce(fn interface{}, memo interface{}) IEnumerable {
+	return m.Aggregate(fn, memo)
 }

@@ -2,7 +2,7 @@ package underscore
 
 import "reflect"
 
-func (m enumerable) Aggregate(memo interface{}, fn interface{}) IEnumerable {
+func (m enumerable) Aggregate(fn interface{}, memo interface{}) IEnumerable {
 	fnValue := reflect.ValueOf(fn)
 	iterator := m.GetEnumerator()
 	memoValue := reflect.ValueOf(memo)

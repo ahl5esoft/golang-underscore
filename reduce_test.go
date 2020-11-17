@@ -1,15 +1,24 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_Reduce(t *testing.T) {
-	dst := make([]int, 0)
-	Chain([]int{1, 2}).Reduce(make([]int, 0), func(memo []int, n, _ int) []int {
-		memo = append(memo, n)
-		memo = append(memo, n+10)
-		return memo
-	}).Value(&dst)
-	if !(len(dst) == 4 && dst[0] == 1 && dst[1] == 11 && dst[2] == 2 && dst[3] == 12) {
-		t.Error(dst)
-	}
+	var res []int
+	Chain([]int{1, 2}).Reduce(
+		func(memo []int, n, _ int) []int {
+			memo = append(memo, n)
+			memo = append(memo, n+10)
+			return memo
+		},
+		make([]int, 0),
+	).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]int{1, 11, 2, 12},
+	)
 }

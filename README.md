@@ -9,7 +9,7 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.0.1-green.svg)
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.1.0-green.svg)
 like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for Go
 
 ## Installation
@@ -64,19 +64,22 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 
 __Arguments__
 
+* `iterator` - func(element or value, key or index, memo) memo
 * `memo` - anyType
-* `iterator` - func(memo, element or value, key or index) memo
 
 __Examples__
 
 ```go
-dst := make([]int, 0)
-Chain([]int{1, 2}).Aggregate(make([]int, 0), func(memo []int, n, _ int) []int {
-	memo = append(memo, n)
-	memo = append(memo, n+10)
-	return memo
-}).Value(&dst)
-// dst = [1 11 2 12]
+var res []int
+Chain([]int{1, 2}).Aggregate(
+	func(memo []int, n, _ int) []int {
+		memo = append(memo, n)
+		memo = append(memo, n+10)
+		return memo
+	},
+	make([]int, 0),
+).Value(&res)
+// res = [1 11 2 12]
 ```
 
 __Same__
@@ -970,6 +973,12 @@ __Same__
 * `FilterBy`
 
 ## Release Notes
+~~~
+v2.1.0 (2019-06-27)
+* IEnumerable增加Order、OrderBy、Sort、SortBy
+* IEnumerable.Aggregate(memo interface{}, fn interface{}) -> IEnumerable.Aggregate(fn interface{}, memo interface{})
+~~~
+
 ~~~
 v2.0.0 (2019-06-27)
 * 删除IQuery
