@@ -9,7 +9,7 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.1.0-green.svg)
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.1.1-green.svg)
 like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for Go
 
 ## Installation
@@ -19,7 +19,7 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-* Except/ExceptBy/Reject/RejectBy/Reverse/ReverseBy/ThenBy
+* ThenBy
 
 ## Documentation
 
@@ -48,6 +48,8 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 * [`Property`](#property), [`PropertyRV`](#propertyRV)
 * [`Range`](#range)
 * [`Reduce`](#aggregate)
+* [`Reject`](#reject), [`RejectBy`](#rejectBy)
+* [`Reverse`](#reverse), [`ReverseBy`](#reverseBy)
 * [`Select`](#select), [`SelectBy`](#selectBy)
 * [`SelectMany`](#selectMany), [`SelectManyBy`](#selectManyBy)
 * [`Size`](#count)
@@ -113,11 +115,11 @@ ok := Chain([]testModel{
 
 <a name="allBy" />
 
-### AllBy(properties) bool
+### AllBy(fields) bool
 
 __Arguments__
 
-* `properties` - map[string]interface{}
+* `fields` - map[string]interface{}
 
 __Return__
 
@@ -163,11 +165,11 @@ ok := Chain([]testModel{
 
 <a name="anyBy" />
 
-### AnyBy(properties) bool
+### AnyBy(fields) bool
 
 __Arguments__
 
-* `properties` - map[string]interface{}
+* `fields` - map[string]interface{}
 
 __Return__
 
@@ -323,11 +325,11 @@ Chain([][]int{
 
 <a name="findBy" />
 
-### FindBy(properties) IEnumerable
+### FindBy(fields) IEnumerable
 
 __Arguments__
 
-* `properties` - map[string]interface{}
+* `fields` - map[string]interface{}
 
 __Examples__
 
@@ -372,11 +374,11 @@ index := Chain(src).FindIndex(func(r testModel, _ int) bool {
 
 <a name="findIndexBy" />
 
-### FindIndexBy(properties) int
+### FindIndexBy(fields) int
 
 __Arguments__
 
-* `properties` - map[string]interface{}
+* `fields` - map[string]interface{}
 
 __Return__
 
@@ -530,12 +532,12 @@ if IsArray(map[string]int{}) {
 
 <a name="isMatch" />
 
-### IsMatch(element, properties) bool
+### IsMatch(element, fields) bool
 
 __Arguments__
 
 * `element` - object
-* `properties` - map[string]interface{}
+* `fields` - map[string]interface{}
 
 __Examples__
 
@@ -763,6 +765,100 @@ Range2(0, 3, 2).Value(&res)
 // res = [0 2]
 ```
 
+<a name="reject" />
+
+### Reject(predicate) IEnumerable
+
+__Arguments__
+
+* `predicate` - func(element or value, index or key) bool
+
+__Examples__
+
+```go
+arr := []int{1, 2, 3, 4}
+var res []int
+Chain(arr).Reject(func(n, i int) bool {
+	return n%2 == 0
+}).Value(&res)
+// res = [1, 3]
+```
+
+__Same__
+
+* `Except`
+
+<a name="rejectBy" />
+
+### RejectBy(fields) IEnumerable
+
+__Arguments__
+
+* `fields` - map[string]interface{}
+
+__Examples__
+
+```go
+arr := []testModel{
+	{ID: 1, Name: "one"},
+	{ID: 2, Name: "two"},
+	{ID: 3, Name: "three"},
+}
+var res []testModel
+Chain(arr).RejectBy(map[string]interface{}{
+	"Id": 1,
+}).Value(&res)
+// res = []testModel{ {ID: 2, Name: "two"}, {ID: 3, Name: "three"} }
+```
+
+__Same__
+
+* `ExceptBy`
+
+<a name="reverse" />
+
+### Reverse(selector) IEnumerable
+
+__Arguments__
+
+* `selector` - func(element, index or key) anyType
+
+__Examples__
+
+```go
+src := []testModel{
+	{ID: 2, Name: "two"},
+	{ID: 1, Name: "one"},
+	{ID: 3, Name: "three"},
+}
+var res []testModel
+Chain(src).Reverse(func(r testModel, _ int) int {
+	return r.ID
+}).Value(&res)
+// res = []testModel{ {ID: 3, Name: "three"}, {ID: 2, Name: "two"}, {ID: 1, Name: "one"} }
+```
+
+<a name="reverseBy" />
+
+### ReverseBy(fieldName) IEnumerable
+
+__Arguments__
+
+* `fieldName` - string
+
+__Examples__
+
+```go
+src := []testModel{
+	{ID: 2, Name: "two"},
+	{ID: 1, Name: "one"},
+	{ID: 3, Name: "three"},
+}
+var res []testModel
+Chain(src).ReverseBy("id").Value(&res)
+// res = []testModel{ {ID: 3, Name: "three"}, {ID: 2, Name: "two"}, {ID: 1, Name: "one"} }
+```
+
 <a name="select" />
 
 ### Select(selector) IEnumerable
@@ -946,11 +1042,11 @@ __Same__
 
 <a name="whereBy" />
 
-### WhereBy(properties) IEnumerable
+### WhereBy(fields) IEnumerable
 
 __Arguments__
 
-* `properties` - map[string]interface{}
+* `fields` - map[string]interface{}
 
 __Examples__
 
@@ -974,7 +1070,7 @@ __Same__
 
 ## Release Notes
 ~~~
-v2.1.0 (2019-06-27)
+v2.1.0 (2020-11-17)
 * IEnumerable增加Order、OrderBy、Sort、SortBy
 * IEnumerable.Aggregate(memo interface{}, fn interface{}) -> IEnumerable.Aggregate(fn interface{}, memo interface{})
 ~~~

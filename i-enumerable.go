@@ -4,19 +4,21 @@ package underscore
 type IEnumerable interface {
 	Aggregate(memo interface{}, fn interface{}) IEnumerable
 	All(predicate interface{}) bool
-	AllBy(dict map[string]interface{}) bool
+	AllBy(fields map[string]interface{}) bool
 	Any(predicate interface{}) bool
-	AnyBy(dict map[string]interface{}) bool
+	AnyBy(fields map[string]interface{}) bool
 	Count() int
 	Distinct(selector interface{}) IEnumerable
 	DistinctBy(fieldName string) IEnumerable
 	Each(action interface{})
+	Except(predicate interface{}) IEnumerable
+	ExceptBy(fields map[string]interface{}) IEnumerable
 	Filter(predicate interface{}) IEnumerable
-	FilterBy(dict map[string]interface{}) IEnumerable
+	FilterBy(fields map[string]interface{}) IEnumerable
 	Find(predicate interface{}) IEnumerable
-	FindBy(dict map[string]interface{}) IEnumerable
+	FindBy(fields map[string]interface{}) IEnumerable
 	FindIndex(predicate interface{}) int
-	FindIndexBy(dict map[string]interface{}) int
+	FindIndexBy(fields map[string]interface{}) int
 	First() IEnumerable
 	GetEnumerator() IEnumerator
 	Group(keySelector interface{}) enumerable
@@ -32,6 +34,10 @@ type IEnumerable interface {
 	Order(selector interface{}) IEnumerable
 	OrderBy(fieldName string) IEnumerable
 	Reduce(memo interface{}, fn interface{}) IEnumerable
+	Reject(predicate interface{}) IEnumerable
+	RejectBy(fields map[string]interface{}) IEnumerable
+	Reverse(selector interface{}) IEnumerable
+	ReverseBy(fieldName string) IEnumerable
 	Select(selector interface{}) IEnumerable
 	SelectBy(fieldName string) IEnumerable
 	SelectMany(selector interface{}) IEnumerable
@@ -46,5 +52,5 @@ type IEnumerable interface {
 	Value(res interface{})
 	Values() IEnumerable
 	Where(predicate interface{}) IEnumerable
-	WhereBy(dict map[string]interface{}) IEnumerable
+	WhereBy(fields map[string]interface{}) IEnumerable
 }
