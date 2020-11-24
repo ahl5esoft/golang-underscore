@@ -26,6 +26,7 @@ type IEnumerable interface {
 	Index(keySelector interface{}) IEnumerable
 	IndexBy(fieldName string) IEnumerable
 	Keys() IEnumerable
+	Last() IEnumerable
 	Map(selector interface{}) IEnumerable
 	MapBy(fieldName string) IEnumerable
 	MapMany(selector interface{}) IEnumerable

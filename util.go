@@ -2,7 +2,7 @@ package underscore
 
 import "reflect"
 
-func getRealRV(v interface{}) reflect.Value {
+func getRealValue(v interface{}) reflect.Value {
 	value := reflect.ValueOf(v)
 	if value.Type() == valueType {
 		value = v.(reflect.Value)
@@ -19,8 +19,8 @@ func getRealRV(v interface{}) reflect.Value {
 	return value
 }
 
-func getFuncReturnRV(selectorValue reflect.Value, enumerator IEnumerator) reflect.Value {
-	return getRealRV(
+func getReturnValue(selectorValue reflect.Value, enumerator IEnumerator) reflect.Value {
+	return getRealValue(
 		selectorValue.Call(
 			[]reflect.Value{
 				enumerator.GetValue(),

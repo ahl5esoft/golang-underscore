@@ -7,7 +7,7 @@ func (m enumerable) Reverse(selector interface{}) IEnumerable {
 }
 
 func (m enumerable) ReverseBy(fieldName string) IEnumerable {
-	getter := PropertyRV(fieldName)
+	getter := FieldValue(fieldName)
 	return m.Reverse(func(value, _ interface{}) facade {
 		return facade{
 			getter(value),

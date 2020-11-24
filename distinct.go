@@ -21,7 +21,7 @@ func (m enumerable) Distinct(selector interface{}) IEnumerable {
 					for ok = iterator.MoveNext(); ok; ok = iterator.MoveNext() {
 						valueValue = iterator.GetValue()
 						keyValue = iterator.GetKey()
-						v := getFuncReturnRV(selectValue, iterator).Interface()
+						v := getReturnValue(selectValue, iterator).Interface()
 						if _, has := set[v]; !has {
 							set[v] = true
 							return
@@ -35,7 +35,7 @@ func (m enumerable) Distinct(selector interface{}) IEnumerable {
 }
 
 func (m enumerable) DistinctBy(fieldName string) IEnumerable {
-	getter := PropertyRV(fieldName)
+	getter := FieldValue(fieldName)
 	return m.Distinct(func(value, _ interface{}) facade {
 		return facade{
 			getter(value),

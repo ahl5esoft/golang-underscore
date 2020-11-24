@@ -17,7 +17,7 @@ func (m enumerable) Order(selector interface{}) IEnumerable {
 }
 
 func (m enumerable) OrderBy(fieldName string) IEnumerable {
-	getter := PropertyRV(fieldName)
+	getter := FieldValue(fieldName)
 	return m.Order(func(value, _ interface{}) facade {
 		return facade{
 			getter(value),

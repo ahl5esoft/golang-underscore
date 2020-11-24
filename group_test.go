@@ -1,6 +1,10 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Benchmark_Group(b *testing.B) {
 	for n := 0; n < b.N; n++ {
@@ -27,27 +31,38 @@ func Benchmark_Group_New(b *testing.B) {
 }
 
 func Test_Group(t *testing.T) {
-	dst := make(map[string][]int)
+	res := make(map[string][]int)
 	Chain([]int{1, 2, 3, 4, 5}).Group(func(n, _ int) string {
 		if n%2 == 0 {
 			return "even"
 		}
 		return "odd"
-	}).Value(&dst)
-	if len(dst["even"]) != 2 {
-		t.Error("wrong")
-	}
+	}).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		map[string][]int{
+			"odd":  []int{1, 3, 5},
+			"even": []int{2, 4},
+		},
+	)
 }
 
 func Test_GroupBy(t *testing.T) {
-	dst := make(map[string][]testModel)
-	Chain([]testModel{
+	src := []testModel{
 		{ID: 1, Name: "a"},
 		{ID: 2, Name: "a"},
 		{ID: 3, Name: "b"},
 		{ID: 4, Name: "b"},
-	}).GroupBy("Name").Value(&dst)
-	if len(dst) != 2 {
-		t.Error("wrong")
 	}
+	res := make(map[string][]testModel)
+	Chain(src).GroupBy("Name").Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		map[string][]testModel{
+			"a": {src[0], src[1]},
+			"b": {src[2], src[3]},
+		},
+	)
 }

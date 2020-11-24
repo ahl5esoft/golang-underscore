@@ -1,16 +1,25 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_Index(t *testing.T) {
 	src := []string{"a", "b"}
-	dst := make(map[string]string)
+	res := make(map[string]string)
 	Chain(src).Index(func(item string, _ int) string {
 		return item
-	}).Value(&dst)
-	if len(dst) != 2 || dst["a"] != "a" || dst["b"] != "b" {
-		t.Error(dst)
-	}
+	}).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		map[string]string{
+			"a": "a",
+			"b": "b",
+		},
+	)
 }
 
 func Test_IndexBy(t *testing.T) {
@@ -20,9 +29,14 @@ func Test_IndexBy(t *testing.T) {
 		{ID: 3, Name: "b"},
 		{ID: 4, Name: "b"},
 	}
-	dst := make(map[string]testModel)
-	Chain(src).IndexBy("name").Value(&dst)
-	if len(dst) != 2 {
-		t.Error(dst)
-	}
+	res := make(map[string]testModel)
+	Chain(src).IndexBy("name").Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		map[string]testModel{
+			"a": src[1],
+			"b": src[3],
+		},
+	)
 }

@@ -11,7 +11,7 @@ func (m enumerable) Select(selector interface{}) IEnumerable {
 				MoveNextFunc: func() (valueRV reflect.Value, keyRV reflect.Value, ok bool) {
 					if ok = iterator.MoveNext(); ok {
 						keyRV = iterator.GetKey()
-						valueRV = getFuncReturnRV(selectorRV, iterator)
+						valueRV = getReturnValue(selectorRV, iterator)
 					}
 
 					return
@@ -22,7 +22,7 @@ func (m enumerable) Select(selector interface{}) IEnumerable {
 }
 
 func (m enumerable) SelectBy(fieldName string) IEnumerable {
-	getter := PropertyRV(fieldName)
+	getter := FieldValue(fieldName)
 	return m.Select(func(value, _ interface{}) facade {
 		return facade{
 			getter(value),

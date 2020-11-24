@@ -16,7 +16,7 @@ func (m enumerator) GetKey() reflect.Value {
 }
 
 func (m enumerator) GetValue() reflect.Value {
-	return getRealRV(m.value)
+	return getRealValue(m.value)
 }
 
 func (m *enumerator) MoveNext() (ok bool) {

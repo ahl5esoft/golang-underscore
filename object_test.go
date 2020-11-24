@@ -1,23 +1,24 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_Object(t *testing.T) {
 	src := [][]interface{}{
 		{"a", 1},
 		{"b", 2},
 	}
-	dst := make(map[string]int)
-	Chain(src).Object().Value(&dst)
-	if len(dst) != 2 {
-		t.Fatal(dst)
-	}
-
-	if v, ok := dst["a"]; !(ok && v == 1) {
-		t.Fatal("key 1")
-	}
-
-	if v, ok := dst["b"]; !(ok && v == 2) {
-		t.Error("key 2")
-	}
+	res := make(map[string]int)
+	Chain(src).Object().Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		map[string]int{
+			"a": 1,
+			"b": 2,
+		},
+	)
 }

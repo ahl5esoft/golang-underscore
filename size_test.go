@@ -1,11 +1,13 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_Size(t *testing.T) {
 	src := []string{"a", "b", "c"}
-	size := Chain(src).Size()
-	if size != len(src) {
-		t.Error("wrong")
-	}
+	res := Chain(src).Size()
+	assert.Equal(t, res, 3)
 }

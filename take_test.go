@@ -1,6 +1,10 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Benchmark_Take(b *testing.B) {
 	for n := 0; n < b.N; n++ {
@@ -18,9 +22,11 @@ func Benchmark_Take_New(b *testing.B) {
 
 func Test_Take(t *testing.T) {
 	src := []int{1, 2, 3}
-	dst := make([]int, 0)
-	Chain(src).Take(1).Value(&dst)
-	if len(dst) != 1 || dst[0] != 1 {
-		t.Fatal(dst)
-	}
+	var res []int
+	Chain(src).Take(1).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		src[:1],
+	)
 }

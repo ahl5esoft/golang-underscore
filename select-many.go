@@ -17,7 +17,7 @@ func (m enumerable) SelectMany(selector interface{}) IEnumerable {
 								return
 							}
 
-							selectorResultRV := getFuncReturnRV(selectorRV, iterator)
+							selectorResultRV := getReturnValue(selectorRV, iterator)
 							tempIterator = chainFromValue(selectorResultRV).GetEnumerator()
 						}
 
@@ -36,7 +36,7 @@ func (m enumerable) SelectMany(selector interface{}) IEnumerable {
 }
 
 func (m enumerable) SelectManyBy(fieldName string) IEnumerable {
-	getter := PropertyRV(fieldName)
+	getter := FieldValue(fieldName)
 	return m.SelectMany(func(value, _ interface{}) facade {
 		return facade{
 			getter(value),

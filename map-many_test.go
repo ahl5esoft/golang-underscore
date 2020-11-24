@@ -1,16 +1,22 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_MapMany(t *testing.T) {
-	src := [2]int{1, 2}
-	var dst []int
+	src := []int{1, 2}
+	var res []int
 	Chain(src).MapMany(func(r, _ int) []int {
 		return []int{r - 1, r + 1}
-	}).Value(&dst)
-	if !(len(dst) == 4 && dst[0] == 0 && dst[1] == 2 && dst[2] == 1 && dst[3] == 3) {
-		t.Error(dst)
-	}
+	}).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]int{0, 2, 1, 3},
+	)
 }
 
 func Test_MapManyBy_Array(t *testing.T) {
@@ -18,11 +24,13 @@ func Test_MapManyBy_Array(t *testing.T) {
 		{Array: [2]int{1, 2}},
 		{Array: [2]int{3, 4}},
 	}
-	var dst []int
-	Chain(src).MapManyBy("Array").Value(&dst)
-	if !(len(dst) == 4 && dst[0] == 1 && dst[1] == 2 && dst[2] == 3 && dst[3] == 4) {
-		t.Error(dst)
-	}
+	var res []int
+	Chain(src).MapManyBy("Array").Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]int{1, 2, 3, 4},
+	)
 }
 
 func Test_MapManyBy_Slice(t *testing.T) {
@@ -30,9 +38,11 @@ func Test_MapManyBy_Slice(t *testing.T) {
 		{Slice: []string{"a", "b"}},
 		{Slice: []string{"c", "d"}},
 	}
-	var dst []string
-	Chain(src).MapManyBy("Slice").Value(&dst)
-	if !(len(dst) == 4 && dst[0] == "a" && dst[1] == "b" && dst[2] == "c" && dst[3] == "d") {
-		t.Error(dst)
-	}
+	var res []string
+	Chain(src).MapManyBy("Slice").Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]string{"a", "b", "c", "d"},
+	)
 }

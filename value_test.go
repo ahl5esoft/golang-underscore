@@ -1,6 +1,10 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_Value(t *testing.T) {
 	res := make(map[string][]int)
@@ -9,9 +13,14 @@ func Test_Value(t *testing.T) {
 			return "even"
 		}
 
-		return "old"
+		return "odd"
 	}).Value(&res)
-	if len(res) != 2 {
-		t.Error("wrong")
-	}
+	assert.EqualValues(
+		t,
+		res,
+		map[string][]int{
+			"odd":  []int{1, 3},
+			"even": []int{2, 4},
+		},
+	)
 }

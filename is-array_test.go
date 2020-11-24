@@ -2,15 +2,17 @@ package underscore
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_IsArray(t *testing.T) {
-	if !IsArray([]int{}) {
-		t.Error("wrong")
-		return
-	}
-
-	if IsArray(map[string]int{}) {
-		t.Error("wrong")
-	}
+	assert.True(
+		t,
+		IsArray([]int{}),
+	)
+	assert.False(
+		t,
+		IsArray(map[string]int{}),
+	)
 }

@@ -1,6 +1,10 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Benchmark_Where(b *testing.B) {
 	for n := 0; n < b.N; n++ {
@@ -19,13 +23,15 @@ func Test_Where(t *testing.T) {
 		{ID: 3, Name: "three"},
 		{ID: 4, Name: "three"},
 	}
-	dst := make([]testModel, 0)
+	var res []testModel
 	Chain(src).Where(func(r testModel, _ int) bool {
 		return r.ID%2 == 0
-	}).Value(&dst)
-	if !(len(dst) == 2 && dst[0] == src[1] && dst[1] == src[3]) {
-		t.Error(dst)
-	}
+	}).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]testModel{src[1], src[3]},
+	)
 }
 
 func Test_WhereBy(t *testing.T) {
@@ -35,11 +41,13 @@ func Test_WhereBy(t *testing.T) {
 		{ID: 3, Name: "three"},
 		{ID: 4, Name: "three"},
 	}
-	dst := make([]testModel, 0)
+	var res []testModel
 	Chain(src).WhereBy(map[string]interface{}{
 		"Name": "one",
-	}).Value(&dst)
-	if !(len(dst) == 2 && dst[0] == src[0] && dst[1] == src[1]) {
-		t.Error("wrong result")
-	}
+	}).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]testModel{src[0], src[1]},
+	)
 }

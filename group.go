@@ -10,7 +10,7 @@ func (m enumerable) Group(keySelector interface{}) enumerable {
 			keySelectorRV := reflect.ValueOf(keySelector)
 			keyRVs := make([]reflect.Value, 0)
 			for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
-				keyRV := getFuncReturnRV(keySelectorRV, iterator)
+				keyRV := getReturnValue(keySelectorRV, iterator)
 				key := keyRV.Interface()
 				groupRV, ok := groupRVs[key]
 				if !ok {
@@ -44,7 +44,7 @@ func (m enumerable) Group(keySelector interface{}) enumerable {
 }
 
 func (m enumerable) GroupBy(fieldName string) enumerable {
-	getter := PropertyRV(fieldName)
+	getter := FieldValue(fieldName)
 	return m.Group(func(value, _ interface{}) facade {
 		return facade{
 			getter(value),

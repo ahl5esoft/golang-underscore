@@ -53,7 +53,7 @@ func (m sorter) Less(i, j int) bool {
 func (m *sorter) Sort(iterator IEnumerator, selector interface{}) {
 	selectorValue := reflect.ValueOf(selector)
 	for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
-		keyValue := getFuncReturnRV(selectorValue, iterator)
+		keyValue := getReturnValue(selectorValue, iterator)
 		if m.Len() == 0 {
 			keysType := reflect.SliceOf(
 				keyValue.Type(),

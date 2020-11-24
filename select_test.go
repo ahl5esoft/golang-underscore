@@ -3,18 +3,22 @@ package underscore
 import (
 	"strconv"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Select(t *testing.T) {
 	src := []string{"11", "12", "13"}
-	dst := make([]int, 0)
+	var res []int
 	Chain(src).Select(func(s string, _ int) int {
 		n, _ := strconv.Atoi(s)
 		return n
-	}).Value(&dst)
-	if len(dst) != len(src) {
-		t.Error(dst)
-	}
+	}).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]int{11, 12, 13},
+	)
 }
 
 func Test_SelectBy(t *testing.T) {
@@ -23,15 +27,11 @@ func Test_SelectBy(t *testing.T) {
 		{ID: 2, Name: "two"},
 		{ID: 3, Name: "three"},
 	}
-	dst := make([]string, 0)
-	Chain(src).SelectBy("name").Value(&dst)
-	if len(dst) != len(src) {
-		t.Fatal(dst)
-	}
-
-	for i := 0; i < 3; i++ {
-		if dst[i] != src[i].Name {
-			t.Error("wrong result")
-		}
-	}
+	var res []string
+	Chain(src).SelectBy("name").Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]string{"one", "two", "three"},
+	)
 }

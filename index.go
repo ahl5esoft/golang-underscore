@@ -10,7 +10,7 @@ func (m enumerable) Index(keySelector interface{}) IEnumerable {
 			return &enumerator{
 				MoveNextFunc: func() (valueRV reflect.Value, keyRV reflect.Value, ok bool) {
 					if ok = iterator.MoveNext(); ok {
-						keyRV = getFuncReturnRV(keySelectorRV, iterator)
+						keyRV = getReturnValue(keySelectorRV, iterator)
 						valueRV = iterator.GetValue()
 					}
 
@@ -22,7 +22,7 @@ func (m enumerable) Index(keySelector interface{}) IEnumerable {
 }
 
 func (m enumerable) IndexBy(fieldName string) IEnumerable {
-	getter := PropertyRV(fieldName)
+	getter := FieldValue(fieldName)
 	return m.Index(func(value, _ interface{}) facade {
 		return facade{
 			getter(value),

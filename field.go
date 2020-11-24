@@ -5,22 +5,22 @@ import (
 	"strings"
 )
 
-// GetProeprtyRVFunc is get property reflect.Value func
-type GetProeprtyRVFunc func(interface{}) reflect.Value
+// GetFieldValueFunc is get field reflect.Value func
+type GetFieldValueFunc func(interface{}) reflect.Value
 
-// Property is 获取属性函数
-func Property(name string) func(interface{}) interface{} {
-	fn := PropertyRV(name)
+// Field is 获取字段函数
+func Field(name string) func(interface{}) interface{} {
+	fn := FieldValue(name)
 	return func(item interface{}) interface{} {
 		return fn(item).Interface()
 	}
 }
 
-// PropertyRV is 获取reflect.Value
-func PropertyRV(name string) GetProeprtyRVFunc {
-	var getter GetProeprtyRVFunc
+// FieldValue is 获取reflect.Value
+func FieldValue(name string) GetFieldValueFunc {
+	var getter GetFieldValueFunc
 	getter = func(item interface{}) reflect.Value {
-		itemRV := getRealRV(item)
+		itemRV := getRealValue(item)
 		itemRT := itemRV.Type()
 		for i := 0; i < itemRT.NumField(); i++ {
 			field := itemRT.Field(i)

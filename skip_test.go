@@ -1,12 +1,18 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_Skip(t *testing.T) {
 	src := []int{1, 2, 3}
-	dst := make([]int, 0)
-	Chain(src).Skip(2).Value(&dst)
-	if len(dst) != 1 || dst[0] != 3 {
-		t.Fatal(dst)
-	}
+	var res []int
+	Chain(src).Skip(2).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]int{3},
+	)
 }

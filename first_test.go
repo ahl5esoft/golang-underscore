@@ -1,6 +1,10 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Benchmark_First(b *testing.B) {
 	for n := 0; n < b.N; n++ {
@@ -10,29 +14,16 @@ func Benchmark_First(b *testing.B) {
 }
 
 func Test_First(t *testing.T) {
-	var dst int
-	Chain([]int{1, 2, 3}).First().Value(&dst)
-	if dst != 1 {
-		t.Error("wrong")
-	}
+	var res int
+	Chain([]int{1, 2, 3}).First().Value(&res)
+	assert.Equal(t, res, 1)
 }
 
 func Test_First_Twice(t *testing.T) {
-	var dst int
+	var res int
 	Chain([][]int{
 		{1, 3, 5, 7},
 		{2, 4, 6, 8},
-	}).First().First().Value(&dst)
-	if dst != 1 {
-		t.Error("wrong")
-	}
-}
-
-func Test_Chain_First(t *testing.T) {
-	arr := []int{1, 2, 3}
-	var item int
-	Chain(arr).First().Value(&item)
-	if item != 1 {
-		t.Error("wrong")
-	}
+	}).First().First().Value(&res)
+	assert.EqualValues(t, res, 1)
 }

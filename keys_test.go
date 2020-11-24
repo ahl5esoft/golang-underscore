@@ -1,18 +1,20 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_Keys_Array(t *testing.T) {
 	src := []string{"aa", "bb", "cc"}
-	dst := make([]int, 0)
-	Chain(src).Keys().Value(&dst)
-	if len(dst) != len(src) {
-		t.Fatal(dst)
-	}
-
-	if dst[0] != 0 {
-		t.Error(dst)
-	}
+	var res []int
+	Chain(src).Keys().Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]int{0, 1, 2},
+	)
 }
 
 func Test_Keys_Map(t *testing.T) {
@@ -22,9 +24,13 @@ func Test_Keys_Map(t *testing.T) {
 		3: "c",
 		4: "d",
 	}
-	dst := make([]int, 0)
-	Chain(src).Keys().Value(&dst)
-	if len(dst) != len(src) {
-		t.Fatal(dst)
-	}
+	var res []int
+	Chain(src).Keys().Sort(func(r, _ int) int {
+		return r
+	}).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]int{1, 2, 3, 4},
+	)
 }

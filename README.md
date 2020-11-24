@@ -9,7 +9,7 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.1.1-green.svg)
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.1.2-green.svg)
 like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for Go
 
 ## Installation
@@ -31,6 +31,7 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 * [`Count`](#count)
 * [`Distinct`](#distinct), [`DistinctBy`](#distinctBy)
 * [`Each`](#each)
+* [`Field`](#field), [`FieldValue`](#fieldValue)
 * [`Filter`](#where), [`FilterBy`](#whereBy)
 * [`Find`](#find), [`FindBy`](#findBy)
 * [`FindIndex`](#findIndex), [`FindIndexBy`](#findIndexBy)
@@ -45,7 +46,6 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 * [`MapMany`](#selectMany), [`MapManyBy`](#selectManyBy)
 * [`Object`](#object)
 * [`Order`](#order), [`OrderBy`](#orderBy)
-* [`Property`](#property), [`PropertyRV`](#propertyRV)
 * [`Range`](#range)
 * [`Reduce`](#aggregate)
 * [`Reject`](#reject), [`RejectBy`](#rejectBy)
@@ -292,6 +292,58 @@ Chain(arr).Each(func(r testModel, i int) {
 		// wrong
 	}
 })
+```
+
+<a name="field" />
+
+### Field(name)
+
+__Arguments__
+
+* `name` - field name
+
+__Return__
+
+* func(interface{}) interface{}
+
+__Examples__
+
+```go
+item := testModel{ 1, "one" }
+
+getAge := Field("age")
+_, err := getAge(item)
+// err != nil
+
+getName := Field("name")
+name, err := getName(item)
+// name = "one"
+```
+
+<a name="fieldValue" />
+
+### FieldValue(name)
+
+__Arguments__
+
+* `name` - field name
+
+__Return__
+
+* func(interface{}) reflect.Value
+
+__Examples__
+
+```go
+item := testModel{ 1, "one" }
+
+getAgeValue := FieldValue("age")
+res := getAgeValue(item)
+// res != reflect.Value(nil)
+
+getNameValue := FieldValue("name")
+nameValue, err := getNameValue(item)
+// nameValue = reflect.ValueOf("one")
 ```
 
 <a name="find" />
@@ -595,19 +647,17 @@ __Examples__
 arr := []int{1, 2, 3}
 var res int
 chain(arr).Last().Value(&res)
-// or
-res := Last(arr).(int)
 // res = 3
 
-dict := map[string]string{
-	"a": "aa",
-	"b": "bb",
+var res []int
+src := [][]int{
+	{1, 2, 3, 4},
+	{5, 6},
 }
-var str string
-Chain(dict).Last().Value(&str)
-// or
-str := Last(dict).(string)
-// res = "aa" or "bb"
+Chain(src).Last().Map(func(r, _ int) int {
+	return r + 5
+}).Value(&res)
+// res = [10, 11]
 ```
 
 <a name="object" />
@@ -678,58 +728,6 @@ Chain(arr).OrderBy("id").Value(&res)
 __Same__
 
 * `SortBy`
-
-<a name="property" />
-
-### Property(name)
-
-__Arguments__
-
-* `name` - property name
-
-__Return__
-
-* func(interface{}) (interface{}, error)
-
-__Examples__
-
-```go
-item := testModel{ 1, "one" }
-
-getAge := Property("age")
-_, err := getAge(item)
-// err != nil
-
-getName := Property("name")
-name, err := getName(item)
-// name = "one"
-```
-
-<a name="propertyRV" />
-
-### Property(name)
-
-__Arguments__
-
-* `name` - property name
-
-__Return__
-
-* func(interface{}) (reflect.Value, error)
-
-__Examples__
-
-```go
-item := testModel{ 1, "one" }
-
-getAgeRV := PropertyRV("age")
-_, err := getAgeRV(item)
-// err != nil
-
-getNameRV := PropertyRV("name")
-nameRV, err := getNameRV(item)
-// nameRV = reflect.ValueOf("one")
-```
 
 <a name="range" />
 

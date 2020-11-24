@@ -1,21 +1,29 @@
 package underscore
 
-// func TestChain_Last_Array(t *testing.T) {
-// 	var item int
-// 	Chain([]int{1, 2, 3}).Last().Value(&item)
-// 	if item != 3 {
-// 		t.Error(item)
-// 	}
-// }
+import (
+	"testing"
 
-// func TestChain_Last_Map(t *testing.T) {
-// 	var item string
-// 	dict := map[string]string{
-// 		"a": "aa",
-// 		"b": "bb",
-// 	}
-// 	Chain(dict).Last().Value(&item)
-// 	if !(item == "aa" || item == "bb") {
-// 		t.Error(item)
-// 	}
-// }
+	"github.com/stretchr/testify/assert"
+)
+
+func Test_Last(t *testing.T) {
+	var res int
+	Chain([]int{1, 2, 3}).Last().Value(&res)
+	assert.Equal(t, res, 3)
+}
+
+func Test_Last_ContinueIterate(t *testing.T) {
+	var res []int
+	src := [][]int{
+		{1, 2, 3, 4},
+		{5, 6},
+	}
+	Chain(src).Last().Map(func(r, _ int) int {
+		return r + 5
+	}).Value(&res)
+	assert.EqualValues(
+		t,
+		res,
+		[]int{10, 11},
+	)
+}
