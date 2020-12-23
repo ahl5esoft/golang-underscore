@@ -2,7 +2,7 @@ package underscore
 
 // IEnumerable is 迭代器接口
 type IEnumerable interface {
-	Aggregate(memo interface{}, fn interface{}) IEnumerable
+	Aggregate(fn interface{}, memo interface{}) IEnumerable
 	All(predicate interface{}) bool
 	AllBy(fields map[string]interface{}) bool
 	Any(predicate interface{}) bool
@@ -34,7 +34,7 @@ type IEnumerable interface {
 	Object() IEnumerable
 	Order(selector interface{}) IEnumerable
 	OrderBy(fieldName string) IEnumerable
-	Reduce(memo interface{}, fn interface{}) IEnumerable
+	Reduce(fn interface{}, memo interface{}) IEnumerable
 	Reject(predicate interface{}) IEnumerable
 	RejectBy(fields map[string]interface{}) IEnumerable
 	Reverse(selector interface{}) IEnumerable
