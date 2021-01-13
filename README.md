@@ -19,7 +19,7 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 	$ go get -u github.com/ahl5esoft/golang-underscore
 
 ## Lack
-* ThenBy
+* Concat/ThenBy
 
 ## Documentation
 
