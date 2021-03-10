@@ -1,4 +1,4 @@
-module github.com/ahl5esoft/golang-underscore/v2
+module github.com/ahl5esoft/golang-underscore
 
 go 1.15
 
