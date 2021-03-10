@@ -42,8 +42,8 @@ func Test_Group(t *testing.T) {
 		t,
 		res,
 		map[string][]int{
-			"odd":  []int{1, 3, 5},
-			"even": []int{2, 4},
+			"odd":  {1, 3, 5},
+			"even": {2, 4},
 		},
 	)
 }

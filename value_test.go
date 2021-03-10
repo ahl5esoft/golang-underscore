@@ -19,8 +19,8 @@ func Test_Value(t *testing.T) {
 		t,
 		res,
 		map[string][]int{
-			"odd":  []int{1, 3},
-			"even": []int{2, 4},
+			"odd":  {1, 3},
+			"even": {2, 4},
 		},
 	)
 }
