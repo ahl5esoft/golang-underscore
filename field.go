@@ -21,6 +21,10 @@ func FieldValue(name string) GetFieldValueFunc {
 	var getter GetFieldValueFunc
 	getter = func(item interface{}) reflect.Value {
 		itemRV := getRealValue(item)
+		if itemRV.Kind() == reflect.Ptr {
+			itemRV = itemRV.Elem()
+		}
+
 		itemRT := itemRV.Type()
 		for i := 0; i < itemRT.NumField(); i++ {
 			field := itemRT.Field(i)
@@ -33,7 +37,7 @@ func FieldValue(name string) GetFieldValueFunc {
 				}
 			}
 
-			if strings.ToLower(name) == strings.ToLower(field.Name) {
+			if strings.EqualFold(name, field.Name) {
 				return itemRV.Field(i)
 			}
 		}

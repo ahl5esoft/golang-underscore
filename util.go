@@ -8,10 +8,6 @@ func getRealValue(v interface{}) reflect.Value {
 		value = v.(reflect.Value)
 	}
 
-	if value.Kind() == reflect.Ptr {
-		value = value.Elem()
-	}
-
 	if value.Type() == facadeType {
 		value = value.Interface().(facade).Real
 	}
