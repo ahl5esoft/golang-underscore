@@ -71,6 +71,12 @@ func chainFromValue(value reflect.Value) IEnumerable {
 			}
 		}
 
+		if value.Kind() == reflect.Ptr {
+			return chainFromValue(
+				value.Elem(),
+			)
+		}
+
 		return enumerable{
 			Enumerator: func() IEnumerator {
 				return nullEnumerator{

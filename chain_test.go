@@ -1,6 +1,10 @@
 package underscore
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 var benchmarkSize = 1000000
 
@@ -30,4 +34,15 @@ func Benchmark_Chain(b *testing.B) {
 			return r < -20
 		}).First().Value(&dst)
 	}
+}
+
+func Test_Chain(t *testing.T) {
+	t.Run("指针", func(t *testing.T) {
+		src := []int{1, 2, 3}
+		var res []int
+		Chain(&src).MapMany(func(r, i int) []int {
+			return []int{r, i}
+		}).Value(&res)
+		assert.EqualValues(t, res, []int{1, 0, 2, 1, 3, 2})
+	})
 }
