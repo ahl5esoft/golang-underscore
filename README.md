@@ -9,7 +9,7 @@
                                                                                  \_/__/
 ```
 
-# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.3.0-green.svg)
+# Underscore.go [![GoDoc](https://godoc.org/github.com/ahl5esoft/golang-underscore?status.svg)](https://godoc.org/github.com/ahl5esoft/golang-underscore) [![Go Report Card](https://goreportcard.com/badge/github.com/ahl5esoft/golang-underscore)](https://goreportcard.com/report/github.com/ahl5esoft/golang-underscore) ![Version](https://img.shields.io/badge/version-2.4.0-green.svg)
 like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for Go
 
 ## Installation
@@ -57,6 +57,7 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 * [`Sort`](#order), [`SortBy`](#orderBy)
 * [`Take`](#take)
 * [`Uniq`](#distinct), [`UniqBy`](#distinctBy)
+* [`Value`](#value)
 * [`Values`](#values)
 * [`Where`](#where), [`WhereBy`](#whereBy)
 
@@ -526,15 +527,11 @@ __Arguments__
 __Examples__
 
 ```go
-src := []string{ "a", "b" }
-var res map[string]string
-Chain(src).Index(func (r string, _ int) string {
-	return r
+src := []string{"a", "b"}
+res := make(map[string]string)
+Chain(src).Index(func(item string, _ int) string {
+	return item
 }).Value(&res)
-// or
-res := Index(src, func (r string, _ int) string {
-	return r
-}).(map[string]string)
 // res = map[a:a b:b]
 ```
 
@@ -555,10 +552,8 @@ arr := []testModel{
 	{ID: 3, Name: "b"},
 	{ID: 4, Name: "b"},
 }
-var res map[int]testModel
+res := make(map[string]testModel)
 Chain(arr).IndexBy("id").Value(&res)
-// or
-res := IndexBy(arr, "id").(map[int]testModel)
 // res = map[1:{{0} 1 a} 2:{{0} 2 a} 3:{{0} 3 b} 4:{{0} 4 b}]
 ```
 
@@ -985,6 +980,43 @@ src := []int{1, 2, 3}
 dst := make([]int, 0)
 Chain(src).Take(1).Value(&dst)
 // res = [1]
+```
+
+<a name="value" />
+
+### Value(res interface{})
+
+__Arguments__
+
+* `res` - array or slice or reflect.Value(array) or reflect.Value(map)
+
+__Examples__
+
+```go
+resValue := reflect.New(
+	reflect.SliceOf(
+		reflect.TypeOf(1),
+	),
+)
+Chain([]string{"a", "b"}).Map(func(_ string, i int) int {
+	return i
+}).Value(resValue)
+// resValue = &[0 1]
+
+src := []testModel{
+	{ID: 1, Name: "a"},
+	{ID: 2, Name: "a"},
+	{ID: 3, Name: "b"},
+	{ID: 4, Name: "b"},
+}
+resValue := reflect.New(
+	reflect.MapOf(
+		reflect.TypeOf(src[0].Name),
+		reflect.TypeOf(src),
+	),
+)
+Chain(src).GroupBy("name").Value(resValue)
+// res = &map[even:[2 4] odd:[1 3 5]]
 ```
 
 <a name="values" />

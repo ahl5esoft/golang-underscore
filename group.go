@@ -1,6 +1,8 @@
 package underscore
 
-import "reflect"
+import (
+	"reflect"
+)
 
 func (m enumerable) Group(keySelector interface{}) enumerable {
 	return enumerable{

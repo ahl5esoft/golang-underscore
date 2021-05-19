@@ -1,9 +1,16 @@
 package underscore
 
-import "reflect"
+import (
+	"reflect"
+)
 
 func (m enumerable) Value(res interface{}) {
-	resValue := reflect.ValueOf(res)
+	var resValue reflect.Value
+	var ok bool
+	if resValue, ok = res.(reflect.Value); !ok {
+		resValue = reflect.ValueOf(res)
+	}
+
 	switch resValue.Elem().Kind() {
 	case reflect.Array, reflect.Slice:
 		m.valueToArrayOrSlice(resValue)
@@ -33,7 +40,9 @@ func (m enumerable) valueToArrayOrSlice(resValue reflect.Value) {
 
 func (m enumerable) valueToMap(resValue reflect.Value) {
 	iterator := m.GetEnumerator()
-	mapValue := resValue.Elem()
+	mapValue := reflect.MakeMap(
+		resValue.Elem().Type(),
+	)
 	for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
 		mapValue.SetMapIndex(
 			iterator.GetKey(),
