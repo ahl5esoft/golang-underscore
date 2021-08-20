@@ -1,7 +1,6 @@
 package underscore
 
 import (
-	"fmt"
 	"reflect"
 	"strconv"
 	"testing"
@@ -51,9 +50,6 @@ func Test_Map(t *testing.T) {
 			resValue.Elem().Interface(),
 			[]int{0, 1},
 		)
-		fmt.Println(resValue)
-
-		assert.True(t, false)
 	})
 }
 

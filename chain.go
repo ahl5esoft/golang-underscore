@@ -1,6 +1,8 @@
 package underscore
 
-import "reflect"
+import (
+	"reflect"
+)
 
 // Chain is 创建枚举器
 func Chain(src interface{}) IEnumerable {
@@ -63,18 +65,20 @@ func chainFromValue(value reflect.Value) IEnumerable {
 			value.Len(),
 		)
 	default:
-		if iterator, ok := value.Interface().(IEnumerator); ok {
-			return enumerable{
-				Enumerator: func() IEnumerator {
-					return iterator
-				},
+		if value.IsValid() {
+			if iterator, ok := value.Interface().(IEnumerator); ok {
+				return enumerable{
+					Enumerator: func() IEnumerator {
+						return iterator
+					},
+				}
 			}
-		}
 
-		if value.Kind() == reflect.Ptr {
-			return chainFromValue(
-				value.Elem(),
-			)
+			if value.Kind() == reflect.Ptr {
+				return chainFromValue(
+					value.Elem(),
+				)
+			}
 		}
 
 		return enumerable{

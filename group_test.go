@@ -53,7 +53,7 @@ func Test_Group(t *testing.T) {
 		}).Value(resValue)
 		assert.EqualValues(
 			t,
-			resValue.Interface(),
+			resValue.Elem().Interface(),
 			map[string][]int{
 				"odd":  {1, 3, 5},
 				"even": {2, 4},
