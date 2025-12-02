@@ -65,3 +65,44 @@ func Test_OrderBy(t *testing.T) {
 		[]string{"one", "two", "three"},
 	)
 }
+
+func Test_OrderMany(t *testing.T) {
+	arr := []testModel{
+		{ID: 2, Name: "two", Age: 30},
+		{ID: 1, Name: "one", Age: 25},
+		{ID: 3, Name: "three", Age: 25},
+		{ID: 4, Name: "four", Age: 30},
+	}
+	var res []int
+	Chain(arr).OrderMany(
+		func(r testModel, _ int) int { return r.Age },
+		func(r testModel, _ int) int { return r.ID },
+	).Map(func(r testModel, _ int) int {
+		return r.ID
+	}).Value(&res)
+	assert.Len(t, res, 4)
+	assert.EqualValues(
+		t,
+		res,
+		[]int{1, 3, 2, 4},
+	)
+}
+
+func Test_OrderManyBy(t *testing.T) {
+	arr := []testModel{
+		{ID: 2, Name: "two", Age: 30},
+		{ID: 1, Name: "one", Age: 25},
+		{ID: 3, Name: "three", Age: 25},
+		{ID: 4, Name: "four", Age: 30},
+	}
+	var res []int
+	Chain(arr).OrderManyBy("age", "id").Map(func(r testModel, _ int) int {
+		return r.ID
+	}).Value(&res)
+	assert.Len(t, res, 4)
+	assert.EqualValues(
+		t,
+		res,
+		[]int{1, 3, 2, 4},
+	)
+}
