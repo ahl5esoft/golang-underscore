@@ -11,6 +11,7 @@ var benchmarkSize = 1000000
 type testModel struct {
 	ID   int
 	Name string
+	Age  int
 }
 
 type testNestedModel struct {
