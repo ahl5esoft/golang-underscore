@@ -34,6 +34,7 @@ type IEnumerable interface {
 	Object() IEnumerable
 	Order(selector interface{}) IEnumerable
 	OrderBy(fieldName string) IEnumerable
+	OrderByFields(fieldNames ...string) IEnumerable
 	Reduce(fn interface{}, memo interface{}) IEnumerable
 	Reject(predicate interface{}) IEnumerable
 	RejectBy(fields map[string]interface{}) IEnumerable
