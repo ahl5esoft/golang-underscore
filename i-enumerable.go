@@ -32,8 +32,8 @@ type IEnumerable interface {
 	MapMany(selector interface{}) IEnumerable
 	MapManyBy(fieldName string) IEnumerable
 	Object() IEnumerable
-	Order(selector interface{}) IEnumerable
-	OrderBy(fieldName string) IEnumerable
+	Order(selectors ...interface{}) IEnumerable
+	OrderBy(fieldNames ...string) IEnumerable
 	Reduce(fn interface{}, memo interface{}) IEnumerable
 	Reject(predicate interface{}) IEnumerable
 	RejectBy(fields map[string]interface{}) IEnumerable
