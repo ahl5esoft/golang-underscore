@@ -40,7 +40,7 @@ func (m sorter) Less(i, j int) bool {
 		for k := 0; k < m.KeysValue.Len(); k++ {
 			thisRV := m.KeysValue.Index(k).Index(i)
 			thatRV := m.KeysValue.Index(k).Index(j)
-			
+
 			result := compareValues(thisRV, thatRV)
 			if result != 0 {
 				return result < 0
@@ -124,16 +124,16 @@ func (m *sorter) SortMultiple(iterator IEnumerator, selectors []interface{}) {
 	for i, selector := range selectors {
 		selectorValues[i] = reflect.ValueOf(selector)
 	}
-	
+
 	// 收集所有元素
 	var elements []reflect.Value
 	for ok := iterator.MoveNext(); ok; ok = iterator.MoveNext() {
 		elements = append(elements, iterator.GetValue())
 	}
-	
+
 	// 创建键切片的切片
-	m.KeysValue = reflect.MakeSlice(reflect.SliceOf(reflect.SliceOf(reflect.TypeOf(interface{}{}))), len(selectors), len(selectors))
-	
+	m.KeysValue = reflect.MakeSlice(reflect.SliceOf(reflect.SliceOf(reflect.TypeOf((*interface{})(nil)).Elem())), len(selectors), len(selectors))
+
 	// 为每个元素生成键
 	for i, element := range elements {
 		// 创建临时迭代器用于获取键值
@@ -145,21 +145,21 @@ func (m *sorter) SortMultiple(iterator IEnumerator, selectors []interface{}) {
 				return
 			},
 		}
-		
+
 		// 为每个选择器生成键
 		for j, selectorValue := range selectorValues {
 			keyValue := getReturnValue(selectorValue, iter)
-			
+
 			if m.KeysValue.Index(j).IsZero() {
 				// 初始化键切片
 				keysType := reflect.SliceOf(keyValue.Type())
 				m.KeysValue.Index(j).Set(reflect.MakeSlice(keysType, 0, 0))
 			}
-			
+
 			m.KeysValue.Index(j).Set(reflect.Append(m.KeysValue.Index(j), keyValue))
 		}
 	}
-	
+
 	// 设置值切片
 	if len(elements) > 0 {
 		valuesType := reflect.SliceOf(elements[0].Type())

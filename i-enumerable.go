@@ -32,7 +32,7 @@ type IEnumerable interface {
 	MapMany(selector interface{}) IEnumerable
 	MapManyBy(fieldName string) IEnumerable
 	Object() IEnumerable
-	Order(selector interface{}) IEnumerable
+	Order(selectors ...interface{}) IEnumerable
 	OrderBy(fieldName string) IEnumerable
 	OrderByFields(fieldNames ...string) IEnumerable
 	Reduce(fn interface{}, memo interface{}) IEnumerable
