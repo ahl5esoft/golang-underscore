@@ -63,12 +63,12 @@ like <a href="http://underscorejs.org/">underscore.js</a> and C# LINQ, but for G
 
 <a name="aggregate" />
 
-### Aggregate(memo, fn) IEnumerable
+### Aggregate(fn, memo) IEnumerable
 
 __Arguments__
 
-* `iterator` - func(element or value, key or index, memo) memo
-* `memo` - anyType
+* `fn` - func(memo, element or value, key or index) memo
+* `memo` - initial accumulator value
 
 __Examples__
 
